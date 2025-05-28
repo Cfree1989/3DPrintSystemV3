@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Always follow the structure and principles in the masterplan described in [masterplanV3.md](mdc:masterplanV3.md) located in the root directory.
