@@ -126,6 +126,10 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
 
 *   Initial Flask app structure created. Basic Flask app `app.py` confirmed to start (ran in background).
 *   Encountered some issues with `mkdir` in PowerShell when trying to create multiple directories at once or with very long paths; switched to creating them one by one, which worked. The `list_dir` command was crucial for verifying directory creation steps.
+*   Initialized local Git repository, created `.gitignore`, and made initial commit. Pushed to GitHub remote: `https://github.com/Cfree1989/3DPrintSystemV3`.
+*   Installed `Flask-SQLAlchemy`, `psycopg2-binary`, `python-dotenv`. Generated `requirements.txt`.
+*   Updated `config.py`, `extensions.py`, and `app/__init__.py` to load database configuration and initialize SQLAlchemy.
+*   Awaiting user to create `.env` file with `SECRET_KEY` and `DATABASE_URL`, and then test the application run to verify database URI loading.
 
 ## Lessons
 
