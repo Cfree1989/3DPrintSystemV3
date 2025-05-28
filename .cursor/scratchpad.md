@@ -88,15 +88,13 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
 
 ## Project Status Board
 
-*(To be filled by Executor as tasks are undertaken)*
-
 *   [x] **Milestone 1: Project Setup & Core Infrastructure**
     *   [x] Initialize Flask application structure
     *   [x] Configure PostgreSQL database and SQLAlchemy
     *   [x] Implement `Job` and `Event` SQLAlchemy models
     *   [x] Set up Flask-Migrate
     *   [x] Implement basic staff authentication
-    *   [ ] Create base HTML templates and static file setup
+    *   [x] Create base HTML templates and static file setup
 *   [ ] **Milestone 2: Student Submission Workflow**
     *   [ ] Create student submission form
     *   [ ] Implement file upload handling
@@ -121,16 +119,36 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
     *   [ ] Implement all required UI/UX details
     *   [ ] Finalize configuration
     *   [ ] Documentation for staff
+*   [x] Redesign the Form Layout and Visual Hierarchy for /submit (static HTML/CSS only)
+*   [x] Implement Dynamic Field Behavior (color dropdown disables/enables and options update based on print method)
+*   [ ] Enhance Client-side Validation and Error Feedback
+*   [ ] Update Informational Sections (printer dimensions, help text)
+*   [ ] Update Consent and File Upload Fields
+*   [ ] Style the Submit Button (loading state)
+*   [ ] Accessibility and Mobile Responsiveness
+*   [ ] Testing and Verification
 
 ## Executor's Feedback or Assistance Requests
 
-*   Initial Flask app structure created. Basic Flask app `app.py` confirmed to start (ran in background).
-*   Encountered some issues with `mkdir` in PowerShell when trying to create multiple directories at once or with very long paths; switched to creating them one by one, which worked. The `list_dir` command was crucial for verifying directory creation steps.
-*   Initialized local Git repository, created `.gitignore`, and made initial commit. Pushed to GitHub remote: `https://github.com/Cfree1989/3DPrintSystemV3`.
-*   Installed `Flask-SQLAlchemy`, `psycopg2-binary`, `python-dotenv`. Generated `requirements.txt`.
-*   Updated `config.py`, `extensions.py`, and `app/__init__.py` to load database configuration and initialize SQLAlchemy.
-*   Awaiting user to create `.env` file with `SECRET_KEY` and `DATABASE_URL`, and then test the application run to verify database URI loading.
-*   Staff authentication (shared password, session management) implemented and tested. Login, logout, and dashboard protection work as expected.
+**Summary of Executor Actions (Today):**
+
+- Completed the static layout and visual hierarchy redesign of the /submit form. This included:
+  - Changing the intro box to a yellow warning/info box with "Important:" heading.
+  - Grouping related fields and adding more vertical spacing and whitespace.
+  - Styling the printer dimensions as a gray info box.
+  - Making the submit button full-width, blue, and rounded.
+- Implemented dynamic field behavior using Alpine.js:
+  - The "Color Preference" dropdown is disabled until a print method is selected.
+  - Only the relevant color options (filament or resin) are shown based on the selected print method.
+  - Contextual help text appears under both the print method and color fields.
+- Updated the Project Status Board to reflect:
+  - [x] Redesign the Form Layout and Visual Hierarchy for /submit (static HTML/CSS only)
+  - [x] Implement Dynamic Field Behavior (color dropdown disables/enables and options update based on print method)
+  - [ ] Enhance Client-side Validation and Error Feedback (next step, not started)
+- Prepared to implement client-side validation and error feedback (real-time validation, error highlighting, error scrolling, file type/size feedback), but paused as requested.
+
+**Status:**
+- The /submit form now closely matches the required UI/UX in both static layout and dynamic field behavior. Ready to continue with validation and error feedback next session.
 
 ## Lessons
 

@@ -3,6 +3,7 @@ from .config import Config
 from .extensions import db, migrate
 from .models import Job, Event
 from .routes.dashboard import bp as dashboard_bp
+from .routes.main import bp as main_bp
 
 def create_app():
     app = Flask(__name__)
@@ -14,6 +15,7 @@ def create_app():
 
     # Register blueprints
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(main_bp)
 
     # Ensure secret key is set for sessions
     if not app.secret_key:
