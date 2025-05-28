@@ -92,10 +92,10 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
 
 *   [x] **Milestone 1: Project Setup & Core Infrastructure**
     *   [x] Initialize Flask application structure
-    *   [ ] Configure PostgreSQL database and SQLAlchemy
-    *   [ ] Implement `Job` and `Event` SQLAlchemy models
-    *   [ ] Set up Flask-Migrate
-    *   [ ] Implement basic staff authentication
+    *   [x] Configure PostgreSQL database and SQLAlchemy
+    *   [x] Implement `Job` and `Event` SQLAlchemy models
+    *   [x] Set up Flask-Migrate
+    *   [x] Implement basic staff authentication
     *   [ ] Create base HTML templates and static file setup
 *   [ ] **Milestone 2: Student Submission Workflow**
     *   [ ] Create student submission form
@@ -130,6 +130,7 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
 *   Installed `Flask-SQLAlchemy`, `psycopg2-binary`, `python-dotenv`. Generated `requirements.txt`.
 *   Updated `config.py`, `extensions.py`, and `app/__init__.py` to load database configuration and initialize SQLAlchemy.
 *   Awaiting user to create `.env` file with `SECRET_KEY` and `DATABASE_URL`, and then test the application run to verify database URI loading.
+*   Staff authentication (shared password, session management) implemented and tested. Login, logout, and dashboard protection work as expected.
 
 ## Lessons
 

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Staff Login{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4">Staff Login</h1>
+    <form method="post" class="space-y-4">
+        <div>
+            <label for="password" class="block font-semibold">Password:</label>
+            <input type="password" id="password" name="password" required class="w-full border rounded px-3 py-2">
+        </div>
+        <button type="submit" class="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="mt-4">
+        {% for category, message in messages %}
+          <li class="text-sm {% if category == 'danger' %}text-red-600{% elif category == 'success' %}text-green-600{% else %}text-black{% endif %}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</div>
+{% endblock %} 
