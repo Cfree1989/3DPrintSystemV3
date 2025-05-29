@@ -1,0 +1,52 @@
+<!-- Reusable Form Field Component -->
+{% macro text_field(name, label, type="text", placeholder="", required=true, min_length=None, max_length=None, hint=None) %}
+<div>
+    <label for="{{ name }}" class="form-label">{{ label }}</label>
+    <input 
+        type="{{ type }}" 
+        id="{{ name }}" 
+        name="{{ name }}" 
+        x-model="form.{{ name | replace('_', '') | replace('-', '') }}"
+        @blur="validateField('{{ name | replace('_', '') | replace('-', '') }}')"
+        :class="{ 'form-input--error': errors.{{ name | replace('_', '') | replace('-', '') }} }"
+        class="form-input w-full"
+        {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+        {% if required %}required{% endif %}
+        {% if min_length %}minlength="{{ min_length }}"{% endif %}
+        {% if max_length %}maxlength="{{ max_length }}"{% endif %}
+    >
+    <template x-if="errors.{{ name | replace('_', '') | replace('-', '') }}">
+        <p class="form-error" x-text="errors.{{ name | replace('_', '') | replace('-', '') }}"></p>
+    </template>
+    {% if hint %}
+        <p class="form-hint">{{ hint }}</p>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro select_field(name, label, options, required=true, hint=None, disabled_condition=None) %}
+<div>
+    <label for="{{ name }}" class="form-label">{{ label }}</label>
+    <select 
+        id="{{ name }}" 
+        name="{{ name }}" 
+        x-model="form.{{ name | replace('_', '') | replace('-', '') }}"
+        @change="validateField('{{ name | replace('_', '') | replace('-', '') }}')"
+        :class="{ 'form-select--error': errors.{{ name | replace('_', '') | replace('-', '') }} }"
+        class="form-select w-full"
+        {% if disabled_condition %}:disabled="{{ disabled_condition }}"{% endif %}
+        {% if required %}required{% endif %}
+    >
+        <option value="">{{ options[0] if options else 'Select an option' }}</option>
+        {% for option in options[1:] if options %}
+            <option value="{{ option.value }}">{{ option.label }}</option>
+        {% endfor %}
+    </select>
+    <template x-if="errors.{{ name | replace('_', '') | replace('-', '') }}">
+        <p class="form-error" x-text="errors.{{ name | replace('_', '') | replace('-', '') }}"></p>
+    </template>
+    {% if hint %}
+        <p class="form-hint">{{ hint }}</p>
+    {% endif %}
+</div>
+{% endmacro %} 

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}Submission Successful{% endblock %}
+
+{% block content %}
+<div id="main-content" class="max-w-3xl mx-auto">
+    <!-- Success Header -->
+    <div class="text-center mb-8">
+        <div class="text-6xl text-green-600 mb-4">✓</div>
+        <h1 class="text-apple-large-title font-semibold text-apple-gray-900 mb-3">
+            Submission Successful!
+        </h1>
+        <p class="text-apple-body text-apple-gray-600">
+            Your 3D print job has been submitted and is now with our staff for review.
+        </p>
+    </div>
+
+    <!-- Job Reference -->
+    <div class="card-apple p-6 mb-8">
+        <h2 class="text-apple-title3 font-medium text-apple-gray-900 mb-4">
+            Your Job Reference
+        </h2>
+        <div class="bg-apple-blue-50 border border-apple-blue-200 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+                <span class="text-apple-body text-apple-gray-700">Job ID:</span>
+                <span class="font-mono text-lg font-bold text-apple-blue-700">{{ job_id }}</span>
+            </div>
+        </div>
+        <p class="text-apple-footnote text-apple-gray-500 mt-2">
+            Please save this job ID for your records. You can reference it in any communication with our staff.
+        </p>
+    </div>
+
+    <!-- What Happens Next -->
+    <div class="card-apple p-6 mb-8">
+        <h2 class="text-apple-title3 font-medium text-apple-gray-900 mb-6">
+            What Happens Next
+        </h2>
+        
+        <!-- Process Steps -->
+        <div class="space-y-6">
+            <!-- Step 1 -->
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-apple-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    1
+                </div>
+                <div>
+                    <h3 class="text-apple-headline font-medium text-apple-gray-900">
+                        Staff Review (1-2 business days)
+                    </h3>
+                    <p class="text-apple-body text-apple-gray-600 mt-1">
+                        Our staff will review your model for printability, estimate weight and time, and calculate the final cost.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-apple-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    2
+                </div>
+                <div>
+                    <h3 class="text-apple-headline font-medium text-apple-gray-900">
+                        Email Notification
+                    </h3>
+                    <p class="text-apple-body text-apple-gray-600 mt-1">
+                        You'll receive an email with either approval (including cost and time estimates and confirmation link) or rejection with explanations.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-apple-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    3
+                </div>
+                <div>
+                    <h3 class="text-apple-headline font-medium text-apple-gray-900">
+                        Your Confirmation
+                    </h3>
+                    <p class="text-apple-body text-apple-gray-600 mt-1">
+                        If approved, click the confirmation link in your email to authorize printing and accept the final cost.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0 w-8 h-8 bg-apple-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    4
+                </div>
+                <div>
+                    <h3 class="text-apple-headline font-medium text-apple-gray-900">
+                        Printing & Pickup
+                    </h3>
+                    <p class="text-apple-body text-apple-gray-600 mt-1">
+                        Once confirmed, we'll print your model and notify you when it's ready for pickup and payment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Important Information -->
+    <div class="alert-apple-warning mb-8">
+        <h3 class="text-apple-headline font-medium text-yellow-800 mb-2">
+            Important Reminders
+        </h3>
+        <ul class="text-apple-body text-yellow-700 space-y-1">
+            <li>• Check your email regularly for updates about your submission</li>
+            <li>• Payment is due at pickup time - TigerCASH only</li>
+            <li>• Contact us if you don't hear back within 3 business days</li>
+            <li>• Keep your job ID ({{ job_id }}) for reference</li>
+        </ul>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="card-apple p-6 mb-8">
+        <h2 class="text-apple-title3 font-medium text-apple-gray-900 mb-4">
+            Questions or Concerns?
+        </h2>
+        <p class="text-apple-body text-apple-gray-600 mb-4">
+            If you have questions about your submission or need to make changes, contact us:
+        </p>
+        <div class="space-y-2">
+            <div class="flex items-center space-x-3">
+                <span class="text-apple-body font-medium text-apple-gray-700">Email:</span>
+                <a href="mailto:coad-fablab@lsu.edu" class="text-apple-blue-600 hover:underline">
+                    coad-fablab@lsu.edu
+                </a>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="text-apple-body font-medium text-apple-gray-700">Location:</span>
+                <span class="text-apple-body text-apple-gray-600">
+                    145 Atkinson Hall
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center space-y-4">
+        <a href="{{ url_for('main.submit') }}" 
+           class="btn-apple-primary inline-block">
+            Submit Another Job
+        </a>
+        <div>
+            <p class="text-apple-footnote text-apple-gray-500">
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

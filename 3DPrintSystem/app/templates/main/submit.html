@@ -1,35 +1,82 @@
 {% extends 'base.html' %}
-{% block title %}3D Print Submission{% endblock %}
+{% block title %}Submit 3D Print Job{% endblock %}
+
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Submit 3D Print Job</h1>
-    <div class="mb-6 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 rounded">
-        <span class="font-bold">Important:</span> Before submitting your model for 3D printing, please ensure you have thoroughly reviewed our Additive Manufacturing Moodle page, read all the guides, and checked the checklist. If necessary, revisit and fix your model before submission. Your model must be scaled and simplified appropriately, often requiring a second version specifically optimized for 3D printing. We will not print models that are broken, messy, or too large. Your model must follow the rules and constraints of the machine. We will not fix or scale your model as we do not know your specific needs or project requirements. We print exactly what you send us; if the scale is wrong or you are unsatisfied with the product, it is your responsibility. We will gladly print another model for you at an additional cost. We are only responsible for print failures due to issues under our control.
+<div id="main-content" class="max-w-4xl mx-auto">
+    <!-- Clean Header -->
+    <div class="mb-8">
+        <h1 class="text-apple-large-title font-semibold text-apple-gray-900 mb-3">
+            3D Print Submission
+        </h1>
+        <p class="text-apple-body text-apple-gray-600">
+            Submit your 3D model for printing. Please ensure you've reviewed our guidelines before proceeding.
+        </p>
     </div>
-    <form method="post" enctype="multipart/form-data" class="space-y-6" x-data="{
-        printMethod: '',
-        filamentColors: [
-            'True Red','True Orange','Light Orange','True Yellow','Dark Yellow','Lime Green','Green','Forest Green','Blue','Electric Blue','Midnight Purple','Light Purple','Clear','True White','Gray','True Black','Brown','Copper','Bronze','True Silver','True Gold','Glow in the Dark','Color Changing'
-        ],
-        resinColors: ['Black','White','Gray','Clear'],
-        get colorOptions() {
-            if (this.printMethod === 'Filament') return this.filamentColors;
-            if (this.printMethod === 'Resin') return this.resinColors;
-            return [];
-        }
-    }">
-        <div class="space-y-4">
-            <div>
-                <label class="block font-semibold">Full Name</label>
-                <input type="text" name="student_name" required minlength="2" maxlength="100" class="w-full border rounded px-3 py-2">
+
+    <!-- Important Guidelines - Prominent Warning -->
+    <div class="alert-apple-warning mb-8" role="alert">
+        <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0 mt-1">
+                <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
             </div>
             <div>
-                <label class="block font-semibold">Email Address</label>
-                <input type="email" name="student_email" required maxlength="100" class="w-full border rounded px-3 py-2">
+                <h3 class="text-apple-headline font-semibold text-yellow-800 mb-2">Important:</h3>
+                <p class="text-apple-callout text-yellow-700 leading-relaxed">
+                    Before submitting your model for 3D printing, please ensure you have thoroughly reviewed our Additive Manufacturing Moodle page, read all the guides, and checked the checklist. If necessary, revisit and fix your model before submission. Your model must be scaled and simplified appropriately, often requiring a second version specifically optimized for 3D printing. We will not print models that are broken, messy, or too large. Your model must follow the rules and constraints of the machine. We will not fix or scale your model as we do not know your specific needs or project requirements. We print exactly what you send us; if the scale is wrong or you are unsatisfied with the product, it is your responsibility. We will gladly print another model for you at an additional cost. We are only responsible for print failures due to issues under our control.
+                </p>
             </div>
-            <div>
-                <label class="block font-semibold">Discipline/Major</label>
-                <select name="discipline" required class="w-full border rounded px-3 py-2">
+        </div>
+    </div>
+
+    <!-- Main Form -->
+    <div class="card-apple p-8">
+        <form method="post" enctype="multipart/form-data" class="space-apple-lg" x-data="{
+            printMethod: '',
+            filamentColors: [
+                'True Red','True Orange','Light Orange','True Yellow','Dark Yellow','Lime Green','Green','Forest Green','Blue','Electric Blue','Midnight Purple','Light Purple','Clear','True White','Gray','True Black','Brown','Copper','Bronze','True Silver','True Gold','Glow in the Dark','Color Changing'
+            ],
+            resinColors: ['Black','White','Gray','Clear'],
+            filamentPrinters: ['Prusa MK4S', 'Prusa XL', 'Raise3D Pro 2 Plus'],
+            resinPrinters: ['Formlabs Form 3'],
+            get colorOptions() {
+                if (this.printMethod === 'Filament') return this.filamentColors;
+                if (this.printMethod === 'Resin') return this.resinColors;
+                return [];
+            },
+            get printerOptions() {
+                if (this.printMethod === 'Filament') return this.filamentPrinters;
+                if (this.printMethod === 'Resin') return this.resinPrinters;
+                return [];
+            }
+        }">
+            
+            <!-- Personal Information -->
+            <div class="form-group-apple">
+                <label for="student_name" class="label-apple">Full Name</label>
+                <input type="text" 
+                       id="student_name"
+                       name="student_name" 
+                       required 
+                       minlength="2" 
+                       maxlength="100" 
+                       class="input-apple">
+            </div>
+
+            <div class="form-group-apple">
+                <label for="student_email" class="label-apple">Email Address</label>
+                <input type="email" 
+                       id="student_email"
+                       name="student_email" 
+                       required 
+                       maxlength="100" 
+                       class="input-apple">
+            </div>
+
+            <div class="form-group-apple">
+                <label for="discipline" class="label-apple">Discipline/Major</label>
+                <select id="discipline" name="discipline" required class="select-apple">
                     <option value="">-- Select Discipline --</option>
                     <option>Art</option>
                     <option>Architecture</option>
@@ -40,77 +87,134 @@
                     <option>Other</option>
                 </select>
             </div>
-            <div>
-                <label class="block font-semibold">Class Number (e.g., ARCH 4000 or N/A)</label>
-                <input type="text" name="class_number" required maxlength="50" class="w-full border rounded px-3 py-2" placeholder="ARCH 4000 or N/A">
+
+            <div class="form-group-apple">
+                <label for="class_number" class="label-apple">Class Number (e.g., ARCH 4000 or N/A)</label>
+                <input type="text" 
+                       id="class_number"
+                       name="class_number" 
+                       required 
+                       maxlength="50" 
+                       placeholder="ARCH 4000"
+                       class="input-apple">
             </div>
-        </div>
-        <div class="space-y-4">
-            <div>
-                <label class="block font-semibold">Print Method</label>
-                <select name="print_method" required class="w-full border rounded px-3 py-2" x-model="printMethod">
+
+            <div class="form-group-apple">
+                <label for="print_method" class="label-apple">Print Method</label>
+                <select id="print_method" 
+                        name="print_method" 
+                        required 
+                        class="select-apple" 
+                        x-model="printMethod">
                     <option value="">-- Select Print Method --</option>
                     <option value="Filament">Filament</option>
                     <option value="Resin">Resin</option>
                 </select>
-                <template x-if="printMethod === 'Filament'">
-                    <div class="text-xs text-gray-600 mt-1">Good resolution, suitable for simpler models. Fast. Best For: Medium items. Cost: Least expensive.</div>
-                </template>
-                <template x-if="printMethod === 'Resin'">
-                    <div class="text-xs text-gray-600 mt-1">Super high resolution and detail. Slow. Best For: Small items. Cost: More expensive.</div>
-                </template>
             </div>
-            <div>
-                <label class="block font-semibold">Color Preference</label>
-                <select name="color" required class="w-full border rounded px-3 py-2" :disabled="!printMethod">
-                    <option value="">-- Select Color --</option>
+
+            <div class="form-group-apple">
+                <label for="color" class="label-apple">Color Preference</label>
+                <select id="color" 
+                        name="color" 
+                        required 
+                        class="select-apple" 
+                        :disabled="!printMethod"
+                        :class="{ 'disabled-apple': !printMethod }">
+                    <option value="">Select color</option>
                     <template x-for="color in colorOptions" :key="color">
-                        <option x-text="color"></option>
+                        <option :value="color" x-text="color"></option>
                     </template>
                 </select>
                 <template x-if="!printMethod">
-                    <div class="text-xs text-gray-500 mt-1">Please select a print method first</div>
+                    <small class="text-apple-footnote text-apple-gray-400 mt-1 block">
+                        Please select a print method first
+                    </small>
                 </template>
             </div>
-        </div>
-        <div class="bg-gray-50 p-4 rounded border mb-2">
-            <div class="font-semibold mb-1">Will your model fit on our printers? Please check the dimensions (W x D x H):</div>
-            <ul class="list-disc ml-6 text-sm mb-1">
-                <li><span class="font-bold">Filament:</span></li>
-                <li>Prusa MK4S: 9.84" × 8.3" × 8.6" (250 × 210 × 220 mm)</li>
-                <li>Prusa XL: 14.17" × 14.17" × 14.17" (360 × 360 × 360 mm)</li>
-                <li>Raise3D Pro 2 Plus: 12" × 12" × 23.8" (305 × 305 × 605 mm)</li>
-                <li><span class="font-bold">Resin:</span></li>
-                <li>Formlabs Form 3: 5.7 × 5.7 × 7.3 inches (145 x 145 x 175 mm)</li>
-            </ul>
-            <span class="text-xs">Ensure your model's dimensions are within the specified limits for the printer you plan to use. If your model is too large, consider scaling it down or splitting it into parts. For more guidance, refer to the design guides on our Moodle page or ask for assistance in person. If exporting as .STL or .OBJ you MUST scale it down in millimeters BEFORE exporting. If you do not the scale will not work correctly.</span>
-        </div>
-        <div class="space-y-4">
-            <div>
-                <label class="block font-semibold">Which printer do you think your model fits on?</label>
-                <select name="printer" required class="w-full border rounded px-3 py-2">
-                    <option value="">-- Select Printer --</option>
-                    <option>Prusa MK4S</option>
-                    <option>Prusa XL</option>
-                    <option>Raise3D Pro 2 Plus</option>
-                    <option>Formlabs Form 3</option>
-                </select>
+
+            <!-- Printer Dimensions Section -->
+            <div class="form-group-apple">
+                <h3 class="text-apple-title3 font-semibold text-apple-gray-900 mb-4">Printer Dimensions</h3>
+                <div class="bg-apple-gray-50 p-6 rounded-apple-lg border border-apple-gray-200">
+                    <p class="text-apple-body text-apple-gray-700 mb-4 font-medium">
+                        Will your model fit on our printers? Please check the dimensions (W x D x H):
+                    </p>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <h4 class="text-apple-headline font-semibold text-apple-gray-900 mb-2">Filament:</h4>
+                            <ul class="text-apple-callout text-apple-gray-700 space-y-1 ml-4">
+                                <li> Prusa MK4S: 9.84" × 8.3" × 8.6" (250 × 210 × 220 mm)</li>
+                                <li> Prusa XL: 14.17" × 14.17" × 14.17" (360 × 360 × 360 mm)</li>
+                                <li> Raise3D Pro 2 Plus: 12" × 12" × 23.8" (305 × 305 × 605 mm)</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-apple-headline font-semibold text-apple-gray-900 mb-2">Resin:</h4>
+                            <ul class="text-apple-callout text-apple-gray-700 space-y-1 ml-4">
+                                <li> Formlabs Form 3: 5.7 × 5.7 × 7.3 inches (145 x 145 x 175 mm)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-apple-blue-50 rounded-apple border-l-4 border-apple-blue-600">
+                        <p class="text-apple-footnote text-apple-blue-800">
+                            Ensure your model's dimensions are within the specified limits for the printer you plan to use. If your model is too large, consider scaling it down or splitting it into parts. For more guidance, refer to the design guides on our Moodle page or ask for assistance in person. If exporting as .STL or .OBJ you MUST scale it down in millimeters BEFORE exporting. If you do not the scale will not work correctly.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label class="block font-semibold">I understand there is a minimum $3.00 charge for all print jobs, and that the final cost may be higher based on material and time.</label>
-                <select name="acknowledged_minimum_charge" required class="w-full border rounded px-3 py-2">
+
+            <div class="form-group-apple">
+                <label for="printer" class="label-apple">Which printer do you think your model fits on?</label>
+                <select id="printer" 
+                        name="printer" 
+                        required 
+                        class="select-apple"
+                        :disabled="!printMethod"
+                        :class="{ 'disabled-apple': !printMethod }">
+                    <option value="">-- Select --</option>
+                    <template x-for="printer in printerOptions" :key="printer">
+                        <option :value="printer" x-text="printer"></option>
+                    </template>
+                </select>
+                <template x-if="!printMethod">
+                    <small class="text-apple-footnote text-apple-gray-400 mt-1 block">
+                        Please select a print method first
+                    </small>
+                </template>
+            </div>
+
+            <div class="form-group-apple">
+                <label for="acknowledged_minimum_charge" class="label-apple">I understand there is a minimum $3.00 charge for all print jobs, and that the final cost may be higher based on material and time.</label>
+                <select id="acknowledged_minimum_charge" name="acknowledged_minimum_charge" required class="select-apple">
                     <option value="">-- Select --</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                 </select>
             </div>
-            <div>
-                <label class="block font-semibold">Upload 3D Model File (.stl, .obj, .3mf)</label>
-                <input type="file" name="file" required accept=".stl,.obj,.3mf" class="w-full border rounded px-3 py-2">
-                <span class="text-xs">Accepted formats: .stl, .obj, .3mf (max 50MB)</span>
+
+            <div class="form-group-apple">
+                <label for="file" class="label-apple">Upload 3D Model File (.stl, .obj, .3mf)</label>
+                <input type="file" 
+                       id="file"
+                       name="file" 
+                       required 
+                       accept=".stl,.obj,.3mf" 
+                       class="input-apple file:mr-4 file:py-2 file:px-4 file:rounded-apple file:border-0 file:bg-apple-blue-50 file:text-apple-blue-700 hover:file:bg-apple-blue-100">
+                <small class="text-apple-footnote text-apple-gray-500 mt-1 block">
+                    Accepted formats: .stl, .obj, .3mf (maximum 50MB)
+                </small>
             </div>
-        </div>
-        <button type="submit" class="w-full bg-blue-700 text-white px-4 py-2 rounded font-semibold hover:bg-blue-800 transition">Submit Print Job</button>
-    </form>
+
+            <!-- Submit Button -->
+            <div class="pt-6 border-t border-apple-gray-200">
+                <button type="submit" class="btn-apple-primary w-full">
+                    Submit Print Job
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %} 

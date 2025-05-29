@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apple-compliant Base Styles */
+@layer base {
+  /* Ensure proper font rendering for Apple fonts */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Apple-style body defaults */
+  body {
+    @apply font-sans text-apple-body leading-relaxed;
+    @apply bg-apple-gray-50 text-apple-gray-900;
+  }
+
+  /* Dynamic Type support - relative units for accessibility */
+  h1 { @apply text-apple-large-title font-semibold; }
+  h2 { @apply text-apple-title1 font-semibold; }
+  h3 { @apply text-apple-title2 font-medium; }
+  h4 { @apply text-apple-title3 font-medium; }
+  h5 { @apply text-apple-headline; }
+  h6 { @apply text-apple-callout font-medium; }
+  
+  p { @apply text-apple-body; }
+  small { @apply text-apple-footnote; }
+  
+  /* Apple-style focus states for accessibility */
+  *:focus {
+    @apply outline-none ring-2 ring-apple-blue-600 ring-opacity-50;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    body {
+      @apply bg-white text-black;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Apple Component Styles */
+@layer components {
+  /* Apple-style Alert/Warning Box */
+  .alert-apple {
+    @apply p-4 rounded-apple-lg border-l-4;
+    @apply bg-apple-blue-50 border-apple-blue-600 text-apple-blue-800;
+  }
+  
+  .alert-apple-warning {
+    @apply p-4 rounded-apple-lg border-l-4;
+    @apply bg-yellow-50 border-yellow-400 text-yellow-800;
+  }
+  
+  .alert-apple-error {
+    @apply p-4 rounded-apple-lg border-l-4;
+    @apply bg-apple-red-50 border-apple-red-600 text-apple-red-800;
+  }
+
+  .alert-apple-success {
+    @apply p-4 rounded-apple-lg border-l-4;
+    @apply bg-apple-green-50 border-apple-green-600 text-apple-green-800;
+  }
+
+  /* Apple-style Form Elements */
+  .form-group-apple {
+    @apply space-y-2 mb-6;
+  }
+
+  .label-apple {
+    @apply block text-apple-headline text-apple-gray-900 font-medium;
+  }
+
+  .input-apple {
+    @apply w-full px-4 py-3 rounded-apple border border-apple-gray-300;
+    @apply text-apple-body bg-white text-apple-gray-900;
+    @apply touch-target transition-apple duration-apple-normal;
+    @apply focus:border-apple-blue-600 focus:ring-2 focus:ring-apple-blue-600 focus:ring-opacity-20;
+    @apply focus:shadow-apple-md focus:-translate-y-0.5;
+  }
+
+  .select-apple {
+    @apply input-apple appearance-none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 40px;
+  }
+
+  /* Apple-style Cards */
+  .card-apple {
+    @apply bg-white rounded-apple-xl shadow-apple-lg;
+    @apply border border-apple-gray-100;
+    @apply backdrop-blur-apple;
+  }
+
+  .card-apple-glass {
+    @apply glass rounded-apple-xl shadow-glass;
+  }
+
+  /* Apple Navigation */
+  .nav-apple {
+    @apply bg-white/80 backdrop-blur-apple-md border-b border-apple-gray-200;
+    @apply shadow-apple-sm;
+  }
+
+  /* Apple Button Variations */
+  .btn-apple-secondary {
+    @apply touch-target px-6 py-3 rounded-apple;
+    @apply bg-apple-gray-100 text-apple-gray-900 font-medium;
+    @apply border border-apple-gray-300;
+    @apply transition-apple duration-apple-normal;
+    @apply hover:bg-apple-gray-200 hover:shadow-apple-md hover:-translate-y-0.5;
+    @apply active:translate-y-0 active:shadow-apple;
+  }
+
+  .btn-apple-text {
+    @apply touch-target px-4 py-2 rounded-apple;
+    @apply text-apple-blue-600 font-medium;
+    @apply transition-apple duration-apple-normal;
+    @apply hover:bg-apple-blue-50 hover:text-apple-blue-700;
+  }
+}
+
+/* Apple Utility Classes */
+@layer utilities {
+  /* Spacing following 8pt grid */
+  .space-apple-xs { @apply space-y-2; }
+  .space-apple-sm { @apply space-y-3; }
+  .space-apple { @apply space-y-4; }
+  .space-apple-md { @apply space-y-6; }
+  .space-apple-lg { @apply space-y-8; }
+  .space-apple-xl { @apply space-y-12; }
+
+  /* Apple-style transitions */
+  .transition-apple {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  /* Apple-style transforms */
+  .hover-lift {
+    @apply transition-apple duration-apple-normal;
+  }
+  .hover-lift:hover {
+    @apply -translate-y-1 shadow-apple-lg;
+  }
+
+  /* Text styles following Apple HIG */
+  .text-apple-contrast {
+    color: contrast(#000000 vs #ffffff);
+  }
+
+  /* Apple-style disabled states */
+  .disabled-apple {
+    @apply opacity-50 cursor-not-allowed;
+    pointer-events: none;
+  }
+
+  /* Apple-style loading states */
+  .loading-apple {
+    @apply opacity-75 cursor-wait;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .dark {
+    @apply bg-apple-gray-900 text-apple-gray-50;
+  }
+  
+  .dark .card-apple {
+    @apply bg-apple-gray-800 border-apple-gray-700;
+  }
+  
+  .dark .input-apple {
+    @apply bg-apple-gray-800 border-apple-gray-600 text-apple-gray-100;
+  }
+  
+  .dark .nav-apple {
+    @apply bg-apple-gray-900/80 border-apple-gray-700;
+  }
+} 

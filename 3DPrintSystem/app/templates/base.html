@@ -4,21 +4,65 @@
     <meta charset="UTF-8">
     <title>{% block title %}3D Print System{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Alpine.js CDN (optional) -->
+    
+    <!-- Apple-optimized CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Alpine.js for interactive components -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Apple-style meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#007AFF">
+    
     {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <nav class="bg-blue-900 text-white p-4 mb-6">
-        <div class="container mx-auto flex justify-between items-center">
-            <span class="font-bold text-lg">3D Print System</span>
-            <a href="/dashboard/" class="hover:underline">Dashboard</a>
+<body class="bg-apple-gray-50 min-h-screen antialiased">
+    <!-- Apple-style Navigation -->
+    <nav class="nav-apple sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-apple-title3 font-semibold text-apple-gray-900">
+                    3D Print System
+                </h1>
+            </div>
         </div>
     </nav>
-    <main class="container mx-auto">
+
+    <!-- Main Content with Apple spacing -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Flash Messages with Apple styling -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-8 space-apple">
+                    {% for category, message in messages %}
+                        <div class="alert-apple{% if category == 'error' %}-error{% elif category == 'warning' %}-warning{% elif category == 'success' %}-success{% endif %}" role="alert">
+                            <strong class="font-medium">
+                                {% if category == 'error' %}Error:{% elif category == 'warning' %}Warning:{% elif category == 'success' %}Success:{% else %}Info:{% endif %}
+                            </strong>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </main>
+
+    <!-- Apple-style footer -->
+    <footer class="mt-16 py-8 border-t border-apple-gray-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <p class="text-apple-footnote text-apple-gray-500 text-center">
+                3D Print System &copy; 2025. Designed with Apple Human Interface Guidelines.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Accessibility: Skip to main content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 btn-apple-primary z-50">
+        Skip to main content
+    </a>
 </body>
 </html> 
