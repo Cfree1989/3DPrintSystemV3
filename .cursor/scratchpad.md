@@ -13,7 +13,14 @@ Based on the `masterplanV3.md`, key challenges and areas requiring careful atten
 1.  **Robust File Management**: Ensuring the integrity and correct tracking of files through various stages (upload, slicing, storage) is critical. The use of `metadata.json` and a clear directory structure is a good approach. Standardized file naming will also be important.
 2.  **Event-Driven Workflow**: Implementing an immutable event log for all job status changes and actions will be central to the system's reliability and auditability.
 3.  **Asynchronous Task Handling**: Correctly setting up and managing asynchronous tasks (e.g., for email notifications, thumbnail generation) using Celery or RQ is crucial for performance and responsiveness.
-4.  **User Experience (UX)**: The submission form has specific dynamic behaviors and detailed informational text requirements that must be implemented accurately.
+4.  **Apple-Style User Experience (UX)**: All frontend development must strictly adhere to Apple's Human Interface Guidelines and design philosophy, following the principles documented in our UI reference guides:
+    - Clarity: Prioritize legibility, white space, and intuitive layouts
+    - Deference: Let content lead; avoid flashy UI elements
+    - Depth: Use translucent panels and subtle shadows (max 3 layers)
+    - Consistency: Maintain standardized patterns throughout
+    - Simplicity: Strip to essential elements
+    - Efficiency: Optimize interaction paths
+    - Accessibility: Support Dynamic Type, high contrast, and reduced motion
 5.  **Database Design and Interaction**: Proper setup of PostgreSQL, SQLAlchemy models (`Job`, `Event`), and migrations is fundamental.
 6.  **Direct File Opening**: Implementing the custom protocol handler for opening files in local slicer software will require careful OS-level integration.
 7.  **Modularity**: Adhering to the planned modular structure using Flask Blueprints will be important for maintainability.
@@ -25,22 +32,35 @@ Based on the `masterplanV3.md`, key challenges and areas requiring careful atten
 This is an initial breakdown. Tasks will be refined and made more granular as the project progresses.
 
 1.  **Project Setup & Core Infrastructure (Milestone 1)**
-    *   [ ] Initialize Flask application structure (as per `masterplanV3.md`).
+    *   [x] Initialize Flask application structure (as per `masterplanV3.md`).
         *   Success Criteria: Basic Flask app runs; directory structure created.
-    *   [ ] Configure PostgreSQL database and SQLAlchemy.
+    *   [x] Configure PostgreSQL database and SQLAlchemy.
         *   Success Criteria: Database connection established; SQLAlchemy initialized.
-    *   [ ] Implement `Job` and `Event` SQLAlchemy models.
+    *   [x] Implement `Job` and `Event` SQLAlchemy models.
         *   Success Criteria: Models defined; initial migration created and applied.
-    *   [ ] Set up Flask-Migrate for database schema management.
+    *   [x] Set up Flask-Migrate for database schema management.
         *   Success Criteria: Migrations can be generated and applied.
-    *   [ ] Implement basic staff authentication (shared password, session management).
+    *   [x] Implement basic staff authentication (shared password, session management).
         *   Success Criteria: Staff can log in to a protected area.
-    *   [ ] Create base HTML templates and static file setup (Tailwind CSS, Alpine.js if chosen).
-        *   Success Criteria: Basic site structure visible; CSS and JS loaded.
+    *   [x] Create base HTML templates and static file setup following Apple UI/UX guidelines:
+        *   Set up Tailwind CSS with custom configuration for Apple-style spacing (8pt grid)
+        *   Configure system font stack (SF Pro / system-ui)
+        *   Implement base component styles adhering to Apple's design principles
+        *   Success Criteria: Base UI components match Apple's aesthetic; spacing follows 8pt grid; typography uses correct system fonts
 
 2.  **Student Submission Workflow (Milestone 2)**
-    *   [ ] Create the student submission form (`/submit`) with all specified fields, validations (client-side and server-side), and introductory text.
-        *   Success Criteria: Form renders correctly; all fields present; client-side validation works as described; introductory text is exactly as specified.
+    *   [ ] Create initial student submission form layout and visual hierarchy
+        *   Success Criteria: Form layout matches design requirements with proper grouping and spacing
+    *   [ ] Implement dynamic field behavior
+        *   Success Criteria: Color dropdown properly enables/disables and updates based on print method
+    *   [ ] Enhance form with Apple UI/UX compliance:
+        *   Configure Tailwind for Apple design system (8pt grid, colors, typography)
+        *   Update visual components to match Apple style
+        *   Implement proper form control sizing and spacing
+        *   Add appropriate depth and translucency effects
+        *   Success Criteria: Form fully complies with Apple HIG specifications
+    *   [ ] Implement client-side validation and error feedback
+        *   Success Criteria: Real-time validation with Apple-style error states and messaging
     *   [ ] Implement file upload handling (validation, standardized naming, storage in `storage/Uploaded/`).
         *   Success Criteria: Files are uploaded, renamed, and stored correctly; invalid files are rejected.
     *   [ ] Implement `metadata.json` creation alongside the uploaded file.
@@ -48,15 +68,18 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
     *   [ ] Implement `JobCreated` event logging.
         *   Success Criteria: An `Event` record is created in the database when a job is submitted.
     *   [ ] Create the submission success page (`/submit/success`).
-        *   Success Criteria: Success page displays job ID and next steps.
+        *   Success Criteria: Success page displays job ID and next steps with Apple-style aesthetics.
     *   [ ] (Optional/Parallel) Setup asynchronous task queue (Celery/RQ).
         *   Success Criteria: Task queue is operational; test task can be executed.
     *   [ ] (Optional/Parallel) Implement asynchronous thumbnail generation.
         *   Success Criteria: Thumbnails are generated for uploaded files and stored; failures are handled gracefully.
 
 3.  **Staff Dashboard & Job Management (Milestone 3)**
-    *   [ ] Create basic staff dashboard page.
-        *   Success Criteria: Staff can view a list of submitted jobs.
+    *   [ ] Create basic staff dashboard page following Apple design principles:
+        *   Implement proper layout grid and spacing
+        *   Use Apple-style cards and list views
+        *   Add appropriate visual hierarchy and typography
+        *   Success Criteria: Dashboard matches Apple aesthetic while maintaining functionality
     *   [ ] Implement job status update functionality (e.g., Approve, Reject).
         *   Success Criteria: Staff can change job statuses; corresponding events are logged.
     *   [ ] Implement file movement based on status changes (e.g., to `storage/Pending/`).
@@ -79,8 +102,12 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
 5.  **Refinements, Testing & Deployment Prep (Milestone 5)**
     *   [ ] Comprehensive testing (unit, integration, and UX tests based on requirements).
         *   Success Criteria: Test suite passes; manual testing confirms all features work as expected.
-    *   [ ] Implement all required UI/UX details (dynamic form behavior, error handling, accessibility).
-        *   Success Criteria: UI matches `masterplanV3.md` specifications.
+    *   [ ] Final UI/UX compliance verification:
+        *   Verify all interactive elements meet 44x44pt minimum size
+        *   Confirm proper contrast ratios (≥4.5:1)
+        *   Test motion/animation behaviors
+        *   Validate Dynamic Type and reduced motion support
+        *   Success Criteria: UI fully complies with Apple HIG specifications
     *   [ ] Finalize configuration for production (if applicable, though lab setup is primary).
         *   Success Criteria: Configuration is secure and appropriate for the lab environment.
     *   [ ] Documentation for staff.
@@ -95,38 +122,69 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
     *   [x] Set up Flask-Migrate
     *   [x] Implement basic staff authentication
     *   [x] Create base HTML templates and static file setup
+
 *   [ ] **Milestone 2: Student Submission Workflow**
-    *   [ ] Create student submission form
+    *   [x] Redesign the Form Layout and Visual Hierarchy for /submit (static HTML/CSS only)
+    *   [x] Implement Dynamic Field Behavior (color dropdown disables/enables and options update based on print method)
+    *   [ ] Enhance Client-side Validation and Error Feedback
+    *   [ ] Update Informational Sections (printer dimensions, help text)
+    *   [ ] Update Consent and File Upload Fields
+    *   [ ] Style the Submit Button (loading state)
+    *   [ ] Accessibility and Mobile Responsiveness
+    *   [ ] Testing and Verification
     *   [ ] Implement file upload handling
     *   [ ] Implement `metadata.json` creation
     *   [ ] Implement `JobCreated` event logging
     *   [ ] Create submission success page
     *   [ ] (Optional) Setup asynchronous task queue
     *   [ ] (Optional) Implement asynchronous thumbnail generation
+
 *   [ ] **Milestone 3: Staff Dashboard & Job Management**
-    *   [ ] Create basic staff dashboard page
+    *   [ ] Create Apple-style dashboard page
     *   [ ] Implement job status update functionality
     *   [ ] Implement file movement based on status changes
     *   [ ] Implement `metadata.json` updates
-    *   [ ] Implement functionality for staff to input slicer-generated data
+    *   [ ] Implement slicer data input functionality
     *   [ ] Implement cost calculation
     *   [ ] Implement direct file opening
+
 *   [ ] **Milestone 4: Notifications & Final Workflow Steps**
     *   [ ] Implement email notifications
     *   [ ] Implement remaining job status transitions
+
 *   [ ] **Milestone 5: Refinements, Testing & Deployment Prep**
     *   [ ] Comprehensive testing
-    *   [ ] Implement all required UI/UX details
+    *   [ ] Final UI/UX compliance verification
     *   [ ] Finalize configuration
     *   [ ] Documentation for staff
-*   [x] Redesign the Form Layout and Visual Hierarchy for /submit (static HTML/CSS only)
-*   [x] Implement Dynamic Field Behavior (color dropdown disables/enables and options update based on print method)
-*   [ ] Enhance Client-side Validation and Error Feedback
-*   [ ] Update Informational Sections (printer dimensions, help text)
-*   [ ] Update Consent and File Upload Fields
-*   [ ] Style the Submit Button (loading state)
-*   [ ] Accessibility and Mobile Responsiveness
-*   [ ] Testing and Verification
+
+*   [ ] **Apple UI/UX Compliance Updates**
+    *   [ ] Configure Tailwind for Apple-style design system:
+        - Set up 8pt spacing scale
+        - Configure system font stack
+        - Define Apple-compliant color palette
+        - Create shadow and depth utilities
+    *   [ ] Update existing components:
+        - Replace warning/info boxes with Apple-style alerts
+        - Adjust button styles to match Apple guidelines
+        - Implement proper form control sizing (44x44pt minimum)
+        - Add appropriate depth and translucency effects
+    *   [ ] Enhance accessibility features:
+        - Implement Dynamic Type support
+        - Add reduced motion options
+        - Ensure proper contrast ratios
+    *   [ ] Review and update animations/transitions
+    *   [ ] Test across different screen sizes and orientations
+
+*   [ ] **Global Apple UI/UX Requirements**
+    *   [ ] Accessibility Features:
+        - [ ] Dynamic Type support
+        - [ ] Reduced motion options
+        - [ ] High contrast compliance
+    *   [ ] Responsive Design:
+        - [ ] Test across screen sizes
+        - [ ] Verify proper scaling
+        - [ ] Validate touch targets
 
 ## Executor's Feedback or Assistance Requests
 
@@ -153,4 +211,5 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
 ## Lessons
 
 *   PowerShell `mkdir` might have limitations with multiple arguments or very long path arguments compared to `bash`. Create directories individually or in smaller batches if issues arise.
-*   Always verify directory/file creation steps, e.g., using `list_dir`, especially if terminal output is unusual or truncated. 
+*   Always verify directory/file creation steps, e.g., using `list_dir`, especially if terminal output is unusual or truncated.
+*   All frontend development must reference and comply with the Apple UI Design Research document and UI Reference Guide. These documents serve as the foundation for our UI/UX implementation. 
