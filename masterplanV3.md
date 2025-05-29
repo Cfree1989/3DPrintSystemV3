@@ -36,6 +36,13 @@ The project aims to replace potentially ad-hoc or manual 3D print request system
     - email-validator>=2.0.0 (essential for form validation)
     - pytz>=2023.3 (required for timezone handling)
     - Celery/RQ dependencies.
+    - **UI Dependencies**:
+        - Tailwind CSS 3.x (for Apple-style design system)
+        - Alpine.js 3.x (for dynamic form behavior)
+        - PostCSS 8.x (for Tailwind processing)
+    - **System Dependencies**:
+        - ImageMagick (for thumbnail generation)
+        - wkhtmltopdf (for future PDF features)
 
 ### 2.3 Simplified Architecture Principles
 This project will adhere to simplicity where appropriate, but prioritize robustness:
@@ -57,6 +64,14 @@ Based on operational needs, the following UX features are critical:
     - Ensure the submission form and dashboard are fully functional and readable on mobile devices.
     - Test UI components with screen readers for basic WCAG 2.1 compliance.
     - Ensure keyboard-only navigation works for all modals and interactive elements.
+-   **Apple UI/UX Compliance**:
+    - All UI components must follow Apple Human Interface Guidelines
+    - Use 8pt spacing grid system
+    - Implement proper depth and translucency effects
+    - Support Dynamic Type and reduced motion
+    - Maintain minimum touch target size (44x44pt)
+    - Use system font stack (SF Pro / system-ui)
+    - Follow Apple's color palette guidelines
 
 
 #### 2.4.1 Required Submission Form Introduction Text
@@ -311,6 +326,14 @@ class Event(db.Model):
 - If a student doesn't confirm within the token expiry period, staff are alerted (e.g., via dashboard).
 - Staff can manually resend a confirmation email (generating a new token).
 - Staff can manually mark a job as confirmed if email confirmation fails (e.g., student confirms verbally). This action is logged.
+
+**UI/UX Implementation Notes:**
+- All status changes must provide immediate visual feedback
+- Use Apple-style loading indicators for async operations
+- Implement smooth transitions between states
+- Provide clear error states with recovery options
+- Use consistent iconography across all status indicators
+- Follow Apple's animation timing guidelines
 
 ## 4. Technical Deep Dive: Direct File Access
 
@@ -578,6 +601,80 @@ class Event(db.Model):
 
 ### 5.10 Development Implementation Lessons
 - PowerShell compatibility, path handling, Flask-WTF integration, template management, JavaScript implementation patterns, form UX requirements, database migration best practices, and all other lessons learned as detailed in section 6.
+
+**UI/UX Lessons:**
+- Always implement form validation with real-time feedback
+- Use proper error scrolling to guide users
+- Implement loading states for all async operations
+- Follow Apple's accessibility guidelines strictly
+- Test all UI components across different screen sizes
+- Ensure proper keyboard navigation support
+
+**Technical Lessons:**
+- Verify file operations with explicit success checks
+- Log all file system operations for debugging
+- Handle network share disconnections gracefully
+- Implement proper error handling for email operations
+- Use atomic file operations where possible
+- Always validate file paths before operations
+
+**Process Lessons:**
+- Document all configuration changes in version control
+- Maintain a separate development environment
+- Test email templates with various email clients
+- Verify protocol handler registration after system updates
+- Keep comprehensive logs of all system changes
+- Document all custom UI components and their usage
+
+### 5.11 Critical Success Factors
+1. **File System Integrity:**
+   - Regular validation of file locations
+   - Automated metadata.json consistency checks
+   - Proper error handling for file operations
+   - Regular backup verification
+
+2. **User Experience:**
+   - Strict adherence to Apple UI/UX guidelines
+   - Consistent feedback for all operations
+   - Clear error messages and recovery paths
+   - Proper form validation and guidance
+
+3. **System Reliability:**
+   - Regular health checks for all components
+   - Proper logging of all operations
+   - Graceful handling of network issues
+   - Regular backup procedures
+
+4. **Staff Efficiency:**
+   - Streamlined workflow processes
+   - Clear status indicators
+   - Easy access to file operations
+   - Proper error recovery procedures
+
+### 5.12 Known Issues and Workarounds
+1. **Network Share Access:**
+   - Implement retry logic for file operations
+   - Cache file metadata when possible
+   - Provide clear error messages for access issues
+   - Document recovery procedures
+
+2. **Protocol Handler:**
+   - Regular verification of registry entries
+   - Fallback procedures for failed operations
+   - Clear documentation for reinstallation
+   - Logging of all handler operations
+
+3. **Email Delivery:**
+   - Implement retry logic for failed sends
+   - Queue messages for later delivery
+   - Monitor delivery success rates
+   - Document SPF/DKIM requirements
+
+4. **UI Components:**
+   - Test across different browsers
+   - Verify mobile responsiveness
+   - Document accessibility features
+   - Maintain consistent styling
 
 ## 6. Implementation Blueprints and Proven Patterns
 
