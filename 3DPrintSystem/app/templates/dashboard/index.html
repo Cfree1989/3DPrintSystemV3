@@ -730,16 +730,40 @@ function updateJobAges() {
 }
 
 function calculateJobAge(createdAtStr) {
-    const createdAt = new Date(createdAtStr);
+    // Parse the ISO string as UTC (add 'Z' if not present)
+    let utcTimeString = createdAtStr;
+    if (!utcTimeString.endsWith('Z') && !utcTimeString.includes('+') && !utcTimeString.includes('-', 10)) {
+        utcTimeString += 'Z'; // Treat as UTC if no timezone specified
+    }
+    
+    const createdAt = new Date(utcTimeString);
     const now = new Date();
+    
+    // Check if date parsing was successful
+    if (isNaN(createdAt.getTime())) {
+        console.warn('Invalid date string:', createdAtStr);
+        return { text: 'Invalid date', colorClass: 'age-red' };
+    }
+    
     const diffMs = now - createdAt;
     const diffHours = diffMs / (1000 * 60 * 60);
+    
+    // Handle negative time differences (future dates)
+    if (diffHours < 0) {
+        console.warn('Job appears to be created in the future:', createdAtStr);
+        return { text: 'Just now', colorClass: 'age-green' };
+    }
+    
     const diffDays = Math.floor(diffHours / 24);
     const remainingHours = Math.floor(diffHours % 24);
     
     let text, colorClass;
     
-    if (diffHours < 24) {
+    if (diffHours < 1) {
+        const diffMinutes = Math.floor(diffMs / (1000 * 60));
+        text = diffMinutes < 1 ? 'Just now' : `${diffMinutes}m ago`;
+        colorClass = 'age-green';
+    } else if (diffHours < 24) {
         text = `${Math.floor(diffHours)}h ago`;
         colorClass = 'age-green';
     } else if (diffHours < 48) {
