@@ -13,6 +13,14 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <div id="last-updated" class="text-xs text-gray-500"></div>
+                    <!-- Sound Notification Toggle -->
+                    <button id="sound-toggle" onclick="toggleSoundNotifications()" 
+                            class="inline-flex items-center px-3 py-2 text-xs font-medium rounded-lg border-0 shadow-sm
+                                   transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                            title="Toggle sound notifications">
+                        <span id="sound-icon">🔊</span>
+                        <span id="sound-text" class="ml-1">Sound</span>
+                    </button>
                     <span class="text-sm text-gray-600">Welcome, Staff</span>
                     <a href="{{ url_for('dashboard.logout') }}" 
                        class="inline-flex items-center px-4 py-2 border-0 shadow-md text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-200 no-underline">
@@ -289,22 +297,184 @@ a:focus-visible {
 .border-gray-300 {
     border-color: rgb(209, 213, 219);
 }
+
+/* Sound Toggle Button Styling */
+#sound-toggle {
+    background-color: #f3f4f6 !important; /* Gray-100 */
+    color: #374151 !important; /* Gray-700 */
+    border: 1px solid #e5e7eb !important; /* Gray-200 */
+}
+
+#sound-toggle:hover {
+    background-color: #e5e7eb !important; /* Gray-200 */
+    transform: translateY(-1px) !important;
+}
+
+#sound-toggle.enabled {
+    background-color: #3b82f6 !important; /* Blue-500 */
+    color: #ffffff !important; /* White */
+    border-color: #2563eb !important; /* Blue-600 */
+}
+
+#sound-toggle.enabled:hover {
+    background-color: #2563eb !important; /* Blue-600 */
+}
+
+#sound-toggle.disabled {
+    background-color: #fef3c7 !important; /* Yellow-100 */
+    color: #92400e !important; /* Yellow-800 */
+    border-color: #fbbf24 !important; /* Yellow-400 */
+}
+
+#sound-toggle.disabled:hover {
+    background-color: #fde68a !important; /* Yellow-200 */
+}
 </style>
 
 <script>
 // Auto-updating Dashboard Functionality
 let updateInterval;
 let lastUpdateTime;
+let previousUploadedCount = 0; // Track uploaded job count for new job detection
 const POLL_INTERVAL = 45000; // 45 seconds
 
-// Initialize dashboard auto-update
+// Sound Notification System
+class SoundNotificationManager {
+    constructor() {
+        this.enabled = localStorage.getItem('soundNotificationsEnabled') !== 'false'; // Default to enabled
+        this.audioContext = null;
+        this.sounds = {};
+        this.userInteracted = false;
+        this.initialized = false;
+    }
+
+    async initialize() {
+        if (this.initialized) return;
+        
+        try {
+            // Load sound files
+            await this.loadSounds();
+            this.updateToggleButton();
+            this.initialized = true;
+            console.log('Sound notification system initialized');
+        } catch (error) {
+            console.warn('Sound notification system failed to initialize:', error);
+        }
+    }
+
+    async loadSounds() {
+        const soundFiles = {
+            'new-job': '{{ url_for("static", filename="sounds/new-job.mp3") }}'
+        };
+
+        for (const [name, url] of Object.entries(soundFiles)) {
+            try {
+                const audio = new Audio(url);
+                audio.preload = 'auto';
+                audio.volume = 0.6; // Moderate volume for office environment
+                this.sounds[name] = audio;
+            } catch (error) {
+                console.warn(`Failed to load sound ${name}:`, error);
+            }
+        }
+    }
+
+    updateToggleButton() {
+        const toggleButton = document.getElementById('sound-toggle');
+        const icon = document.getElementById('sound-icon');
+        const text = document.getElementById('sound-text');
+        
+        if (!toggleButton) return;
+
+        toggleButton.className = toggleButton.className.replace(/(enabled|disabled)/g, '').trim();
+        
+        if (this.enabled) {
+            toggleButton.classList.add('enabled');
+            icon.textContent = '🔊';
+            text.textContent = 'Sound On';
+            toggleButton.title = 'Sound notifications enabled - click to disable';
+        } else {
+            toggleButton.classList.add('disabled');
+            icon.textContent = '🔇';
+            text.textContent = 'Sound Off';
+            toggleButton.title = 'Sound notifications disabled - click to enable';
+        }
+    }
+
+    async playSound(soundName) {
+        if (!this.enabled || !this.initialized) return;
+
+        try {
+            const audio = this.sounds[soundName];
+            if (!audio) {
+                console.warn(`Sound ${soundName} not found`);
+                return;
+            }
+
+            // Handle autoplay restrictions
+            if (!this.userInteracted) {
+                console.log('Waiting for user interaction before playing sound');
+                return;
+            }
+
+            audio.currentTime = 0; // Reset to beginning
+            await audio.play();
+            console.log(`Played sound: ${soundName}`);
+        } catch (error) {
+            console.warn(`Failed to play sound ${soundName}:`, error);
+        }
+    }
+
+    toggle() {
+        this.enabled = !this.enabled;
+        localStorage.setItem('soundNotificationsEnabled', this.enabled.toString());
+        this.updateToggleButton();
+        this.userInteracted = true; // Mark user interaction
+        
+        if (this.enabled) {
+            // Test sound when enabling
+            this.playSound('new-job');
+        }
+    }
+
+    onNewJobDetected() {
+        this.playSound('new-job');
+    }
+}
+
+// Global sound manager instance
+const soundManager = new SoundNotificationManager();
+
+// Initialize dashboard auto-update and sound system
 document.addEventListener('DOMContentLoaded', function() {
     updateLastUpdatedTime();
     updateJobAges();
     startAutoUpdate();
+    soundManager.initialize();
+    
+    // Mark user interaction for autoplay permissions
+    document.addEventListener('click', function() {
+        soundManager.userInteracted = true;
+    }, { once: true });
 });
 
 function startAutoUpdate() {
+    // Get initial uploaded count for new job detection
+    const currentStatus = getCurrentStatus();
+    const url = `{{ url_for('dashboard.api_stats') }}?status=${currentStatus}`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                previousUploadedCount = data.stats.uploaded || 0;
+                console.log(`Initial uploaded count: ${previousUploadedCount}`);
+            }
+        })
+        .catch(error => {
+            console.warn('Failed to get initial uploaded count:', error);
+        });
+
     updateInterval = setInterval(function() {
         updateDashboard();
     }, POLL_INTERVAL);
@@ -323,6 +493,14 @@ function updateDashboard() {
         })
         .then(data => {
             if (data.success) {
+                // Check for new jobs (uploaded count increase)
+                const currentUploadedCount = data.stats.uploaded || 0;
+                if (previousUploadedCount > 0 && currentUploadedCount > previousUploadedCount) {
+                    console.log(`New job detected! Previous: ${previousUploadedCount}, Current: ${currentUploadedCount}`);
+                    soundManager.onNewJobDetected();
+                }
+                previousUploadedCount = currentUploadedCount;
+                
                 updateTabBadges(data.stats);
                 updateJobListing(data.jobs, data.current_status);
                 updateLastUpdatedTime();
@@ -608,6 +786,10 @@ function markAsReviewed(jobId) {
         console.error('Error marking job as reviewed:', error);
         alert('Error occurred while marking job as reviewed. Please try again.');
     });
+}
+
+function toggleSoundNotifications() {
+    soundManager.toggle();
 }
 
 // Clean up interval when page unloads
