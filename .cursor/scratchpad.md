@@ -30,6 +30,8 @@ Based on the `masterplanV3.md`, key challenges and areas requiring careful atten
 
 ## High-level Task Breakdown
 
+**Note: This High-level Task Breakdown represents the initial project planning structure organized by milestones. For current implementation sequencing and prioritization, please refer to the Consolidated Implementation Plan section below, which organizes these same tasks into execution phases.**
+
 This is an initial breakdown. Tasks will be refined and made more granular as the project progresses.
 
 1.  **Project Setup & Core Infrastructure (Milestone 1)**
@@ -114,125 +116,136 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
     *   [ ] Documentation for staff.
         *   Success Criteria: Basic usage guide for staff is created.
 
-## Project Status Board
+## Consolidated Implementation Plan
 
-*   [x] **Milestone 1: Project Setup & Core Infrastructure** ⭐ COMPLETE
-    *   [x] Initialize Flask application structure
-    *   [x] Configure PostgreSQL database and SQLAlchemy
-    *   [x] Implement `Job` and `Event` SQLAlchemy models
-    *   [x] Set up Flask-Migrate
-    *   [x] Implement basic staff authentication
-    *   [x] Create base HTML templates and static file setup
+### Completed Work
+- [x] **Milestone 1: Project Setup & Core Infrastructure** ✅ COMPLETE
+- [x] **Milestone 2: Student Submission Workflow** ✅ COMPLETE
+- [x] **Phase 1: Critical Bug Fixes** ✅ COMPLETE
+   - Form field naming mismatch fixed
+   - Database integration issues resolved
+   - Redirect functionality working properly
 
-*   [x] **Milestone 2: Student Submission Workflow** ⭐ PARTIALLY COMPLETE
-    *   [x] Redesign the Form Layout and Visual Hierarchy for /submit (static HTML/CSS only)
-    *   [x] Implement Dynamic Field Behavior
-    *   [x] Implement Backend Submission Handler (POST route for /submit)
-    *   [x] Implement file upload handling (validation, standardized naming, storage)
-    *   [x] Implement `metadata.json` creation alongside uploaded file
-    *   [ ] Implement `JobCreated` event logging in database ❌ BUG FOUND
-    *   [ ] Create submission success page routing logic ❌ BUG FOUND
+### Phase 2: Core Workflow Implementation (Current Focus)
 
-*   [ ] **Milestone 3: Staff Dashboard & Job Management** ⭐ NEXT PRIORITY
-    *   [ ] Create Apple-style dashboard page
-    *   [ ] Implement job status update functionality
-    *   [ ] Implement file movement based on status changes
-    *   [ ] Implement `metadata.json` updates
-    *   [ ] Implement slicer data input functionality
-    *   [ ] Implement cost calculation
-    *   [ ] Implement direct file opening
+#### 1. Staff Dashboard Development
+- [ ] **Apple-Style Dashboard Page**
+  * Implement status-based tabs with badge counts
+  * Create responsive layout grid adhering to 8pt spacing
+  * Implement job listing components
+  * Add database queries to retrieve jobs by status
+  * **Success Criteria**: Staff can view all jobs with proper status filtering
 
-*   [ ] **Milestone 4: Notifications & Final Workflow Steps**
-    *   [ ] Implement email notifications
-    *   [ ] Implement remaining job status transitions
+#### 2. Job Status Management
+- [ ] **Approval/Rejection Functionality**
+  * Create modal interfaces for approve/reject actions
+  * Implement database status updates with event logging
+  * Add file movement between status directories (Uploaded → Pending)
+  * **Success Criteria**: Staff can approve/reject jobs with proper state changes
 
-*   [ ] **Milestone 5: Refinements, Testing & Deployment Prep**
-    *   [ ] Comprehensive testing
-    *   [ ] Final UI/UX compliance verification
-    *   [ ] Finalize configuration
-    *   [ ] Documentation for staff
+#### 3. Student Confirmation Workflow
+- [ ] **Token-Based Confirmation System**
+  * Implement secure token generation and storage
+  * Create confirmation email template
+  * Build confirmation page UI and routing
+  * Implement token validation logic
+  * Add file movement (Pending → ReadyToPrint) upon confirmation
+  * **Success Criteria**: Students can securely confirm jobs via email links
 
-*   [x] **Apple UI/UX Compliance Updates** ⭐ COMPLETE
-    *   [x] Configure Tailwind for Apple-style design system
-    *   [x] Update existing components to Apple guidelines
-    *   [x] Enhance accessibility features
-    *   [x] Review and update animations/transitions
-    *   [x] Test across different screen sizes and orientations
+### Phase 3: Enhanced Management Features
 
-*   [x] **Project Cleanup & Optimization** ⭐ COMPLETE
-    *   [x] Phase 1: Dead Code Elimination (17.5KB+ removed)
-    *   [x] Phase 2: Route Structure & Backend Implementation  
-    *   [x] Phase 3: Configuration Standardization (secure .env setup)
-    *   [x] Phase 4: Static File Optimization (24.7KB optimal footprint)
+#### 4. Metadata and File Operations
+- [ ] **Metadata Management**
+  * Implement metadata.json updates when job details change
+  * Create slicer data input UI (weight, time)
+  * Implement cost calculation based on weight/time
+  * **Success Criteria**: Staff can update job details with proper persistence
 
-## Current System Status & Development Plan
+#### 5. Direct File Integration
+- [ ] **File Access Integration**
+  * Implement SlicerOpener.py protocol handler
+  * Create Windows registry integration for protocol
+  * Add direct file opening buttons in dashboard
+  * **Success Criteria**: Staff can open files directly in slicer software
 
-### Issues Identified
+#### 6. Status Transition System
+- [ ] **Complete Workflow States**
+  * Implement remaining status transitions:
+    * ReadyToPrint → Printing
+    * Printing → Completed
+    * Completed → PaidPickedUp
+  * Add UI for all workflow state changes
+  * Ensure proper event logging throughout
+  * **Success Criteria**: Full job lifecycle is manageable through the UI
 
-1. **Database Integration**: Files are uploaded but no job records are created in the database
-2. **Redirect Failure**: No redirect to success page after form submission
-3. **Form Field Mismatch**: Form submission returns field error "Missing: Studentname" despite the field being filled
-4. **Staff Dashboard**: Implementation incomplete
-5. **Job Status Workflow**: Not implemented
-6. **Email Authentication**: Fails with test credentials
+### Phase 4: Communication and Asynchronous Features
 
-### Root Cause Analysis
+#### 7. Notification System
+- [ ] **Email Integration**
+  * Set up Office 365 SMTP configuration
+  * Create email templates for all notifications
+  * Implement notification triggers throughout workflow
+  * **Success Criteria**: All relevant status changes trigger appropriate emails
 
-Many of these issues appear to be related to incomplete implementation rather than bugs in existing code. The system has the basic structure in place but is missing critical connective functionality:
+#### 8. Asynchronous Processing
+- [ ] **Task Queue Implementation**
+  * Set up Celery or RQ infrastructure
+  * Configure task workers and monitoring
+  * Migrate email sending to async tasks
+  * **Success Criteria**: System handles background tasks reliably
 
-1. **Form Field Naming Inconsistency**: The backend is likely expecting camelCase fields (studentName) while the frontend sends snake_case fields (student_name)
-2. **Database Integration Gap**: The file service is working, but the database transaction is likely failing silently
-3. **Missing Redirect Logic**: The success redirection is not being triggered after successful submission
+#### 9. Thumbnail Generation
+- [ ] **3D Preview System**
+  * Implement STL/OBJ thumbnail generation
+  * Add error handling for generation failures
+  * Integrate thumbnails in dashboard UI
+  * **Success Criteria**: Job listings display preview thumbnails when available
 
-### Development Plan
+### Phase 5: Refinement and Production Readiness
 
-We'll adopt a hybrid approach that balances bug fixes with continued implementation:
+#### 10. Testing and Documentation
+- [ ] **Comprehensive Testing**
+  * Write unit tests for core functionality
+  * Implement integration tests for workflows
+  * Add UI automation for critical paths
+  * **Success Criteria**: Test suite validates all critical functionality
 
-#### Phase 1: Critical Path Bug Fixes First
+#### 11. UI/UX Verification
+- [ ] **Accessibility and Design Compliance**
+  * Verify all components meet Apple HIG standards
+  * Test with various screen sizes and devices
+  * Validate accessibility features
+  * **Success Criteria**: UI fully complies with Apple design standards
 
-1. **Fix Form Field Naming Mismatch** (1-2 hours)
-   - This is causing the "Missing: Studentname" error
-   - Likely a simple mismatch between form field names and what the backend expects
-   - Quick win that enables successful form submission
+#### 12. Deployment Preparation
+- [ ] **Production Configuration**
+  * Finalize database configuration
+  * Set up proper logging and monitoring
+  * Create staff documentation
+  * **Success Criteria**: System is ready for production use
 
-2. **Fix Database Integration** (4-6 hours)
-   - Files upload but no database records are created
-   - Need to debug transaction handling and ensure proper error logging
-   - Critical for tracking job status and progression
+### Advanced Enhancements (Time Permitting)
 
-3. **Fix Redirect Logic** (1 hour)
-   - Ensure successful submissions redirect to the success page
-   - Completes the basic submission flow
+#### 13. Analytics and Reporting
+- [ ] **Usage Analytics**
+  * Implement job statistics dashboard
+  * Add time-based reporting
+  * Create material usage tracking
+  * **Success Criteria**: Staff can view print service utilization metrics
 
-#### Phase 2: Implement Core Workflow (Parallel Development)
+#### 14. Batch Operations
+- [ ] **Multi-Job Management**
+  * Add batch status update capabilities
+  * Implement bulk email notifications
+  * Create job filtering and search
+  * **Success Criteria**: Staff can efficiently manage multiple jobs simultaneously
 
-Once the critical bugs are fixed, we should implement the core workflow components in priority order:
-
-1. **Staff Dashboard - Basic Job List** (6-8 hours)
-   - Implement the dashboard with status-based tabs
-   - Add job listing functionality with filters
-   - This allows staff to see submitted jobs
-
-2. **Job Status Management** (8-10 hours)
-   - Implement approval/rejection functionality
-   - Add file movement between status directories
-   - Add status change events and logging
-
-3. **Student Confirmation Flow** (6-8 hours)
-   - Implement token generation
-   - Create confirmation page and handling
-   - Enable file movement to ReadyToPrint status
-
-#### Phase 3: Complete the System (Final Features)
-
-1. **Email Integration** (4-6 hours)
-   - Set up proper email templates
-   - Implement asynchronous sending
-   - Add notification points in workflow
-
-2. **Protocol Handler** (if needed) (8-10 hours)
-   - Implement SlicerOpener.py
-   - Configure registry integration
+#### 15. Mobile Optimization
+- [ ] **Mobile Experience**
+  * Enhance responsive design for small screens
+  * Optimize touch interactions
+  * Add mobile-specific UI improvements
+  * **Success Criteria**: System is fully usable on mobile devices
 
 ## Lessons
 

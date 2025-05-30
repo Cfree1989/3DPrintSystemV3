@@ -129,4 +129,25 @@ dmypy.json
 .pytype/
 
 # Cython debug symbols
-cython_debug/ 
+cython_debug/
+
+# 3D Print System specific
+# Uploaded user files
+storage/Uploaded/*
+storage/Pending/*
+storage/ReadyToPrint/*
+storage/Printing/*
+storage/Completed/*
+storage/PaidPickedUp/*
+storage/thumbnails/*
+3DPrintSystem/storage/Uploaded/*
+3DPrintSystem/storage/Pending/*
+3DPrintSystem/storage/ReadyToPrint/*
+3DPrintSystem/storage/Printing/*
+3DPrintSystem/storage/Completed/*
+3DPrintSystem/storage/PaidPickedUp/*
+3DPrintSystem/storage/thumbnails/*
+
+# Keep .gitkeep files to maintain directory structure
+!storage/*/keep
+!3DPrintSystem/storage/*/keep 

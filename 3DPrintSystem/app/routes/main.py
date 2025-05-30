@@ -22,14 +22,14 @@ def submit():
             
             # Prepare form data for file service
             form_data = {
-                'studentName': request.form.get('studentName', '').strip(),
-                'studentEmail': request.form.get('studentEmail', '').strip(), 
+                'studentName': request.form.get('student_name', '').strip(),
+                'studentEmail': request.form.get('student_email', '').strip(), 
                 'discipline': request.form.get('discipline', ''),
-                'classNumber': request.form.get('classNumber', '').strip(),
-                'printMethod': request.form.get('printMethod', ''),
-                'colorPreference': request.form.get('colorPreference', ''),
+                'classNumber': request.form.get('class_number', '').strip(),
+                'printMethod': request.form.get('print_method', ''),
+                'colorPreference': request.form.get('color', ''),
                 'printer': request.form.get('printer', ''),
-                'minChargeConsent': request.form.get('minChargeConsent', '')
+                'minChargeConsent': request.form.get('acknowledged_minimum_charge', '')
             }
             
             # Validate required fields
