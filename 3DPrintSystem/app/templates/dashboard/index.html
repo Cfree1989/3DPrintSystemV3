@@ -8,16 +8,21 @@
     
     <!-- Confirmation Dialog Modal -->
     <div id="confirmation-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all scale-95 opacity-0" id="confirmation-content">
             <div class="p-6">
-                <h3 id="confirmation-title" class="text-lg font-semibold text-gray-900 mb-3">Confirm Action</h3>
-                <p id="confirmation-message" class="text-gray-600 mb-6">Are you sure you want to proceed?</p>
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                        <span id="confirmation-icon" class="text-2xl">❓</span>
+                    </div>
+                    <h3 id="confirmation-title" class="text-lg font-semibold text-gray-900">Confirm Action</h3>
+                </div>
+                <p id="confirmation-message" class="text-gray-600 mb-6 ml-16">Are you sure you want to proceed?</p>
                 <div class="flex space-x-3 justify-end">
-                    <button id="confirmation-cancel" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg
+                    <button id="confirmation-cancel" class="px-6 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg
                                                             hover:bg-gray-200 transition-colors duration-200 border-0 shadow-sm">
                         Cancel
                     </button>
-                    <button id="confirmation-confirm" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg
+                    <button id="confirmation-confirm" class="px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg
                                                              hover:bg-blue-700 transition-colors duration-200 border-0 shadow-md">
                         Confirm
                     </button>
@@ -480,10 +485,19 @@ a:focus-visible {
 /* Enhanced confirmation modal styling */
 #confirmation-modal {
     backdrop-filter: blur(5px);
+    transition: backdrop-filter 0.3s ease;
 }
 
-#confirmation-modal .bg-white {
+#confirmation-content {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.95);
+    opacity: 0;
+}
+
+#confirmation-modal.show #confirmation-content {
+    transform: scale(1);
+    opacity: 1;
 }
 
 /* Hide dropdown menus by default */
@@ -1143,8 +1157,10 @@ const toastManager = new ToastManager();
 class ConfirmationDialog {
     constructor() {
         this.modal = document.getElementById('confirmation-modal');
+        this.content = document.getElementById('confirmation-content');
         this.title = document.getElementById('confirmation-title');
         this.message = document.getElementById('confirmation-message');
+        this.icon = document.getElementById('confirmation-icon');
         this.cancelBtn = document.getElementById('confirmation-cancel');
         this.confirmBtn = document.getElementById('confirmation-confirm');
         this.currentResolver = null;
@@ -1184,27 +1200,51 @@ class ConfirmationDialog {
         });
     }
 
-    show(title, message, confirmText = 'Confirm', cancelText = 'Cancel') {
+    show(title, message, confirmText = 'Confirm', cancelText = 'Cancel', icon = '❓') {
         return new Promise((resolve) => {
             this.currentResolver = resolve;
             this.title.textContent = title;
             this.message.textContent = message;
+            this.icon.textContent = icon;
             this.confirmBtn.textContent = confirmText;
             this.cancelBtn.textContent = cancelText;
+            
+            // Set appropriate icon colors
+            const iconContainer = this.icon.parentElement;
+            iconContainer.className = 'w-12 h-12 rounded-full flex items-center justify-center mr-4';
+            
+            if (icon === '✓') {
+                iconContainer.classList.add('bg-green-100');
+                this.confirmBtn.className = this.confirmBtn.className.replace('bg-blue-600 hover:bg-blue-700', 'bg-green-600 hover:bg-green-700');
+            } else if (icon === '↺') {
+                iconContainer.classList.add('bg-orange-100');
+                this.confirmBtn.className = this.confirmBtn.className.replace('bg-blue-600 hover:bg-blue-700', 'bg-orange-600 hover:bg-orange-700');
+            } else {
+                iconContainer.classList.add('bg-blue-100');
+                this.confirmBtn.className = this.confirmBtn.className.replace(/bg-\w+-600 hover:bg-\w+-700/, 'bg-blue-600 hover:bg-blue-700');
+            }
             
             this.modal.classList.remove('hidden');
             this.modal.classList.add('flex');
             
+            // Trigger animation
+            requestAnimationFrame(() => {
+                this.modal.classList.add('show');
+            });
+            
             // Focus the confirm button
             setTimeout(() => {
                 this.confirmBtn.focus();
-            }, 100);
+            }, 150);
         });
     }
 
     hide() {
-        this.modal.classList.add('hidden');
-        this.modal.classList.remove('flex');
+        this.modal.classList.remove('show');
+        setTimeout(() => {
+            this.modal.classList.add('hidden');
+            this.modal.classList.remove('flex');
+        }, 300);
     }
 }
 
@@ -1256,9 +1296,10 @@ async function confirmMarkAsReviewed(jobId) {
     
     const confirmed = await confirmationDialog.show(
         'Mark as Reviewed',
-        'Are you sure you want to mark this job as reviewed? This will remove the NEW badge and orange highlighting.',
+        'This will remove the NEW badge and orange highlighting from this job.',
         'Mark as Reviewed',
-        'Cancel'
+        'Cancel',
+        '✓'
     );
     
     if (confirmed) {
@@ -1271,9 +1312,10 @@ async function confirmMarkAsUnreviewed(jobId) {
     
     const confirmed = await confirmationDialog.show(
         'Mark as Unreviewed',
-        'Are you sure you want to mark this job as unreviewed? This will restore the NEW badge and require staff attention.',
+        'This will restore the NEW badge and orange highlighting to require staff attention.',
         'Mark as Unreviewed',
-        'Cancel'
+        'Cancel',
+        '↺'
     );
     
     if (confirmed) {
@@ -1281,7 +1323,7 @@ async function confirmMarkAsUnreviewed(jobId) {
     }
 }
 
-// Enhanced API calls with audit trail and toast notifications
+// Enhanced API calls with audit trail (NO redundant toast notifications)
 function markAsReviewedWithAudit(jobId) {
     fetch(`{{ url_for('dashboard.mark_job_reviewed', job_id='') }}${jobId}`, {
         method: 'POST',
@@ -1297,19 +1339,12 @@ function markAsReviewedWithAudit(jobId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update UI immediately
+            // Update UI immediately - no toast needed since confirmation dialog already provided feedback
             updateJobReviewState(jobId, true);
-            
-            // Show success toast
-            toastManager.show(
-                'Job Reviewed',
-                `Job has been marked as reviewed. NEW badge removed.`,
-                'success'
-            );
-            
             console.log('Job marked as reviewed successfully:', jobId);
         } else {
             console.error('Failed to mark job as reviewed:', data.error);
+            // Only show toast for actual errors
             toastManager.show(
                 'Review Failed',
                 'Failed to mark job as reviewed. Please try again.',
@@ -1319,6 +1354,7 @@ function markAsReviewedWithAudit(jobId) {
     })
     .catch(error => {
         console.error('Error marking job as reviewed:', error);
+        // Only show toast for network errors
         toastManager.show(
             'Network Error',
             'Error occurred while updating job status. Please check your connection.',
@@ -1342,19 +1378,12 @@ function markAsUnreviewedWithAudit(jobId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update UI immediately
+            // Update UI immediately - no toast needed since confirmation dialog already provided feedback  
             updateJobReviewState(jobId, false);
-            
-            // Show success toast
-            toastManager.show(
-                'Job Unreviewed',
-                `Job has been marked as unreviewed. NEW badge restored.`,
-                'warning'
-            );
-            
             console.log('Job marked as unreviewed successfully:', jobId);
         } else {
             console.error('Failed to mark job as unreviewed:', data.error);
+            // Only show toast for actual errors
             toastManager.show(
                 'Unreview Failed',
                 'Failed to mark job as unreviewed. Please try again.',
@@ -1364,6 +1393,7 @@ function markAsUnreviewedWithAudit(jobId) {
     })
     .catch(error => {
         console.error('Error marking job as unreviewed:', error);
+        // Only show toast for network errors
         toastManager.show(
             'Network Error',
             'Error occurred while updating job status. Please check your connection.',
