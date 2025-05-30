@@ -24,6 +24,7 @@ class Job(db.Model):
     confirm_token = db.Column(db.String(128), nullable=True, unique=True)
     confirm_token_expires = db.Column(db.DateTime, nullable=True)
     reject_reasons = db.Column(db.JSON, nullable=True)
+    staff_viewed_at = db.Column(db.DateTime, nullable=True)  # For tracking unreviewed jobs and visual alerts
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     last_updated_by = db.Column(db.String(50), nullable=True)

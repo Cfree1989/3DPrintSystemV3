@@ -12,6 +12,7 @@
                     <p class="text-gray-600 text-sm">Manage and track all print requests</p>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <div id="last-updated" class="text-xs text-gray-500"></div>
                     <span class="text-sm text-gray-600">Welcome, Staff</span>
                     <a href="{{ url_for('dashboard.logout') }}" 
                        class="inline-flex items-center px-4 py-2 border-0 shadow-md text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-200 no-underline">
@@ -25,9 +26,10 @@
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Apple-Style Status Tabs -->
-        <div class="flex space-x-3 mb-8 overflow-x-auto pb-2">
+        <div class="flex space-x-3 mb-8 overflow-x-auto pb-2" id="status-tabs">
             {% for tab_status, config in tabs.items() %}
             <a href="{{ url_for('dashboard.index', status=tab_status) }}" 
+               data-status="{{ tab_status }}"
                class="flex-shrink-0 px-6 py-3 rounded-xl font-medium transition-all duration-200 min-w-fit no-underline
                       {% if current_status == tab_status %}
                       bg-blue-600 text-white shadow-lg shadow-blue-600/30
@@ -36,7 +38,7 @@
                       {% endif %}">
                 <div class="flex items-center justify-between space-x-3">
                     <span>{{ config.title }}</span>
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full
+                    <span class="badge px-2 py-1 text-xs font-semibold rounded-full
                                 {% if current_status == tab_status %}
                                 bg-blue-500 text-white shadow-sm
                                 {% else %}
@@ -50,86 +52,103 @@
         </div>
 
         <!-- Job Listing -->
-        {% if jobs %}
-        <div class="space-y-6">
-            {% for job in jobs %}
-            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200">
-                <div class="p-6">
-                    <div class="flex items-start justify-between">
-                        <!-- Student Information (Primary) -->
-                        <div class="flex-1 min-w-0">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ job.student_name }}</h3>
-                            <p class="text-gray-600 text-sm mb-3">{{ job.display_name or job.original_filename }}</p>
-                            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                                <span>{{ job.student_email }}</span>
-                                <span>{{ job.discipline | discipline_name }}</span>
-                                {% if job.class_number %}
-                                <span>{{ job.class_number }}</span>
+        <div id="job-listing">
+            {% if jobs %}
+            <div class="space-y-6">
+                {% for job in jobs %}
+                <div class="job-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200
+                           {% if job.staff_viewed_at is none %}unreviewed-job{% endif %}" 
+                     data-job-id="{{ job.id }}">
+                    <div class="p-6">
+                        {% if job.staff_viewed_at is none %}
+                        <div class="flex items-center mb-4">
+                            <span class="new-badge px-3 py-1 text-xs font-bold rounded-full bg-orange-500 text-white shadow-sm animate-pulse">NEW</span>
+                        </div>
+                        {% endif %}
+                        <div class="flex items-start justify-between">
+                            <!-- Student Information (Primary) -->
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ job.student_name }}</h3>
+                                <p class="text-gray-600 text-sm mb-3">{{ job.display_name or job.original_filename }}</p>
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                    <span>{{ job.student_email }}</span>
+                                    <span>{{ job.discipline | discipline_name }}</span>
+                                    {% if job.class_number %}
+                                    <span>{{ job.class_number }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Job Details (Secondary) -->
+                            <div class="ml-6 text-right">
+                                <div class="text-sm text-gray-500 mb-2">
+                                    <span class="job-age" data-created-at="{{ job.created_at.isoformat() if job.created_at }}"></span>
+                                </div>
+                                {% if job.printer or job.color or job.material %}
+                                <div class="text-sm space-y-1 text-right">
+                                    {% if job.printer %}
+                                    <div class="font-medium text-gray-700">{{ job.printer | printer_name }}</div>
+                                    {% endif %}
+                                    {% if job.color %}
+                                    <div class="text-gray-600">{{ job.color | color_name }}</div>
+                                    {% endif %}
+                                    {% if job.material %}
+                                    <div class="text-gray-600">{{ job.material | title }}</div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                {% if job.cost_usd %}
+                                <div class="text-lg font-semibold text-gray-900 mt-3">
+                                    ${{ "%.2f"|format(job.cost_usd) }}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
 
-                        <!-- Job Details (Secondary) -->
-                        <div class="ml-6 text-right">
-                            <div class="text-sm text-gray-500 mb-2">
-                                {{ job.created_at | local_datetime }}
-                            </div>
-                            {% if job.printer or job.color or job.material %}
-                            <div class="text-sm space-y-1 text-right">
-                                {% if job.printer %}
-                                <div class="font-medium text-gray-700">{{ job.printer | printer_name }}</div>
+                        <!-- Apple-Style Action Buttons -->
+                        {% if current_status == 'UPLOADED' %}
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <div class="flex space-x-3">
+                                <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
+                                             shadow-md hover:bg-blue-700 hover:shadow-lg 
+                                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    Review
+                                </button>
+                                <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
+                                             shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
+                                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                                    View Details
+                                </button>
+                                {% if job.staff_viewed_at is none %}
+                                <button onclick="markAsReviewed('{{ job.id }}')" 
+                                        class="px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg border-0
+                                               shadow-md hover:bg-orange-700 hover:shadow-lg 
+                                               transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+                                    Mark as Reviewed
+                                </button>
                                 {% endif %}
-                                {% if job.color %}
-                                <div class="text-gray-600">{{ job.color | color_name }}</div>
-                                {% endif %}
-                                {% if job.material %}
-                                <div class="text-gray-600">{{ job.material | title }}</div>
-                                {% endif %}
                             </div>
-                            {% endif %}
-                            {% if job.cost_usd %}
-                            <div class="text-lg font-semibold text-gray-900 mt-3">
-                                ${{ "%.2f"|format(job.cost_usd) }}
-                            </div>
-                            {% endif %}
                         </div>
+                        {% endif %}
                     </div>
-
-                    <!-- Apple-Style Action Buttons -->
-                    {% if current_status == 'UPLOADED' %}
-                    <div class="mt-6 pt-4 border-t border-gray-200">
-                        <div class="flex space-x-3">
-                            <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
-                                         shadow-md hover:bg-blue-700 hover:shadow-lg 
-                                         transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                Review
-                            </button>
-                            <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
-                                         shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
-                                         transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                    {% endif %}
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <!-- Apple-Style Empty State -->
+            <div class="text-center py-16">
+                <div class="text-gray-400 text-6xl mb-4">📋</div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
+                <p class="text-gray-500 max-w-sm mx-auto">
+                    {% if current_status and tabs[current_status] %}
+                    No jobs are currently in {{ tabs[current_status].title }} status.
+                    {% else %}
+                    No jobs are available at this time.
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
         </div>
-        {% else %}
-        <!-- Apple-Style Empty State -->
-        <div class="text-center py-16">
-            <div class="text-gray-400 text-6xl mb-4">📋</div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
-            <p class="text-gray-500 max-w-sm mx-auto">
-                {% if current_status and tabs[current_status] %}
-                No jobs are currently in {{ tabs[current_status].title }} status.
-                {% else %}
-                No jobs are available at this time.
-                {% endif %}
-            </p>
-        </div>
-        {% endif %}
     </div>
 </div>
 
@@ -151,6 +170,31 @@ a:active {
 button {
     border: none !important;
 }
+
+/* Visual Alert Styling */
+.unreviewed-job {
+    border: 2px solid rgb(251, 146, 60) !important; /* Orange border */
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.new-badge {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .7;
+    }
+}
+
+/* Job Age Color Coding */
+.job-age.age-green { color: #059669; } /* < 24h */
+.job-age.age-yellow { color: #d97706; } /* 24-48h */
+.job-age.age-orange { color: #ea580c; } /* 48-72h */
+.job-age.age-red { color: #dc2626; } /* > 72h */
 
 /* Ensure proper tab scrolling on mobile */
 @media (max-width: 640px) {
@@ -215,4 +259,333 @@ a:focus-visible {
     border-color: rgb(209, 213, 219);
 }
 </style>
+
+<script>
+// Auto-updating Dashboard Functionality
+let updateInterval;
+let lastUpdateTime;
+const POLL_INTERVAL = 45000; // 45 seconds
+
+// Initialize dashboard auto-update
+document.addEventListener('DOMContentLoaded', function() {
+    updateLastUpdatedTime();
+    updateJobAges();
+    startAutoUpdate();
+});
+
+function startAutoUpdate() {
+    updateInterval = setInterval(function() {
+        updateDashboard();
+    }, POLL_INTERVAL);
+}
+
+function updateDashboard() {
+    const currentStatus = getCurrentStatus();
+    const url = `{{ url_for('dashboard.api_stats') }}?status=${currentStatus}`;
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                updateTabBadges(data.stats);
+                updateJobListing(data.jobs, data.current_status);
+                updateLastUpdatedTime();
+                updateJobAges();
+            }
+        })
+        .catch(error => {
+            console.error('Error updating dashboard:', error);
+            updateLastUpdatedTime('Error updating data');
+        });
+}
+
+function getCurrentStatus() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('status') || 'UPLOADED';
+}
+
+function updateTabBadges(stats) {
+    const statusMap = {
+        'UPLOADED': 'uploaded',
+        'PENDING': 'pending', 
+        'READYTOPRINT': 'ready',
+        'PRINTING': 'printing',
+        'COMPLETED': 'completed',
+        'PAIDPICKEDUP': 'paidpickedup',
+        'REJECTED': 'rejected'
+    };
+    
+    const tabs = document.querySelectorAll('#status-tabs a');
+    tabs.forEach(tab => {
+        const status = tab.getAttribute('data-status');
+        const statKey = statusMap[status];
+        if (statKey && stats[statKey] !== undefined) {
+            const badge = tab.querySelector('.badge');
+            if (badge) {
+                badge.textContent = stats[statKey] || 0;
+            }
+        }
+    });
+}
+
+function updateJobListing(jobs, currentStatus) {
+    const jobListing = document.getElementById('job-listing');
+    if (!jobs || jobs.length === 0) {
+        jobListing.innerHTML = `
+            <div class="text-center py-16">
+                <div class="text-gray-400 text-6xl mb-4">📋</div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
+                <p class="text-gray-500 max-w-sm mx-auto">
+                    No jobs are currently in ${getStatusTitle(currentStatus)} status.
+                </p>
+            </div>
+        `;
+        return;
+    }
+    
+    const jobsHtml = jobs.map(job => createJobCardHtml(job, currentStatus)).join('');
+    jobListing.innerHTML = `<div class="space-y-6">${jobsHtml}</div>`;
+    
+    // Update job ages after creating new content
+    updateJobAges();
+}
+
+// Add formatting functions for proper data display
+function formatPrinterName(printer) {
+    const printerMap = {
+        'prusa_mk4s': 'Prusa MK4S',
+        'prusa_xl': 'Prusa XL',
+        'raise3d_pro2plus': 'Raise3D Pro 2 Plus',
+        'formlabs_form3': 'Formlabs Form 3'
+    };
+    return printerMap[printer?.toLowerCase()] || printer || '';
+}
+
+function formatColorName(color) {
+    const colorMap = {
+        'true_red': 'True Red',
+        'true_orange': 'True Orange',
+        'light_orange': 'Light Orange',
+        'true_yellow': 'True Yellow',
+        'dark_yellow': 'Dark Yellow',
+        'lime_green': 'Lime Green',
+        'green': 'Green',
+        'forest_green': 'Forest Green',
+        'blue': 'Blue',
+        'electric_blue': 'Electric Blue',
+        'midnight_purple': 'Midnight Purple',
+        'light_purple': 'Light Purple',
+        'clear': 'Clear',
+        'true_white': 'True White',
+        'gray': 'Gray',
+        'true_black': 'True Black',
+        'brown': 'Brown',
+        'copper': 'Copper',
+        'bronze': 'Bronze',
+        'true_silver': 'True Silver',
+        'true_gold': 'True Gold',
+        'glow_in_dark': 'Glow in the Dark',
+        'color_changing': 'Color Changing'
+    };
+    return colorMap[color?.toLowerCase()] || color?.replace('_', ' ').replace(/\w\S*/g, (txt) => 
+        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()) || '';
+}
+
+function formatDisciplineName(discipline) {
+    const disciplineMap = {
+        'landscape_architecture': 'Landscape Architecture',
+        'interior_design': 'Interior Design',
+        'hobby_personal': 'Hobby/Personal'
+    };
+    return disciplineMap[discipline?.toLowerCase()] || discipline || '';
+}
+
+function createJobCardHtml(job, currentStatus) {
+    const isUnreviewed = !job.staff_viewed_at;
+    const newBadge = isUnreviewed ? `
+        <div class="flex items-center mb-4">
+            <span class="new-badge px-3 py-1 text-xs font-bold rounded-full bg-orange-500 text-white shadow-sm animate-pulse">NEW</span>
+        </div>
+    ` : '';
+    
+    const markReviewedButton = isUnreviewed && currentStatus === 'UPLOADED' ? `
+        <button onclick="markAsReviewed('${job.id}')" 
+                class="px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg border-0
+                       shadow-md hover:bg-orange-700 hover:shadow-lg 
+                       transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+            Mark as Reviewed
+        </button>
+    ` : '';
+    
+    const actionButtons = currentStatus === 'UPLOADED' ? `
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <div class="flex space-x-3">
+                <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
+                             shadow-md hover:bg-blue-700 hover:shadow-lg 
+                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Review
+                </button>
+                <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
+                             shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
+                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                    View Details
+                </button>
+                ${markReviewedButton}
+            </div>
+        </div>
+    ` : '';
+    
+    return `
+        <div class="job-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200
+                   ${isUnreviewed ? 'unreviewed-job' : ''}" 
+             data-job-id="${job.id}">
+            <div class="p-6">
+                ${newBadge}
+                <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-1">${job.student_name || ''}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${job.display_name || job.original_filename || ''}</p>
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                            <span>${job.student_email || ''}</span>
+                            <span>${formatDisciplineName(job.discipline)}</span>
+                            ${job.class_number ? `<span>${job.class_number}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="ml-6 text-right">
+                        <div class="text-sm text-gray-500 mb-2">
+                            <span class="job-age" data-created-at="${job.created_at || ''}"></span>
+                        </div>
+                        ${job.printer || job.color || job.material ? `
+                        <div class="text-sm space-y-1 text-right">
+                            ${job.printer ? `<div class="font-medium text-gray-700">${formatPrinterName(job.printer)}</div>` : ''}
+                            ${job.color ? `<div class="text-gray-600">${formatColorName(job.color)}</div>` : ''}
+                            ${job.material ? `<div class="text-gray-600">${job.material.charAt(0).toUpperCase() + job.material.slice(1)}</div>` : ''}
+                        </div>
+                        ` : ''}
+                        ${job.cost_usd ? `
+                            <div class="text-lg font-semibold text-gray-900 mt-3">
+                                $${parseFloat(job.cost_usd).toFixed(2)}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+                ${actionButtons}
+            </div>
+        </div>
+    `;
+}
+
+function updateJobAges() {
+    const ageElements = document.querySelectorAll('.job-age');
+    ageElements.forEach(element => {
+        const createdAt = element.getAttribute('data-created-at');
+        if (createdAt) {
+            const age = calculateJobAge(createdAt);
+            element.textContent = age.text;
+            element.className = `job-age ${age.colorClass}`;
+        }
+    });
+}
+
+function calculateJobAge(createdAtStr) {
+    const createdAt = new Date(createdAtStr);
+    const now = new Date();
+    const diffMs = now - createdAt;
+    const diffHours = diffMs / (1000 * 60 * 60);
+    const diffDays = Math.floor(diffHours / 24);
+    const remainingHours = Math.floor(diffHours % 24);
+    
+    let text, colorClass;
+    
+    if (diffHours < 24) {
+        text = `${Math.floor(diffHours)}h ago`;
+        colorClass = 'age-green';
+    } else if (diffHours < 48) {
+        text = `${diffDays}d ${remainingHours}h ago`;
+        colorClass = 'age-yellow';
+    } else if (diffHours < 72) {
+        text = `${diffDays}d ${remainingHours}h ago`;
+        colorClass = 'age-orange';
+    } else {
+        text = `${diffDays}d ${remainingHours}h ago`;
+        colorClass = 'age-red';
+    }
+    
+    return { text, colorClass };
+}
+
+function updateLastUpdatedTime(errorMessage = null) {
+    const lastUpdatedElement = document.getElementById('last-updated');
+    if (errorMessage) {
+        lastUpdatedElement.textContent = errorMessage;
+        lastUpdatedElement.className = 'text-xs text-red-500';
+    } else {
+        const now = new Date();
+        lastUpdatedElement.textContent = `Last updated: ${now.toLocaleTimeString()}`;
+        lastUpdatedElement.className = 'text-xs text-gray-500';
+        lastUpdateTime = now;
+    }
+}
+
+function getStatusTitle(status) {
+    const statusTitles = {
+        'UPLOADED': 'Uploaded',
+        'PENDING': 'Pending',
+        'READYTOPRINT': 'Ready to Print',
+        'PRINTING': 'Printing',
+        'COMPLETED': 'Completed',
+        'PAIDPICKEDUP': 'Picked Up',
+        'REJECTED': 'Rejected'
+    };
+    return statusTitles[status] || status;
+}
+
+function markAsReviewed(jobId) {
+    // Make API call to mark job as reviewed
+    fetch(`{{ url_for('dashboard.mark_job_reviewed', job_id='') }}${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove visual indicators immediately for better UX
+            const jobCard = document.querySelector(`[data-job-id="${jobId}"]`);
+            if (jobCard) {
+                jobCard.classList.remove('unreviewed-job');
+                const newBadge = jobCard.querySelector('.new-badge');
+                if (newBadge) {
+                    newBadge.parentElement.remove();
+                }
+                const markReviewedBtn = jobCard.querySelector('button[onclick*="markAsReviewed"]');
+                if (markReviewedBtn) {
+                    markReviewedBtn.remove();
+                }
+            }
+            console.log('Job marked as reviewed successfully:', jobId);
+        } else {
+            console.error('Failed to mark job as reviewed:', data.error);
+            alert('Failed to mark job as reviewed. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error marking job as reviewed:', error);
+        alert('Error occurred while marking job as reviewed. Please try again.');
+    });
+}
+
+// Clean up interval when page unloads
+window.addEventListener('beforeunload', function() {
+    if (updateInterval) {
+        clearInterval(updateInterval);
+    }
+});
+</script>
 {% endblock %} 

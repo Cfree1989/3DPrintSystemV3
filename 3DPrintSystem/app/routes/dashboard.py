@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app, jsonify
 from app.models.job import Job
+from app.extensions import db
 
 bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
@@ -82,4 +83,98 @@ def index():
                              jobs=[], 
                              stats={},
                              current_status=status,
-                             tabs={}) 
+                             tabs={})
+
+@bp.route('/api/stats')
+@login_required
+def api_stats():
+    """Lightweight JSON API endpoint for auto-updating dashboard"""
+    try:
+        # Get current status parameter for job listing
+        status = request.args.get('status', 'UPLOADED').upper()
+        valid_statuses = ['UPLOADED', 'PENDING', 'READYTOPRINT', 'PRINTING', 'COMPLETED', 'PAIDPICKEDUP', 'REJECTED']
+        
+        if status not in valid_statuses:
+            status = 'UPLOADED'
+        
+        # Calculate statistics for all tabs
+        stats = {
+            'uploaded': Job.query.filter_by(status='UPLOADED').count(),
+            'pending': Job.query.filter_by(status='PENDING').count(),
+            'ready': Job.query.filter_by(status='READYTOPRINT').count(),
+            'printing': Job.query.filter_by(status='PRINTING').count(),
+            'completed': Job.query.filter_by(status='COMPLETED').count(),
+            'paidpickedup': Job.query.filter_by(status='PAIDPICKEDUP').count(),
+            'rejected': Job.query.filter_by(status='REJECTED').count()
+        }
+        
+        # Get jobs for current status with basic information needed for UI updates
+        jobs = Job.query.filter_by(status=status).order_by(Job.created_at.desc()).all()
+        
+        # Convert jobs to lightweight JSON format
+        jobs_data = []
+        for job in jobs:
+            job_data = {
+                'id': job.id,
+                'student_name': job.student_name,
+                'student_email': job.student_email,
+                'discipline': job.discipline,
+                'class_number': job.class_number,
+                'original_filename': job.original_filename,
+                'display_name': job.display_name,
+                'created_at': job.created_at.isoformat() if job.created_at else None,
+                'printer': job.printer,
+                'color': job.color,
+                'material': job.material,
+                'cost_usd': float(job.cost_usd) if job.cost_usd else None,
+                'staff_viewed_at': job.staff_viewed_at.isoformat() if job.staff_viewed_at else None
+            }
+            jobs_data.append(job_data)
+        
+        return jsonify({
+            'success': True,
+            'stats': stats,
+            'jobs': jobs_data,
+            'current_status': status,
+            'timestamp': Job.query.first().created_at.isoformat() if Job.query.first() else None
+        })
+        
+    except Exception as e:
+        current_app.logger.error(f"Error loading dashboard stats API: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to load dashboard statistics'
+        }), 500 
+
+@bp.route('/api/mark-reviewed/<job_id>', methods=['POST'])
+@login_required
+def mark_job_reviewed(job_id):
+    """Mark a job as reviewed by staff"""
+    try:
+        job = Job.query.filter_by(id=job_id).first()
+        if not job:
+            return jsonify({
+                'success': False,
+                'error': 'Job not found'
+            }), 404
+            
+        # Update the staff_viewed_at timestamp
+        from datetime import datetime
+        job.staff_viewed_at = datetime.utcnow()
+        job.last_updated_by = 'staff'
+        db.session.commit()
+        
+        current_app.logger.info(f"Job {job_id[:8]} marked as reviewed by staff")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Job marked as reviewed'
+        })
+        
+    except Exception as e:
+        current_app.logger.error(f"Error marking job {job_id[:8]} as reviewed: {str(e)}")
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': 'Failed to mark job as reviewed'
+        }), 500 
