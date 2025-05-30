@@ -1471,3 +1471,69 @@ The Enhanced Operational Dashboard provides comprehensive real-time visibility a
 - Support for first-in-first-out workflow management
 - Early identification of potential process bottlenecks
 - Clear temporal context for all jobs in system
+
+#### 6.12.5 Enhanced Review System with UX Safety Features
+**Purpose**: Provide comprehensive job review functionality with advanced user experience safeguards to prevent accidental actions and enable audit capabilities
+
+**Technical Implementation**:
+- **Confirmation Dialog System**: Modal interfaces with visual icons and contextual messaging
+- **Toast Notification Framework**: Apple-style notifications for system feedback
+- **Dropdown Menu Interface**: Review controls positioned in safer, secondary location
+- **Audit Trail Enhancement**: Comprehensive logging with timestamps and user agent tracking
+- **Perfect Viewport Centering**: Modal positioning optimized for any scroll position
+
+**Core Features**:
+
+**Multi-State Review Management**:
+- **Mark as Reviewed**: Remove NEW badge and visual alerts when staff acknowledges job
+- **Mark as Unreviewed**: Restore alert state for jobs requiring additional attention
+- **Bidirectional Control**: Full undo capability for all review state changes
+- **Visual State Indicators**: Clear "Reviewed" vs "Unreviewed" status with color coding
+
+**Safety and Confirmation System**:
+- **Confirmation Dialogs**: Modal prompts with contextual icons and clear messaging
+  - Green checkmark (✓) for "Mark as Reviewed" actions
+  - Orange rotation arrow (↺) for "Mark as Unreviewed" actions
+  - Professional backdrop blur with perfect viewport centering
+- **Error Prevention**: Multi-layer confirmation prevents accidental state changes
+- **Keyboard Support**: ESC key cancellation, proper focus management, click-outside-to-cancel
+
+**User Experience Enhancements**:
+- **Viewport Centering**: Confirmation dialogs always appear in center of visible screen regardless of scroll position
+- **Smooth Animations**: Scale-in effects (0.95 → 1.0) with cubic-bezier easing
+- **Visual Hierarchy**: Clear separation between primary actions and administrative controls
+- **Reduced Redundancy**: Single confirmation mechanism eliminates duplicate notifications
+
+**API Endpoints**:
+```python
+@bp.route('/api/mark-reviewed/<job_id>', methods=['POST'])
+@bp.route('/api/mark-unreviewed/<job_id>', methods=['POST'])
+# Enhanced audit logging with action types, timestamps, and user context
+```
+
+**JavaScript Architecture**:
+```javascript
+// Confirmation Dialog System with icon management
+class ConfirmationDialog {
+    show(title, message, confirmText, cancelText, icon)
+    // Promise-based modal with accessibility support
+}
+
+// Review Functions with Audit Trail
+async function confirmMarkAsReviewed(jobId)
+async function confirmMarkAsUnreviewed(jobId)
+// Multi-step confirmation with clear visual communication
+```
+
+**Database Integration**:
+- **Enhanced Event Logging**: All review actions logged with detailed context
+- **User Agent Tracking**: Browser and system information for audit trails
+- **Timestamp Precision**: High-resolution timestamps for action sequencing
+- **Backward Compatibility**: Graceful handling of legacy requests
+
+**Quality Achievements**:
+- **Single Source of Truth**: Each action has one clear confirmation mechanism
+- **Visual Clarity**: Icons and colors immediately communicate action type
+- **Professional Appearance**: Consistent with Apple UI guidelines
+- **Error Handling**: Toast notifications reserved for actual system errors only
+- **Accessibility**: Full keyboard navigation and screen reader support
