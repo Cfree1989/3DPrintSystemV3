@@ -1,0 +1,33 @@
+<!-- Print Method and Color Selection -->
+<div class="form-group-apple">
+    <label for="print_method" class="label-apple">Print Method</label>
+    <select id="print_method" 
+            name="print_method" 
+            required 
+            class="select-apple" 
+            x-model="printMethod">
+        <option value="">-- Select Print Method --</option>
+        <option value="Filament">Filament</option>
+        <option value="Resin">Resin</option>
+    </select>
+</div>
+
+<div class="form-group-apple">
+    <label for="color" class="label-apple">Color Preference</label>
+    <select id="color" 
+            name="color" 
+            required 
+            class="select-apple" 
+            :disabled="!printMethod"
+            :class="{ 'disabled-apple': !printMethod }">
+        <option value="">Select color</option>
+        <template x-for="color in colorOptions" :key="color">
+            <option :value="color" x-text="color"></option>
+        </template>
+    </select>
+    <template x-if="!printMethod">
+        <small class="text-apple-footnote text-apple-gray-400 mt-1 block">
+            Please select a print method first
+        </small>
+    </template>
+</div> 
