@@ -407,7 +407,8 @@ class SoundNotificationManager {
         try {
             const audio = this.sounds[soundName];
             if (!audio) {
-                console.warn(`Sound ${soundName} not found`);
+                console.warn(`Sound ${soundName} not found, trying fallback beep`);
+                this.playFallbackBeep();
                 return;
             }
 
@@ -421,7 +422,36 @@ class SoundNotificationManager {
             await audio.play();
             console.log(`Played sound: ${soundName}`);
         } catch (error) {
-            console.warn(`Failed to play sound ${soundName}:`, error);
+            console.warn(`Failed to play sound ${soundName}, trying fallback beep:`, error);
+            this.playFallbackBeep();
+        }
+    }
+
+    playFallbackBeep() {
+        if (!this.userInteracted) return;
+        
+        try {
+            // Create a simple beep using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800; // 800 Hz tone
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+            
+            console.log('Played fallback beep sound');
+        } catch (error) {
+            console.warn('Failed to play fallback beep:', error);
         }
     }
 
