@@ -7,25 +7,27 @@
     <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
     <!-- Confirmation Dialog Modal -->
-    <div id="confirmation-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all scale-95 opacity-0" id="confirmation-content">
-            <div class="p-6">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
-                        <span id="confirmation-icon" class="text-2xl">❓</span>
+    <div id="confirmation-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50" style="display: none;">
+        <div class="min-h-screen px-4 flex items-center justify-center">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all scale-95 opacity-0" id="confirmation-content">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                            <span id="confirmation-icon" class="text-2xl">❓</span>
+                        </div>
+                        <h3 id="confirmation-title" class="text-lg font-semibold text-gray-900">Confirm Action</h3>
                     </div>
-                    <h3 id="confirmation-title" class="text-lg font-semibold text-gray-900">Confirm Action</h3>
-                </div>
-                <p id="confirmation-message" class="text-gray-600 mb-6 ml-16">Are you sure you want to proceed?</p>
-                <div class="flex space-x-3 justify-end">
-                    <button id="confirmation-cancel" class="px-6 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg
-                                                            hover:bg-gray-200 transition-colors duration-200 border-0 shadow-sm">
-                        Cancel
-                    </button>
-                    <button id="confirmation-confirm" class="px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg
-                                                             hover:bg-blue-700 transition-colors duration-200 border-0 shadow-md">
-                        Confirm
-                    </button>
+                    <p id="confirmation-message" class="text-gray-600 mb-6 ml-16">Are you sure you want to proceed?</p>
+                    <div class="flex space-x-3 justify-end">
+                        <button id="confirmation-cancel" class="px-6 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg
+                                                                hover:bg-gray-200 transition-colors duration-200 border-0 shadow-sm">
+                            Cancel
+                        </button>
+                        <button id="confirmation-confirm" class="px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg
+                                                                 hover:bg-blue-700 transition-colors duration-200 border-0 shadow-md">
+                            Confirm
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -482,10 +484,23 @@ a:focus-visible {
     z-index: 20;
 }
 
-/* Enhanced confirmation modal styling */
+/* Enhanced confirmation modal styling with perfect viewport centering */
 #confirmation-modal {
     backdrop-filter: blur(5px);
     transition: backdrop-filter 0.3s ease;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9999;
+}
+
+#confirmation-modal .min-h-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #confirmation-content {
@@ -493,6 +508,8 @@ a:focus-visible {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: scale(0.95);
     opacity: 0;
+    position: relative;
+    z-index: 10000;
 }
 
 #confirmation-modal.show #confirmation-content {
@@ -1215,17 +1232,18 @@ class ConfirmationDialog {
             
             if (icon === '✓') {
                 iconContainer.classList.add('bg-green-100');
-                this.confirmBtn.className = this.confirmBtn.className.replace('bg-blue-600 hover:bg-blue-700', 'bg-green-600 hover:bg-green-700');
+                this.confirmBtn.className = this.confirmBtn.className.replace(/bg-\w+-600 hover:bg-\w+-700/, 'bg-green-600 hover:bg-green-700');
             } else if (icon === '↺') {
                 iconContainer.classList.add('bg-orange-100');
-                this.confirmBtn.className = this.confirmBtn.className.replace('bg-blue-600 hover:bg-blue-700', 'bg-orange-600 hover:bg-orange-700');
+                this.confirmBtn.className = this.confirmBtn.className.replace(/bg-\w+-600 hover:bg-\w+-700/, 'bg-orange-600 hover:bg-orange-700');
             } else {
                 iconContainer.classList.add('bg-blue-100');
                 this.confirmBtn.className = this.confirmBtn.className.replace(/bg-\w+-600 hover:bg-\w+-700/, 'bg-blue-600 hover:bg-blue-700');
             }
             
+            // Show modal with proper viewport centering
+            this.modal.style.display = 'flex';
             this.modal.classList.remove('hidden');
-            this.modal.classList.add('flex');
             
             // Trigger animation
             requestAnimationFrame(() => {
@@ -1243,7 +1261,7 @@ class ConfirmationDialog {
         this.modal.classList.remove('show');
         setTimeout(() => {
             this.modal.classList.add('hidden');
-            this.modal.classList.remove('flex');
+            this.modal.style.display = 'none';
         }, 300);
     }
 }
