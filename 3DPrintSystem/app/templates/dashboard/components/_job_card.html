@@ -1,0 +1,115 @@
+<div class="job-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200
+           {% if job.staff_viewed_at is none %}unreviewed-job{% endif %}" 
+     data-job-id="{{ job.id }}">
+    <div class="p-6">
+        {% if job.staff_viewed_at is none %}
+        <div class="flex items-center mb-4">
+            <span class="new-badge px-3 py-1 text-xs font-bold rounded-full bg-orange-500 text-white shadow-sm animate-pulse">NEW</span>
+        </div>
+        {% endif %}
+        <div class="flex items-start justify-between">
+            <!-- Student Information (Primary) -->
+            <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ job.student_name }}</h3>
+                <p class="text-gray-600 text-sm mb-3">{{ job.display_name or job.original_filename }}</p>
+                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <span>{{ job.student_email }}</span>
+                    <span>{{ job.discipline | discipline_name }}</span>
+                    {% if job.class_number %}
+                    <span>{{ job.class_number }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Job Details (Secondary) -->
+            <div class="ml-6 text-right">
+                <div class="text-sm text-gray-500 mb-2">
+                    <span class="job-age" data-created-at="{{ job.created_at.isoformat() if job.created_at }}"></span>
+                </div>
+                {% if job.printer or job.color or job.material %}
+                <div class="text-sm space-y-1 text-right">
+                    {% if job.printer %}
+                    <div class="font-medium text-gray-700">{{ job.printer | printer_name }}</div>
+                    {% endif %}
+                    {% if job.color %}
+                    <div class="text-gray-600">{{ job.color | color_name }}</div>
+                    {% endif %}
+                    {% if job.material %}
+                    <div class="text-gray-600">{{ job.material | title }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% if job.cost_usd %}
+                <div class="text-lg font-semibold text-gray-900 mt-3">
+                    ${{ "%.2f"|format(job.cost_usd) }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Apple-Style Action Buttons -->
+        {% if current_status == 'UPLOADED' %}
+        <div class="mt-6 pt-4 border-t border-gray-200">
+            <div class="flex items-center justify-between">
+                <!-- Primary Actions (Left) -->
+                <div class="flex space-x-3">
+                    <button onclick="handleApprovalClick(event, '{{ job.id }}')" 
+                            class="btn-approve action-button">
+                        Approve
+                    </button>
+                    <button onclick="handleRejectionClick(event, '{{ job.id }}')"
+                            class="btn-reject action-button">
+                        Reject
+                    </button>
+                    <button onclick="event.stopPropagation(); event.preventDefault();" class="btn-view-details action-button">
+                        📋 View Details
+                    </button>
+                </div>
+                
+                <!-- Review Status Actions (Right) -->
+                <div class="flex items-center space-x-2">
+                    {% if job.staff_viewed_at is none %}
+                    <!-- Unreviewed State -->
+                    <span class="text-xs text-orange-600 font-medium">Unreviewed</span>
+                    <div class="relative">
+                        <button onclick="showReviewMenu('{{ job.id }}')" 
+                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 
+                                       hover:bg-orange-100 transition-colors duration-200 border border-orange-200
+                                       focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1"
+                                title="Review options">
+                            Review
+                        </button>
+                        <div id="review-menu-{{ job.id }}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <button onclick="confirmMarkAsReviewed('{{ job.id }}')" 
+                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                           focus:outline-none focus:bg-gray-50">
+                                ✓ Mark as Reviewed
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Reviewed State -->
+                    <span class="text-xs text-green-600 font-medium">Reviewed</span>
+                    <div class="relative">
+                        <button onclick="showReviewMenu('{{ job.id }}')" 
+                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 
+                                       hover:bg-green-100 transition-colors duration-200 border border-green-200
+                                       focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                                title="Review options">
+                            ⚙️ Review
+                        </button>
+                        <div id="review-menu-{{ job.id }}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <button onclick="confirmMarkAsUnreviewed('{{ job.id }}')" 
+                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                           focus:outline-none focus:bg-gray-50">
+                                ↺ Mark as Unreviewed
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div> 
