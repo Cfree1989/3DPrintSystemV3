@@ -8,7 +8,7 @@
     
     <!-- Confirmation Dialog Modal -->
     <div id="confirmation-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50" style="display: none;">
-        <div class="min-h-screen px-4 flex items-center justify-center">
+        <div class="w-full h-full flex items-center justify-center p-4">
             <div class="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all scale-95 opacity-0" id="confirmation-content">
                 <div class="p-6">
                     <div class="flex items-center mb-4">
@@ -496,11 +496,13 @@ a:focus-visible {
     z-index: 9999;
 }
 
-#confirmation-modal .min-h-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#confirmation-modal > div {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1rem;
 }
 
 #confirmation-content {
@@ -510,6 +512,8 @@ a:focus-visible {
     opacity: 0;
     position: relative;
     z-index: 10000;
+    max-width: 28rem;
+    width: 100%;
 }
 
 #confirmation-modal.show #confirmation-content {
