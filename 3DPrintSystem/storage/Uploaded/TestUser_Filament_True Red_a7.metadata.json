@@ -1,0 +1,16 @@
+{
+    "temp_job_id": "A7",
+    "original_filename": "test_cube.stl",
+    "display_name": "TestUser_Filament_True Red_a7.stl",
+    "student_name": "Test User",
+    "student_email": "test@example.com",
+    "discipline": "Engineering",
+    "class_number": "TEST 1000",
+    "print_method": "Filament",
+    "color_preference": "True Red",
+    "printer_selection": "Prusa MK4S",
+    "acknowledged_minimum_charge": true,
+    "submission_timestamp_utc": "2025-05-30T14:02:31.299107+00:00",
+    "status": "Uploaded",
+    "notes_from_submission": null
+}
