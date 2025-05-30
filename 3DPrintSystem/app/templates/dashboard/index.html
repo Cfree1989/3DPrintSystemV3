@@ -149,15 +149,16 @@
                             <div class="flex items-center justify-between">
                                 <!-- Primary Actions (Left) -->
                                 <div class="flex space-x-3">
-                                    <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
-                                                 shadow-md hover:bg-blue-700 hover:shadow-lg 
-                                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                        Review
+                                    <button onclick="handleApprovalClick(event, '{{ job.id }}')" 
+                                            class="btn-approve action-button">
+                                        ✓ Approve
                                     </button>
-                                    <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
-                                                 shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
-                                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                                        View Details
+                                    <button onclick="handleRejectionClick(event, '{{ job.id }}')"
+                                            class="btn-reject action-button">
+                                        ✗ Reject
+                                    </button>
+                                    <button onclick="event.stopPropagation(); event.preventDefault();" class="btn-view-details action-button">
+                                        📋 View Details
                                     </button>
                                 </div>
                                 
@@ -534,6 +535,136 @@ a:focus-visible {
     transform: translateY(0);
     pointer-events: auto;
 }
+
+/* Enhanced Button Styling for Approve/Reject */
+.btn-approve {
+    background-color: #16a34a !important; /* green-600 */
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btn-approve:hover {
+    background-color: #15803d !important; /* green-700 */
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 10px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.btn-reject {
+    background-color: #dc2626 !important; /* red-600 */
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btn-reject:hover {
+    background-color: #b91c1c !important; /* red-700 */
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 10px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.btn-view-details {
+    background-color: #ffffff !important;
+    color: #374151 !important; /* gray-700 */
+    border: 1px solid #d1d5db !important; /* gray-300 border */
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btn-view-details:hover {
+    background-color: #f9fafb !important; /* gray-50 */
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Enhanced action button styling for consistency */
+.action-button {
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+    transition: all 200ms ease-in-out !important;
+    min-width: 90px !important;
+    cursor: pointer !important;
+}
+
+.action-button:focus {
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+}
+
+/* Enhanced Modal Positioning - CRITICAL FIX */
+#approval-modal, #rejection-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9999 !important;
+    display: none !important;
+    backdrop-filter: blur(5px) !important;
+    transition: backdrop-filter 0.3s ease !important;
+}
+
+#approval-modal.show, #rejection-modal.show {
+    display: block !important;
+}
+
+/* Modal content box styling - auto height based on content */
+#approval-modal .bg-white, #rejection-modal .bg-white {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform: scale(0.95) !important;
+    opacity: 0 !important;
+    position: relative !important;
+    z-index: 10000 !important;
+    max-width: 28rem !important;
+    width: 100% !important;
+    max-height: 90vh !important; /* Prevent modal from being too tall */
+    overflow-y: auto !important; /* Allow scrolling if content is long */
+    margin: auto !important; /* Center the modal */
+}
+
+#approval-modal.show .bg-white, #rejection-modal.show .bg-white {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+}
+
+/* Close button styling */
+.modal-close-btn {
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #f3f4f6 !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    z-index: 10 !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+.modal-close-btn:hover {
+    background-color: #e5e7eb !important;
+    transform: scale(1.1) !important;
+}
+
+.modal-close-btn svg {
+    stroke: #6b7280 !important;
+}
 </style>
 
 <script>
@@ -862,58 +993,59 @@ function createJobCardHtml(job, currentStatus) {
             <div class="flex items-center justify-between">
                 <!-- Primary Actions (Left) -->
                 <div class="flex space-x-3">
-                    <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
-                                 shadow-md hover:bg-blue-700 hover:shadow-lg 
-                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Review
+                    <button onclick="handleApprovalClick(event, '${job.id}')" 
+                            class="btn-approve action-button">
+                        ✓ Approve
                     </button>
-                    <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
-                                 shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
-                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                        View Details
+                    <button onclick="handleRejectionClick(event, '${job.id}')"
+                            class="btn-reject action-button">
+                        ✗ Reject
+                    </button>
+                    <button onclick="event.stopPropagation(); event.preventDefault();" class="btn-view-details action-button">
+                        📋 View Details
                     </button>
                 </div>
                 
                 <!-- Review Status Actions (Right) -->
                 <div class="flex items-center space-x-2">
                     ${isUnreviewed ? `
-                        <!-- Unreviewed State -->
-                        <span class="text-xs text-orange-600 font-medium">Unreviewed</span>
-                        <div class="relative">
-                            <button onclick="showReviewMenu('${job.id}')" 
-                                    class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 
-                                           hover:bg-orange-100 transition-colors duration-200 border border-orange-200
-                                           focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1"
-                                    title="Review options">
-                                ⚙️ Review
+                    <!-- Unreviewed State -->
+                    <span class="text-xs text-orange-600 font-medium">Unreviewed</span>
+                    <div class="relative">
+                        <button onclick="showReviewMenu('${job.id}')" 
+                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 
+                                       hover:bg-orange-100 transition-colors duration-200 border border-orange-200
+                                       focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1"
+                                title="Review options">
+                            ⚙️ Review
+                        </button>
+                        <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <button onclick="confirmMarkAsReviewed('${job.id}')" 
+                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                           focus:outline-none focus:bg-gray-50">
+                                ✓ Mark as Reviewed
                             </button>
-                            <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                                <button onclick="confirmMarkAsReviewed('${job.id}')" 
-                                        class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
-                                               focus:outline-none focus:bg-gray-50">
-                                    ✓ Mark as Reviewed
-                                </button>
-                            </div>
                         </div>
+                    </div>
                     ` : `
-                        <!-- Reviewed State -->
-                        <span class="text-xs text-green-600 font-medium">Reviewed</span>
-                        <div class="relative">
-                            <button onclick="showReviewMenu('${job.id}')" 
-                                    class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 
-                                           hover:bg-green-100 transition-colors duration-200 border border-green-200
-                                           focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
-                                    title="Review options">
-                                ⚙️ Review
+                    <!-- Reviewed State -->
+                    <span class="text-xs text-green-600 font-medium">Reviewed</span>
+                    <div class="relative">
+                        <button onclick="showReviewMenu('${job.id}')" 
+                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 
+                                       hover:bg-green-100 transition-colors duration-200 border border-green-200
+                                       focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                                title="Review options">
+                            ⚙️ Review
+                        </button>
+                        <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <button onclick="confirmMarkAsUnreviewed('${job.id}')" 
+                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                           focus:outline-none focus:bg-gray-50">
+                                ↺ Mark as Unreviewed
                             </button>
-                            <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                                <button onclick="confirmMarkAsUnreviewed('${job.id}')" 
-                                        class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
-                                               focus:outline-none focus:bg-gray-50">
-                                    ↺ Mark as Unreviewed
-                                </button>
-                            </div>
                         </div>
+                    </div>
                     `}
                 </div>
             </div>
@@ -1500,5 +1632,743 @@ function updateJobReviewState(jobId, isReviewed) {
         }
     }
 }
+
+// Enhanced Modal Management - CRITICAL FIX
+function hideAllModalsAndMenus() {
+    console.log('=== HIDING ALL MODALS AND MENUS ===');
+    
+    // Hide all review menus
+    document.querySelectorAll('[id^="review-menu-"]').forEach(menu => {
+        menu.classList.add('hidden');
+        menu.classList.remove('show');
+    });
+    
+    // Hide all modals
+    ['approval-modal', 'rejection-modal', 'confirmation-modal'].forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+        }
+    });
+    
+    console.log('All modals and menus hidden');
+}
+
+// Job Approval Functions - Enhanced with comprehensive debugging and proper modal behavior
+function showApprovalModal(jobId) {
+    console.log('=== APPROVAL MODAL DEBUG START ===');
+    console.log('Job ID:', jobId);
+    console.log('Function called at:', new Date().toISOString());
+    
+    try {
+        // STEP 1: Close all other UI elements first
+        hideAllModalsAndMenus();
+        
+        // STEP 2: Find and validate modal elements
+        const modal = document.getElementById('approval-modal');
+        const jobIdInput = document.getElementById('approval-job-id');
+        
+        if (!modal) {
+            console.error('CRITICAL ERROR: approval-modal element not found');
+            alert('Error: Approval modal not found. Please refresh the page.');
+            return;
+        }
+        console.log('✅ Modal element found:', modal);
+        
+        if (!jobIdInput) {
+            console.error('CRITICAL ERROR: approval-job-id input not found');
+            alert('Error: Modal form not found. Please refresh the page.');
+            return;
+        }
+        console.log('✅ Job ID input found:', jobIdInput);
+        
+        // STEP 3: Set job ID
+        jobIdInput.value = jobId;
+        console.log('✅ Job ID set in form:', jobIdInput.value);
+        
+        // STEP 4: Show modal with enhanced method
+        console.log('Showing modal...');
+        modal.classList.remove('hidden');
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        
+        console.log('Modal classes after show:', modal.className);
+        console.log('Modal display style:', modal.style.display);
+        
+        // STEP 5: Add cost calculation listeners
+        addCostCalculationListeners();
+        console.log('✅ Cost calculation listeners added');
+        
+        // STEP 6: Focus and animate with enhanced reliability
+        setTimeout(() => {
+            console.log('Starting focus and animation...');
+            
+            const weightInput = document.getElementById('approval-weight');
+            if (weightInput) {
+                weightInput.focus();
+                console.log('✅ Weight input focused');
+            } else {
+                console.warn('Weight input not found for focus');
+            }
+            
+            // More reliable animation selector
+            const modalContent = modal.querySelector('.bg-white');
+            if (modalContent) {
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+                console.log('✅ Modal animation applied');
+                console.log('Modal content classes:', modalContent.className);
+            } else {
+                console.warn('Modal content (.bg-white) not found for animation');
+            }
+        }, 100);
+        
+        console.log('=== APPROVAL MODAL SHOWN SUCCESSFULLY ===');
+    } catch (error) {
+        console.error('=== CRITICAL ERROR IN showApprovalModal ===');
+        console.error('Error details:', error);
+        console.error('Stack trace:', error.stack);
+        alert('Error showing approval modal: ' + error.message);
+    }
+}
+
+function hideApprovalModal() {
+    console.log('=== HIDING APPROVAL MODAL ===');
+    
+    try {
+        const modal = document.getElementById('approval-modal');
+        
+        if (!modal) {
+            console.error('Modal not found during hide');
+            return;
+        }
+        
+        // First animate out
+        const modalContent = modal.querySelector('.bg-white');
+        if (modalContent) {
+            modalContent.classList.add('scale-95');
+            modalContent.classList.remove('scale-100');
+            console.log('✅ Hide animation started');
+        }
+        
+        // Then hide after animation completes
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            
+            // Reset form
+            const form = document.getElementById('approval-form');
+            if (form) {
+                form.reset();
+                console.log('✅ Form reset');
+            }
+            
+            // Hide cost display
+            const costDisplay = document.getElementById('approval-cost-display');
+            if (costDisplay) {
+                costDisplay.classList.add('hidden');
+                console.log('✅ Cost display hidden');
+            }
+            
+            console.log('=== APPROVAL MODAL HIDDEN SUCCESSFULLY ===');
+        }, 300);
+    } catch (error) {
+        console.error('Error hiding approval modal:', error);
+    }
+}
+
+function addCostCalculationListeners() {
+    const weightInput = document.getElementById('approval-weight');
+    const materialSelect = document.getElementById('approval-material');
+    
+    const calculateCost = () => {
+        const weight = parseFloat(weightInput.value) || 0;
+        const material = materialSelect.value;
+        
+        if (weight > 0 && material) {
+            const costPerGram = material === 'Resin' ? 0.20 : 0.10;
+            const calculatedCost = Math.max(weight * costPerGram, 3.00);
+            
+            document.getElementById('approval-cost-amount').textContent = calculatedCost.toFixed(2);
+            document.getElementById('approval-cost-display').classList.remove('hidden');
+        } else {
+            document.getElementById('approval-cost-display').classList.add('hidden');
+        }
+    };
+    
+    weightInput.addEventListener('input', calculateCost);
+    materialSelect.addEventListener('change', calculateCost);
+}
+
+function submitApproval() {
+    const form = document.getElementById('approval-form');
+    const formData = new FormData(form);
+    
+    // Validate required fields
+    const weight = formData.get('weight_g');
+    const time = formData.get('time_hours');
+    
+    if (!weight || !time) {
+        toastManager.show('Validation Error', 'Weight and time are required', 'error');
+        return;
+    }
+    
+    // Disable submit button
+    const submitBtn = document.getElementById('approval-submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Approving...';
+    
+    const jobId = formData.get('job_id');
+    const approvalData = {
+        weight_g: parseFloat(weight),
+        time_hours: parseFloat(time),
+        material: formData.get('material'),
+        notes: formData.get('notes')
+    };
+    
+    fetch(`/dashboard/api/approve-job/${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(approvalData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            toastManager.show('Success', data.message, 'success');
+            hideApprovalModal();
+            // Trigger dashboard refresh to show updated status
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            toastManager.show('Approval Failed', data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error approving job:', error);
+        toastManager.show('Network Error', 'Failed to approve job. Please try again.', 'error');
+    })
+    .finally(() => {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Approve Job';
+    });
+}
+
+// Job Rejection Functions - Enhanced with comprehensive debugging and proper modal behavior
+function showRejectionModal(jobId) {
+    console.log('=== REJECTION MODAL DEBUG START ===');
+    console.log('Job ID:', jobId);
+    console.log('Function called at:', new Date().toISOString());
+    
+    try {
+        // STEP 1: Close all other UI elements first
+        hideAllModalsAndMenus();
+        
+        // STEP 2: Find and validate modal elements
+        const modal = document.getElementById('rejection-modal');
+        const jobIdInput = document.getElementById('rejection-job-id');
+        
+        if (!modal) {
+            console.error('CRITICAL ERROR: rejection-modal element not found');
+            alert('Error: Rejection modal not found. Please refresh the page.');
+            return;
+        }
+        console.log('✅ Modal element found:', modal);
+        
+        if (!jobIdInput) {
+            console.error('CRITICAL ERROR: rejection-job-id input not found');
+            alert('Error: Modal form not found. Please refresh the page.');
+            return;
+        }
+        console.log('✅ Job ID input found:', jobIdInput);
+        
+        // STEP 3: Set job ID
+        jobIdInput.value = jobId;
+        console.log('✅ Job ID set in form:', jobIdInput.value);
+        
+        // STEP 4: Show modal with enhanced method
+        console.log('Showing modal...');
+        modal.classList.remove('hidden');
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        
+        console.log('Modal classes after show:', modal.className);
+        console.log('Modal display style:', modal.style.display);
+        
+        // STEP 5: Focus and animate with enhanced reliability
+        setTimeout(() => {
+            console.log('Starting focus and animation...');
+            
+            // More reliable animation selector
+            const modalContent = modal.querySelector('.bg-white');
+            if (modalContent) {
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+                console.log('✅ Modal animation applied');
+                console.log('Modal content classes:', modalContent.className);
+            } else {
+                console.warn('Modal content (.bg-white) not found for animation');
+            }
+            
+            // Focus first checkbox for better accessibility
+            const firstReason = document.querySelector('#rejection-form input[type="checkbox"]');
+            if (firstReason) {
+                firstReason.focus();
+                console.log('✅ First checkbox focused');
+            } else {
+                console.warn('First checkbox not found for focus');
+            }
+        }, 100);
+        
+        console.log('=== REJECTION MODAL SHOWN SUCCESSFULLY ===');
+    } catch (error) {
+        console.error('=== CRITICAL ERROR IN showRejectionModal ===');
+        console.error('Error details:', error);
+        console.error('Stack trace:', error.stack);
+        alert('Error showing rejection modal: ' + error.message);
+    }
+}
+
+function hideRejectionModal() {
+    console.log('=== HIDING REJECTION MODAL ===');
+    
+    try {
+        const modal = document.getElementById('rejection-modal');
+        
+        if (!modal) {
+            console.error('Modal not found during hide');
+            return;
+        }
+        
+        // First animate out
+        const modalContent = modal.querySelector('.bg-white');
+        if (modalContent) {
+            modalContent.classList.add('scale-95');
+            modalContent.classList.remove('scale-100');
+            console.log('✅ Hide animation started');
+        }
+        
+        // Then hide after animation completes
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+            
+            // Reset form
+            const form = document.getElementById('rejection-form');
+            if (form) {
+                form.reset();
+                console.log('✅ Form reset');
+            }
+            
+            console.log('=== REJECTION MODAL HIDDEN SUCCESSFULLY ===');
+        }, 300);
+    } catch (error) {
+        console.error('Error hiding rejection modal:', error);
+    }
+}
+
+function submitRejection() {
+    const form = document.getElementById('rejection-form');
+    const formData = new FormData(form);
+    
+    // Get selected reasons
+    const selectedReasons = [];
+    const checkboxes = form.querySelectorAll('input[name="rejection_reasons"]:checked');
+    checkboxes.forEach(checkbox => {
+        selectedReasons.push(checkbox.value);
+    });
+    
+    const customReason = formData.get('custom_reason');
+    
+    // Validate at least one reason is provided
+    if (selectedReasons.length === 0 && !customReason) {
+        toastManager.show('Validation Error', 'Please select at least one rejection reason', 'error');
+        return;
+    }
+    
+    // Disable submit button
+    const submitBtn = document.getElementById('rejection-submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Rejecting...';
+    
+    const jobId = formData.get('job_id');
+    const rejectionData = {
+        reasons: selectedReasons,
+        custom_reason: customReason,
+        notes: formData.get('notes')
+    };
+    
+    fetch(`/dashboard/api/reject-job/${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rejectionData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            toastManager.show('Success', data.message, 'success');
+            hideRejectionModal();
+            // Trigger dashboard refresh to show updated status
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            toastManager.show('Rejection Failed', data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error rejecting job:', error);
+        toastManager.show('Network Error', 'Failed to reject job. Please try again.', 'error');
+    })
+    .finally(() => {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Reject Job';
+    });
+}
+
+// Enhanced event handlers for modals with comprehensive coverage
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        console.log('=== ESCAPE KEY PRESSED ===');
+        
+        // Check all modals and close if open
+        let modalClosed = false;
+        
+        if (!document.getElementById('approval-modal').classList.contains('hidden')) {
+            console.log('Closing approval modal via ESC');
+            hideApprovalModal();
+            modalClosed = true;
+        }
+        if (!document.getElementById('rejection-modal').classList.contains('hidden')) {
+            console.log('Closing rejection modal via ESC');
+            hideRejectionModal();
+            modalClosed = true;
+        }
+        if (!document.getElementById('confirmation-modal').classList.contains('hidden')) {
+            console.log('Closing confirmation modal via ESC');
+            // Trigger cancel button click for confirmation modal
+            const cancelBtn = document.getElementById('confirmation-cancel');
+            if (cancelBtn) {
+                cancelBtn.click();
+            }
+            modalClosed = true;
+        }
+        
+        // Also close any open review menus
+        let menusClosed = false;
+        document.querySelectorAll('[id^="review-menu-"]:not(.hidden)').forEach(menu => {
+            const jobId = menu.id.replace('review-menu-', '');
+            hideReviewMenu(jobId);
+            menusClosed = true;
+        });
+        
+        if (modalClosed || menusClosed) {
+            console.log('✅ UI elements closed via ESC key');
+        }
+    }
+});
+
+// Enhanced backdrop click handlers with proper event isolation
+document.addEventListener('DOMContentLoaded', function() {
+    // Approval modal backdrop click
+    const approvalModal = document.getElementById('approval-modal');
+    if (approvalModal) {
+        // Click handler for the backdrop (the flex wrapper div)
+        const backdrop = approvalModal.querySelector('.w-full.h-full.flex');
+        if (backdrop) {
+            backdrop.addEventListener('click', function(e) {
+                // Only close if clicking the backdrop itself, not the modal content
+                if (e.target === this) {
+                    console.log('=== APPROVAL MODAL BACKDROP CLICKED ===');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hideApprovalModal();
+                }
+            });
+            console.log('✅ Approval modal backdrop handler registered');
+        }
+    }
+
+    // Rejection modal backdrop click  
+    const rejectionModal = document.getElementById('rejection-modal');
+    if (rejectionModal) {
+        // Click handler for the backdrop (the flex wrapper div)
+        const backdrop = rejectionModal.querySelector('.w-full.h-full.flex');
+        if (backdrop) {
+            backdrop.addEventListener('click', function(e) {
+                // Only close if clicking the backdrop itself, not the modal content
+                if (e.target === this) {
+                    console.log('=== REJECTION MODAL BACKDROP CLICKED ===');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hideRejectionModal();
+                }
+            });
+            console.log('✅ Rejection modal backdrop handler registered');
+        }
+    }
+    
+    // Confirmation modal backdrop click (already exists but enhance logging)
+    const confirmationModal = document.getElementById('confirmation-modal');
+    if (confirmationModal) {
+        console.log('✅ Confirmation modal found and ready');
+    }
+});
+
+// Enhanced Button Event Handlers - Phase 3 Implementation
+function handleApprovalClick(event, jobId) {
+    console.log('=== APPROVAL BUTTON CLICKED ===');
+    console.log('Event:', event);
+    console.log('Job ID:', jobId);
+    console.log('Event target:', event.target);
+    console.log('Event type:', event.type);
+    
+    try {
+        // Complete event isolation
+        event.stopPropagation();
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        
+        console.log('✅ Event isolation applied');
+        
+        // Small delay to ensure other handlers complete
+        setTimeout(() => {
+            console.log('Calling showApprovalModal...');
+            showApprovalModal(jobId);
+        }, 10);
+    } catch (error) {
+        console.error('Error in handleApprovalClick:', error);
+        alert('Error handling approval click: ' + error.message);
+    }
+}
+
+function handleRejectionClick(event, jobId) {
+    console.log('=== REJECTION BUTTON CLICKED ===');
+    console.log('Event:', event);
+    console.log('Job ID:', jobId);
+    console.log('Event target:', event.target);
+    console.log('Event type:', event.type);
+    
+    try {
+        // Complete event isolation
+        event.stopPropagation();
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        
+        console.log('✅ Event isolation applied');
+        
+        // Small delay to ensure other handlers complete
+        setTimeout(() => {
+            console.log('Calling showRejectionModal...');
+            showRejectionModal(jobId);
+        }, 10);
+    } catch (error) {
+        console.error('Error in handleRejectionClick:', error);
+        alert('Error handling rejection click: ' + error.message);
+    }
+}
 </script>
+
+<!-- Job Approval Modal -->
+<div id="approval-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50">
+    <div class="w-full h-full flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full transform scale-95 transition-all duration-300">
+            <div class="p-6 relative">
+                <!-- Close button -->
+                <button onclick="hideApprovalModal()" class="modal-close-btn" aria-label="Close modal">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <div class="flex items-center mb-4">
+                    <div class="text-2xl mr-3">✅</div>
+                    <h3 class="text-lg font-semibold text-gray-900">Approve Job</h3>
+                </div>
+                
+                <div class="mb-6 text-sm text-gray-600">
+                    Enter the estimated weight and time for this print job. Cost will be calculated automatically.
+                </div>
+                
+                <form id="approval-form" class="space-y-4">
+                    <input type="hidden" id="approval-job-id" name="job_id">
+                    
+                    <div>
+                        <label for="approval-weight" class="block text-sm font-medium text-gray-700 mb-1">
+                            Estimated Weight (grams) *
+                        </label>
+                        <input type="number" 
+                               id="approval-weight" 
+                               name="weight_g" 
+                               min="0.1" 
+                               step="0.1" 
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    
+                    <div>
+                        <label for="approval-time" class="block text-sm font-medium text-gray-700 mb-1">
+                            Estimated Time (hours) *
+                        </label>
+                        <input type="number" 
+                               id="approval-time" 
+                               name="time_hours" 
+                               min="0.5" 
+                               step="0.5" 
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    
+                    <div>
+                        <label for="approval-material" class="block text-sm font-medium text-gray-700 mb-1">
+                            Material Type
+                        </label>
+                        <select id="approval-material" 
+                                name="material"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <option value="">Select material...</option>
+                            <option value="Filament">Filament ($0.10/gram)</option>
+                            <option value="Resin">Resin ($0.20/gram)</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="approval-notes" class="block text-sm font-medium text-gray-700 mb-1">
+                            Staff Notes (Optional)
+                        </label>
+                        <textarea id="approval-notes" 
+                                  name="notes" 
+                                  rows="3"
+                                  placeholder="Any additional notes about this approval..."
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none"></textarea>
+                    </div>
+                    
+                    <div id="approval-cost-display" class="hidden p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="text-sm text-green-700">
+                            <strong>Estimated Cost: $<span id="approval-cost-amount">0.00</span></strong>
+                            <div class="text-xs mt-1">Minimum charge: $3.00</div>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="flex space-x-3 mt-6 pt-4 border-t border-gray-200">
+                    <button onclick="hideApprovalModal()" 
+                            class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                        Cancel
+                    </button>
+                    <button onclick="submitApproval()" 
+                            id="approval-submit-btn"
+                            class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+                        Approve Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Rejection Modal -->
+<div id="rejection-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50">
+    <div class="w-full h-full flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full transform scale-95 transition-all duration-300">
+            <div class="p-6 relative">
+                <!-- Close button -->
+                <button onclick="hideRejectionModal()" class="modal-close-btn" aria-label="Close modal">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <div class="flex items-center mb-4">
+                    <div class="text-2xl mr-3">❌</div>
+                    <h3 class="text-lg font-semibold text-gray-900">Reject Job</h3>
+                </div>
+                
+                <div class="mb-6 text-sm text-gray-600">
+                    Select the reason(s) for rejecting this print job. The student will be notified.
+                </div>
+                
+                <form id="rejection-form" class="space-y-4">
+                    <input type="hidden" id="rejection-job-id" name="job_id">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                            Rejection Reasons (select all that apply) *
+                        </label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="rejection_reasons" value="File too large for printers" class="mr-2 text-red-600">
+                                <span class="text-sm">File too large for available printers</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="rejection_reasons" value="File corrupt or invalid" class="mr-2 text-red-600">
+                                <span class="text-sm">File is corrupt or invalid</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="rejection_reasons" value="Model not printable" class="mr-2 text-red-600">
+                                <span class="text-sm">Model is not suitable for 3D printing</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="rejection_reasons" value="Missing supports" class="mr-2 text-red-600">
+                                <span class="text-sm">Model requires supports that weren't included</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="rejection_reasons" value="Too complex" class="mr-2 text-red-600">
+                                <span class="text-sm">Model is too complex for available equipment</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="rejection_reasons" value="Policy violation" class="mr-2 text-red-600">
+                                <span class="text-sm">Violates lab printing policies</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="rejection-custom" class="block text-sm font-medium text-gray-700 mb-1">
+                            Custom Reason (Optional)
+                        </label>
+                        <input type="text" 
+                               id="rejection-custom" 
+                               name="custom_reason" 
+                               placeholder="Specify additional reason..."
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    
+                    <div>
+                        <label for="rejection-notes" class="block text-sm font-medium text-gray-700 mb-1">
+                            Staff Notes (Optional)
+                        </label>
+                        <textarea id="rejection-notes" 
+                                  name="notes" 
+                                  rows="3"
+                                  placeholder="Any additional notes about this rejection..."
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"></textarea>
+                    </div>
+                </form>
+                
+                <div class="flex space-x-3 mt-6 pt-4 border-t border-gray-200">
+                    <button onclick="hideRejectionModal()" 
+                            class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                        Cancel
+                    </button>
+                    <button onclick="submitRejection()" 
+                            id="rejection-submit-btn"
+                            class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200">
+                        Reject Job
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 
