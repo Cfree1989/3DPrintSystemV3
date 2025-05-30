@@ -29,7 +29,7 @@ def login():
             return redirect(url_for('dashboard.index'))
         else:
             flash('Incorrect password.', 'danger')
-    return render_template('dashboard/login.html')
+    return render_template('staff/auth/login.html')
 
 @bp.route('/logout')
 def logout():
@@ -73,7 +73,7 @@ def index():
             'REJECTED': {'title': 'Rejected', 'stat_key': 'rejected'}
         }
         
-        return render_template('dashboard/index.html', 
+        return render_template('staff/dashboard/index.html', 
                              jobs=jobs, 
                              stats=stats, 
                              current_status=status,
@@ -82,7 +82,7 @@ def index():
     except Exception as e:
         current_app.logger.error(f"Error loading dashboard: {str(e)}")
         # Graceful degradation - return empty state instead of crash
-        return render_template('dashboard/index.html', 
+        return render_template('staff/dashboard/index.html', 
                              jobs=[], 
                              stats={},
                              current_status=status,

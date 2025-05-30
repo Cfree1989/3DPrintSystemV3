@@ -1,0 +1,66 @@
+3DPrintSystem/app/templates/
+├── base/                             # Base templates and layouts
+│   ├── base.html                    # Main base template
+│   ├── email_base.html              # Email template base
+│   └── error_base.html              # Error page base
+├── shared/                          # Truly shared components
+│   ├── navigation.html              # Site navigation
+│   ├── flash_messages.html         # Flash message display
+│   ├── form_macros.html            # Reusable form macros
+│   └── ui_components.html          # Generic UI components
+├── student/                         # Student-facing templates
+│   ├── submission/                 # Submission workflow
+│   │   ├── submit.html             # Main submission form
+│   │   ├── submit_success.html     # Success confirmation
+│   │   ├── confirm.html            # Job confirmation page
+│   │   └── components/             # Submission-specific components
+│   │       ├── _form_header.html
+│   │       ├── _guidelines_warning.html
+│   │       ├── _personal_info_fields.html
+│   │       ├── _print_method_selection.html
+│   │       ├── _printer_dimensions_info.html
+│   │       ├── _printer_selection.html
+│   │       ├── _consent_and_upload.html
+│   │       └── _submit_button.html
+│   └── job_status/                 # Student job tracking (future)
+│       ├── track.html              # Job status lookup
+│       └── status_display.html     # Status display page
+├── staff/                          # Staff-facing templates
+│   ├── auth/                       # Authentication
+│   │   ├── login.html              # Staff login
+│   │   └── logout.html             # Logout confirmation
+│   ├── dashboard/                  # Main dashboard
+│   │   ├── index.html              # Dashboard main page
+│   │   ├── job_detail.html         # Detailed job view
+│   │   └── components/             # Dashboard-specific components
+│   │       ├── _dashboard_tabs.html
+│   │       ├── _job_card.html
+│   │       ├── _approval_modal.html
+│   │       ├── _rejection_modal.html
+│   │       ├── _sound_toggle_button.html
+│   │       ├── _loading_indicator.html
+│   │       └── _last_updated_timestamp.html
+│   ├── reports/                    # Reporting templates (future)
+│   │   ├── usage_stats.html
+│   │   └── financial_report.html
+│   └── admin/                      # Administrative functions (future)
+│       ├── settings.html
+│       └── user_management.html
+├── email/                          # Email notification templates
+│   ├── job_approved.html           # Approval notification
+│   ├── job_rejected.html           # Rejection notification
+│   ├── job_completed.html          # Completion notification
+│   └── components/                 # Email-specific components
+│       ├── _email_header.html
+│       ├── _email_footer.html
+│       └── _job_details_table.html
+├── errors/                         # Error page templates
+│   ├── 404.html                    # Page not found
+│   ├── 500.html                    # Server error
+│   ├── 403.html                    # Access forbidden
+│   └── maintenance.html            # Maintenance mode
+└── public/                         # Public information pages
+    ├── index.html                  # Homepage/landing
+    ├── about.html                  # About the service
+    ├── pricing.html                # Pricing information
+    └── contact.html                # Contact information

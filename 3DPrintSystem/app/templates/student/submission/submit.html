@@ -1,13 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% block title %}Submit 3D Print Job{% endblock %}
 
 {% block content %}
 <div id="main-content" class="max-w-4xl mx-auto">
     <!-- Form Header -->
-    {% include 'main/components/_form_header.html' %}
+    {% include 'student/submission/components/_form_header.html' %}
 
     <!-- Important Guidelines Warning -->
-    {% include 'main/components/_guidelines_warning.html' %}
+    {% include 'student/submission/components/_guidelines_warning.html' %}
 
     <!-- Main Form -->
     <div class="card-apple p-8">
@@ -32,22 +32,22 @@
         }">
             
             <!-- Personal Information -->
-            {% include 'main/components/_personal_info_fields.html' %}
+            {% include 'student/submission/components/_personal_info_fields.html' %}
 
             <!-- Print Method and Color Selection -->
-            {% include 'main/components/_print_method_selection.html' %}
+            {% include 'student/submission/components/_print_method_selection.html' %}
 
             <!-- Printer Dimensions Information -->
-            {% include 'main/components/_printer_dimensions_info.html' %}
+            {% include 'student/submission/components/_printer_dimensions_info.html' %}
 
             <!-- Printer Selection -->
-            {% include 'main/components/_printer_selection.html' %}
+            {% include 'student/submission/components/_printer_selection.html' %}
 
             <!-- Consent and File Upload -->
-            {% include 'main/components/_consent_and_upload.html' %}
+            {% include 'student/submission/components/_consent_and_upload.html' %}
 
             <!-- Submit Button -->
-            {% include 'main/components/_submit_button.html' %}
+            {% include 'student/submission/components/_submit_button.html' %}
         </form>
     </div>
 </div>

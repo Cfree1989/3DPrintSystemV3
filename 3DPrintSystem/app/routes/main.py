@@ -18,7 +18,7 @@ def submit():
             uploaded_file = request.files.get('file')
             if not uploaded_file or uploaded_file.filename == '':
                 flash('Please select a file to upload.', 'error')
-                return render_template('main/submit.html')
+                return render_template('student/submission/submit.html')
             
             # Prepare form data for file service
             form_data = {
@@ -39,12 +39,12 @@ def submit():
             for field in required_fields:
                 if not form_data.get(field):
                     flash(f'Please fill in all required fields. Missing: {field.replace("_", " ").title()}', 'error')
-                    return render_template('main/submit.html')
+                    return render_template('student/submission/submit.html')
             
             # Validate minimum charge consent
             if form_data['minChargeConsent'].lower() != 'yes':
                 flash('You must acknowledge the minimum charge policy to proceed.', 'error')
-                return render_template('main/submit.html')
+                return render_template('student/submission/submit.html')
             
             # Process file upload
             display_name, file_path, metadata_path = save_uploaded_file(uploaded_file, form_data)
@@ -52,7 +52,7 @@ def submit():
             if not display_name:
                 # file_path contains error message when display_name is None
                 flash(f'File upload failed: {file_path}', 'error')
-                return render_template('main/submit.html')
+                return render_template('student/submission/submit.html')
             
             # Create database job record
             job_id = str(uuid.uuid4())
@@ -109,10 +109,10 @@ def submit():
             db.session.rollback()
             current_app.logger.error(f"Error processing submission: {str(e)}")
             flash('An unexpected error occurred. Please try again or contact support.', 'error')
-            return render_template('main/submit.html')
+            return render_template('student/submission/submit.html')
     
     # GET request - show the form
-    return render_template('main/submit.html')
+    return render_template('student/submission/submit.html')
 
 @bp.route('/submit/success')
 def submit_success():
@@ -121,4 +121,4 @@ def submit_success():
         flash('Invalid success page access.', 'error')
         return redirect(url_for('main.submit'))
     
-    return render_template('main/submit_success.html', job_id=job_id) 
+    return render_template('student/submission/submit_success.html', job_id=job_id) 

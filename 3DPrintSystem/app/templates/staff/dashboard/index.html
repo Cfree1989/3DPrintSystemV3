@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% block title %}Staff Dashboard{% endblock %}
 
 {% block content %}
@@ -42,8 +42,8 @@
                     <p class="text-gray-600 text-sm">Manage and track all print requests</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    {% include 'dashboard/components/_last_updated_timestamp.html' %}
-                    {% include 'dashboard/components/_sound_toggle_button.html' %}
+                    {% include 'staff/dashboard/components/_last_updated_timestamp.html' %}
+                    {% include 'staff/dashboard/components/_sound_toggle_button.html' %}
                     <span class="text-sm text-gray-600">Welcome, Staff</span>
                     <a href="{{ url_for('dashboard.logout') }}" 
                        class="inline-flex items-center px-4 py-2 border-0 shadow-md text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-200 no-underline">
@@ -57,14 +57,14 @@
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Apple-Style Status Tabs -->
-        {% include 'dashboard/components/_dashboard_tabs.html' %}
+        {% include 'staff/dashboard/components/_dashboard_tabs.html' %}
 
         <!-- Job Listing -->
         <div id="job-listing">
             {% if jobs %}
             <div class="space-y-6">
                 {% for job in jobs %}
-                {% include 'dashboard/components/_job_card.html' %}
+                {% include 'staff/dashboard/components/_job_card.html' %}
                 {% endfor %}
             </div>
             {% else %}
@@ -84,7 +84,7 @@
         </div>
 
         <!-- Loading Indicator -->
-        {% include 'dashboard/components/_loading_indicator.html' %}
+        {% include 'staff/dashboard/components/_loading_indicator.html' %}
     </div>
 </div>
 
@@ -1064,6 +1064,6 @@ window.addEventListener('beforeunload', function() {
 </script>
 
 <!-- Include Modal Components -->
-{% include 'dashboard/components/_approval_modal.html' %}
-{% include 'dashboard/components/_rejection_modal.html' %}
+{% include 'staff/dashboard/components/_approval_modal.html' %}
+{% include 'staff/dashboard/components/_rejection_modal.html' %}
 {% endblock %} 
