@@ -849,7 +849,7 @@ function calculateJobAge(createdAtStr) {
 
 **Functional Features Confirmed**:
 - ✅ **Approval Modal**: Complete form with weight, time, material selection, and cost calculation
-- ✅ **Rejection Modal**: Comprehensive reason selection with checkboxes and custom reason input
+- ✅ **Reject Modal**: Comprehensive reason selection with checkboxes and custom reason input
 - ✅ **Button Visibility**: Green approve button and red reject button clearly visible
 - ✅ **Modal Triggers**: `showApprovalModal()` and `showRejectionModal()` functions working
 - ✅ **Form Submission**: API integration for approval and rejection workflows
@@ -1111,3 +1111,111 @@ Successfully resolved the critical database schema mismatch that was preventing 
 
 **Solution Implemented**:
 1. **Template Syntax Fix**: Replaced all `{{ job.id }}`
+
+## Dashboard Template Modularization Strategy
+
+**Objective**: Break down the monolithic `dashboard/index.html` into smaller, reusable Jinja2 components and macros to improve maintainability, readability, and organization.
+
+**Identified Components for Extraction**:
+
+Based on the analysis of `3DPrintSystem/app/templates/dashboard/index.html`, the following sections are prime candidates for modularization:
+
+1.  **`_dashboard_tabs.html`**:
+    *   **Content**: The main status tab navigation bar (Uploaded, Pending, ReadyToPrint, etc.).
+    *   **Logic**: Iterates through `tabs` and `stats` context variables to render tab links and job counts.
+    *   **Inputs**: `tabs`, `stats`, `current_status`.
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_dashboard_tabs.html`
+
+2.  **`_job_card.html`**:
+    *   **Content**: The individual job card display. This is the most complex and repeated element.
+    *   **Logic**: Displays job details (student info, file info, status, printer, color, material, timestamps, cost), action buttons (Approve, Reject, View Details, Mark Reviewed/Unreviewed), and the NEW badge.
+    *   **Inputs**: `job` object, `current_status`.
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_job_card.html`
+    *   **Note**: This component will likely use Jinja2 macros internally for rendering specific parts like action buttons or the NEW badge if they have complex conditional logic.
+
+3.  **`_job_actions_dropdown.html` (or Macro within `_job_card.html`)**:
+    *   **Content**: The "Mark as Reviewed/Unreviewed" dropdown menu.
+    *   **Logic**: Conditional display based on `job.staff_viewed_at`.
+    *   **Inputs**: `job` object.
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_job_actions_dropdown.html` (if a separate file) or as a macro within `_job_card.html`.
+
+4.  **`_approval_modal.html`**:
+    *   **Content**: The modal dialog for approving a job (input fields for weight, time, material, cost display).
+    *   **Logic**: Form elements, potentially JavaScript interaction for cost calculation (though JS is usually separate).
+    *   **Inputs**: `job` object (for pre-filling or context), `material_options_json`, `config`.
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_approval_modal.html`
+
+5.  **`_rejection_modal.html`**:
+    *   **Content**: The modal dialog for rejecting a job (reason checkboxes, custom reason textarea).
+    *   **Logic**: Form elements.
+    *   **Inputs**: `job` object (for context), `rejection_reasons`.
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_rejection_modal.html`
+
+6.  **`_sound_toggle_button.html`**:
+    *   **Content**: The "Sound On/Off" button in the header.
+    *   **Logic**: Displays the button, state is managed by JavaScript.
+    *   **Inputs**: None (state managed client-side).
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_sound_toggle_button.html`
+
+7.  **`_loading_indicator.html`**:
+    *   **Content**: The "Loading..." indicator shown during AJAX updates.
+    *   **Logic**: Simple display element.
+    *   **Inputs**: None.
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_loading_indicator.html`
+
+8.  **`_last_updated_timestamp.html`**:
+    *   **Content**: The "Last updated: ..." timestamp.
+    *   **Logic**: Displays the timestamp, updated by JavaScript.
+    *   **Inputs**: None (state managed client-side).
+    *   **File Location**: `3DPrintSystem/app/templates/dashboard/components/_last_updated_timestamp.html`
+
+**Macros for Reusability (within `_job_card.html` or a general `_macros.html`)**:
+
+*   **`render_job_badge(job, current_status)`**: Macro to render the "NEW" badge or other status-related indicators.
+*   **`render_action_button(job, action_type, text, icon_class)`**: Macro to render generic action buttons to ensure consistent styling.
+
+**Refactoring Steps**:
+
+1.  **Create `components` Directory**: Create `3DPrintSystem/app/templates/dashboard/components/`.
+2.  **Extract Tabs**:
+    *   Create `_dashboard_tabs.html`.
+    *   Move the tab rendering loop from `index.html` to this new file.
+    *   In `index.html`, use `{% include 'dashboard/components/_dashboard_tabs.html' %}`.
+3.  **Extract Job Card**:
+    *   Create `_job_card.html`.
+    *   Isolate the HTML for a single job card from the `{% for job in jobs %}` loop in `index.html` and move it to `_job_card.html`.
+    *   In `index.html`, inside the loop, use `{% include 'dashboard/components/_job_card.html' with context %}` or pass `job=job, current_status=current_status`.
+4.  **Extract Modals**:
+    *   Create `_approval_modal.html` and `_rejection_modal.html`.
+    *   Move the corresponding modal HTML structures from `index.html` to these files.
+    *   In `index.html` (likely at the end of the `<body>` or a suitable wrapper), use `{% include 'dashboard/components/_approval_modal.html' %}` and `{% include 'dashboard/components/_rejection_modal.html' %}`. Ensure necessary context variables (like `material_options_json`, `config`, `rejection_reasons`) are available or passed.
+5.  **Extract Smaller UI Elements**:
+    *   Create `_sound_toggle_button.html`, `_loading_indicator.html`, `_last_updated_timestamp.html`.
+    *   Move their respective small HTML snippets.
+    *   Include them in `index.html` where they originally appeared.
+6.  **Identify and Create Macros**:
+    *   Review `_job_card.html` for repetitive small patterns (e.g., button rendering).
+    *   Create a `_macros.html` in the `components` directory or define macros directly in `_job_card.html` if they are only used there.
+    *   Import and use macros: `{% from 'dashboard/components/_macros.html' import render_job_badge %}`.
+7.  **JavaScript Considerations**:
+    *   Ensure that JavaScript event listeners and element selectors in `index.html` are updated if IDs or class names change due to component extraction.
+    *   If JavaScript functions heavily manipulate the structure of these components, they might need to be adjusted to work with the new modular structure. For example, functions that dynamically create job cards will need to render the HTML structure now defined in `_job_card.html`.
+    *   The `createJobCardHtml` JavaScript function will be significantly impacted. It currently generates a large HTML string. This string will need to be updated to match the structure of the `_job_card.html` component, or, ideally, the server should render the job card and the JS should only insert/update it. However, given the existing auto-update mechanism, the JS function will likely need to replicate the `_job_card.html` structure.
+
+**Benefits**:
+
+*   **Readability**: `index.html` becomes much shorter and easier to understand, focusing on the overall page layout.
+*   **Maintainability**: Changes to specific UI elements (like a job card or a modal) can be made in their dedicated files without affecting other parts of the dashboard.
+*   **Reusability**: Components like modals or job cards could potentially be reused elsewhere if needed (though less likely for highly specific dashboard elements).
+*   **Organization**: Template files are grouped logically by their function.
+
+**Success Criteria**:
+
+1.  The dashboard renders identically to the current version after modularization.
+2.  All interactive features (tabs, job actions, modals, sound toggle, auto-update) continue to function correctly.
+3.  The `3DPrintSystem/app/templates/dashboard/index.html` file is significantly reduced in line count and complexity.
+4.  New component files are created in `3DPrintSystem/app/templates/dashboard/components/` as planned.
+5.  The JavaScript `createJobCardHtml` function is updated to generate HTML consistent with the `_job_card.html` component, ensuring dynamically added jobs look identical to server-rendered ones.
+6.  The system remains stable and performant.
+
+This modularization plan provides a clear path to a more organized and maintainable dashboard template structure.
