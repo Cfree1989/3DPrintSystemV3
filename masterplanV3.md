@@ -12,15 +12,25 @@ The project aims to replace potentially ad-hoc or manual 3D print request system
 ### 2.1 Core Features
 1.  **Student submission process**: Allow students to upload 3D model files (.stl, .obj, .3mf) with metadata (name, email, print parameters).
 2.  **Staff approval workflow**: Enable staff to review, slice files, and approve/reject jobs.
-3.  **Multi-computer support**: System can run on up to two staff computers, as long as both use the same shared storage and database.
-4.  **File lifecycle management**: Track original files; manage authoritative files post-slicing; embed `metadata.json` with files for resilience.
-5.  **Job status tracking & Event Logging**: Clear progression through Uploaded → Pending → ReadyToPrint → Printing → Completed → PaidPickedUp, and Rejected, with an **immutable event log** tracking all changes.
-6.  **Email notifications**: **Asynchronously** send automated updates to students.
-7.  **Thumbnails**: **Asynchronously** generate previews from uploaded files. If thumbnail generation fails, no thumbnail will be displayed, or a generic placeholder may be shown.
+3.  **Enhanced operational dashboard**: Real-time auto-updating interface with comprehensive staff alerting:
+    *   **Auto-updating data**: Dashboard refreshes automatically without manual intervention
+    *   **Sound notifications**: Audio alerts when new jobs are uploaded to notify staff immediately  
+    *   **Visual alert indicators**: Persistent "NEW" badges and highlighting for unreviewed jobs until acknowledged
+    *   **Job age tracking**: Display time elapsed since job submission with color-coded prioritization
+4.  **Multi-computer support**: System can run on up to two staff computers, as long as both use the same shared storage and database.
+5.  **File lifecycle management**: Track original files; manage authoritative files post-slicing; embed `metadata.json` with files for resilience.
+6.  **Job status tracking & Event Logging**: Clear progression through Uploaded → Pending → ReadyToPrint → Printing → Completed → PaidPickedUp, and Rejected, with an **immutable event log** tracking all changes.
+7.  **Email notifications**: **Asynchronously** send automated updates to students.
+8.  **Thumbnails**: **Asynchronously** generate previews from uploaded files. If thumbnail generation fails, no thumbnail will be displayed, or a generic placeholder may be shown.
 
 ### 2.2 Technical Requirements
 -   **Backend**: **Modular Flask (Blueprints)** with SQLAlchemy (**PostgreSQL**).
 -   **Frontend**: Tailwind CSS with professional card-style UI design. Alpine.js optional for advanced interactivity.
+-   **Enhanced Dashboard Features**: 
+    *   **Auto-updating system**: JavaScript polling with lightweight JSON API endpoints for real-time data refresh
+    *   **Audio notifications**: Browser Audio API integration with user preference controls and sound file management
+    *   **Visual alert system**: CSS animations and highlighting for unreviewed job indicators with persistent state tracking
+    *   **Time tracking utilities**: Helper functions for human-readable time elapsed display with color-coded aging thresholds
 -   **Task Queue**: Celery or RQ for **asynchronous processing** (emails, thumbnails).
 -   **Authentication**: Simple staff-wide shared password (for the single computer duo) with session management.
 -   **File handling**: Shared network storage (mounted at OS level) with standardized naming, status-based directory structure, and embedded `metadata.json`.
@@ -38,7 +48,7 @@ The project aims to replace potentially ad-hoc or manual 3D print request system
     - Celery/RQ dependencies.
     - **UI Dependencies**:
         - Tailwind CSS 3.x (for Apple-style design system)
-        - Alpine.js 3.x (for dynamic form behavior)
+        - Alpine.js 3.x (for dynamic form behavior and dashboard interactivity)
         - PostCSS 8.x (for Tailwind processing)
     - **System Dependencies**:
         - ImageMagick (for thumbnail generation)
@@ -60,6 +70,13 @@ Based on operational needs, the following UX features are critical:
 -   **Educational Content**: Comprehensive introduction text with liability disclaimers and scaling guidance
 -   **Accessibility**: Visual error states with red borders, clear error messages, and error scrolling for form submission
 -   **File Validation**: Immediate feedback on file selection with size and type checking
+-   **Enhanced Operational Dashboard UX**:
+    *   **Real-time Updates**: Dashboard data refreshes automatically every 45 seconds without user intervention
+    *   **Audio Feedback**: Sound notifications play when new jobs are uploaded, with user-controlled toggle
+    *   **Visual Alert System**: Unreviewed jobs display prominent "NEW" badges with pulsing highlight borders until acknowledged
+    *   **Temporal Awareness**: Job age display with human-readable format ("2d 4h ago") and color-coded prioritization
+    *   **Staff Acknowledgment**: Clear "Mark as Reviewed" functionality to manage alert states
+    *   **Last Updated Indicator**: Timestamp showing when dashboard data was last refreshed
 -   **Mobile and Accessibility Considerations**: 
     - Ensure the submission form and dashboard are fully functional and readable on mobile devices.
     - Test UI components with screen readers for basic WCAG 2.1 compliance.
@@ -187,6 +204,7 @@ class Job(db.Model):
    confirm_token = db.Column(db.String(128), nullable=True, unique=True)
    confirm_token_expires = db.Column(db.DateTime, nullable=True)
    reject_reasons = db.Column(db.JSON, nullable=True)
+   staff_viewed_at = db.Column(db.DateTime, nullable=True)  # For tracking unreviewed jobs and visual alerts
    created_at = db.Column(db.DateTime, default=datetime.utcnow)
    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
    last_updated_by = db.Column(db.String(50), nullable=True)
@@ -1384,3 +1402,72 @@ def move_file_between_status_dirs(current_path: str, from_status: str, to_status
 - Internationalization for multi-language support
 
 This confirmation workflow implementation represents exceptional achievement in balancing security, usability, and reliability. The system provides a professional, trustworthy experience for students while maintaining robust technical foundations for staff operations. Every aspect from token security to user interface design reflects production-quality standards and attention to detail. 
+
+### 6.12 Enhanced Operational Dashboard Features
+
+The Enhanced Operational Dashboard provides comprehensive real-time visibility and alerting to support efficient lab operations with minimal staff.
+
+#### 6.12.1 Auto-Updating Dashboard System
+**Purpose**: Eliminate manual refresh requirements and provide real-time operational awareness
+
+**Technical Implementation**:
+- **Lightweight JSON API**: `/dashboard/stats` endpoint returning only count data and basic job information
+- **JavaScript Polling**: 45-second interval updates using `setInterval` and `fetch` API
+- **Selective Updates**: Only refresh changed data to minimize bandwidth and processing
+- **Error Handling**: Graceful degradation when server is unavailable
+- **User Feedback**: "Last updated" timestamp and subtle loading indicators
+
+**Data Refreshed**:
+- Status tab badge counts (Uploaded, Pending, etc.)
+- Job listing data for current tab
+- Job age calculations
+- Visual alert states
+
+#### 6.12.2 Sound Notification System
+**Purpose**: Immediate audio alerts for new job uploads to ensure staff awareness
+
+**Technical Implementation**:
+- **Browser Audio API**: Use HTML5 audio elements with JavaScript control
+- **Event Triggers**: Sound plays on detection of new uploaded jobs during polling refresh
+- **User Preferences**: Toggle control stored in `localStorage` for enable/disable
+- **Browser Compatibility**: Handle user interaction requirements and autoplay restrictions
+- **Sound Files**: Stored in `/static/sounds/` directory (notification.mp3, upload-alert.wav)
+
+**Audio Events**:
+- New job uploaded (primary alert sound)
+- Job status changes (optional, lighter notification)
+- System alerts (error conditions, maintenance)
+
+#### 6.12.3 Visual Alert Indicators
+**Purpose**: Persistent visual cues for unreviewed jobs to prevent oversight
+
+**Technical Implementation**:
+- **Database Tracking**: `staff_viewed_at` timestamp field in Job model
+- **Visual Design**: Prominent "NEW" badge with pulsing orange/red highlight border
+- **Acknowledgment System**: "Mark as Reviewed" button updates `staff_viewed_at`
+- **State Persistence**: Visual indicators remain until explicitly acknowledged
+- **Auto-refresh Integration**: Alert states update during polling without page reload
+
+**Visual Hierarchy**:
+- Unreviewed jobs: Bright orange border with "NEW" badge
+- Recently reviewed: Subtle highlight for 5 minutes post-acknowledgment  
+- Standard jobs: Regular card appearance
+
+#### 6.12.4 Job Age and Prioritization Display
+**Purpose**: Enable time-based prioritization and identify aging jobs
+
+**Technical Implementation**:
+- **Time Calculation**: Helper function calculating human-readable elapsed time
+- **Color-coded Thresholds**:
+  - Green: < 24 hours (recent)
+  - Yellow: 24-48 hours (moderate priority)
+  - Orange: 48-72 hours (high priority)
+  - Red: > 72 hours (critical/overdue)
+- **Display Format**: "2d 4h ago" for compact display, "2 days 4 hours ago" for detailed view
+- **Auto-refresh**: Age calculations update with each polling cycle
+
+**Prioritization Benefits**:
+- Visual identification of aging jobs
+- Support for first-in-first-out workflow management
+- Early identification of potential process bottlenecks
+- Clear temporal context for all jobs in system
