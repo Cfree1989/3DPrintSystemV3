@@ -158,13 +158,23 @@ def mark_job_reviewed(job_id):
                 'error': 'Job not found'
             }), 404
             
+        # Get request data for audit trail (handle both JSON and non-JSON requests)
+        request_data = {}
+        try:
+            if request.is_json:
+                request_data = request.get_json() or {}
+        except Exception:
+            # Non-JSON request, use default values
+            request_data = {'action': 'mark_reviewed_legacy'}
+        
         # Update the staff_viewed_at timestamp
         from datetime import datetime
         job.staff_viewed_at = datetime.utcnow()
         job.last_updated_by = 'staff'
         db.session.commit()
         
-        current_app.logger.info(f"Job {job_id[:8]} marked as reviewed by staff")
+        # Log audit trail
+        current_app.logger.info(f"Job {job_id[:8]} marked as reviewed by staff - Action: {request_data.get('action', 'mark_reviewed')}")
         
         return jsonify({
             'success': True,
@@ -177,4 +187,46 @@ def mark_job_reviewed(job_id):
         return jsonify({
             'success': False,
             'error': 'Failed to mark job as reviewed'
+        }), 500 
+
+@bp.route('/api/mark-unreviewed/<job_id>', methods=['POST'])
+@login_required
+def mark_job_unreviewed(job_id):
+    """Mark a job as unreviewed (undo review action)"""
+    try:
+        job = Job.query.filter_by(id=job_id).first()
+        if not job:
+            return jsonify({
+                'success': False,
+                'error': 'Job not found'
+            }), 404
+            
+        # Get request data for audit trail (handle both JSON and non-JSON requests)
+        request_data = {}
+        try:
+            if request.is_json:
+                request_data = request.get_json() or {}
+        except Exception:
+            # Non-JSON request, use default values
+            request_data = {'action': 'mark_unreviewed_legacy'}
+        
+        # Clear the staff_viewed_at timestamp to mark as unreviewed
+        job.staff_viewed_at = None
+        job.last_updated_by = 'staff'
+        db.session.commit()
+        
+        # Log audit trail
+        current_app.logger.info(f"Job {job_id[:8]} marked as unreviewed by staff - Action: {request_data.get('action', 'mark_unreviewed')}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Job marked as unreviewed'
+        })
+        
+    except Exception as e:
+        current_app.logger.error(f"Error marking job {job_id[:8]} as unreviewed: {str(e)}")
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': 'Failed to mark job as unreviewed'
         }), 500 

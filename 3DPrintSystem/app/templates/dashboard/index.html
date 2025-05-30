@@ -3,6 +3,29 @@
 
 {% block content %}
 <div class="min-h-screen bg-gray-100">
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    
+    <!-- Confirmation Dialog Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+            <div class="p-6">
+                <h3 id="confirmation-title" class="text-lg font-semibold text-gray-900 mb-3">Confirm Action</h3>
+                <p id="confirmation-message" class="text-gray-600 mb-6">Are you sure you want to proceed?</p>
+                <div class="flex space-x-3 justify-end">
+                    <button id="confirmation-cancel" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg
+                                                            hover:bg-gray-200 transition-colors duration-200 border-0 shadow-sm">
+                        Cancel
+                    </button>
+                    <button id="confirmation-confirm" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg
+                                                             hover:bg-blue-700 transition-colors duration-200 border-0 shadow-md">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Dashboard Header -->
     <div class="bg-white border-b border-gray-300 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -116,23 +139,63 @@
                         <!-- Apple-Style Action Buttons -->
                         {% if current_status == 'UPLOADED' %}
                         <div class="mt-6 pt-4 border-t border-gray-200">
-                            <div class="flex space-x-3">
-                                <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
-                                             shadow-md hover:bg-blue-700 hover:shadow-lg 
-                                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                    Review
-                                </button>
-                                <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
-                                             shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
-                                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                                    View Details
-                                </button>
-                                {% if job.staff_viewed_at is none %}
-                                <button onclick="markAsReviewed('{{ job.id }}')" 
-                                        class="mark-reviewed-btn px-4 py-2 text-sm font-medium rounded-lg">
-                                    Mark as Reviewed
-                                </button>
-                                {% endif %}
+                            <div class="flex items-center justify-between">
+                                <!-- Primary Actions (Left) -->
+                                <div class="flex space-x-3">
+                                    <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
+                                                 shadow-md hover:bg-blue-700 hover:shadow-lg 
+                                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                        Review
+                                    </button>
+                                    <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
+                                                 shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
+                                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                                        View Details
+                                    </button>
+                                </div>
+                                
+                                <!-- Review Status Actions (Right) -->
+                                <div class="flex items-center space-x-2">
+                                    {% if job.staff_viewed_at is none %}
+                                    <!-- Unreviewed State -->
+                                    <span class="text-xs text-orange-600 font-medium">Unreviewed</span>
+                                    <div class="relative">
+                                        <button onclick="showReviewMenu('{{ job.id }}')" 
+                                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 
+                                                       hover:bg-orange-100 transition-colors duration-200 border border-orange-200
+                                                       focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1"
+                                                title="Review options">
+                                            ⚙️ Review
+                                        </button>
+                                        <div id="review-menu-{{ job.id }}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                            <button onclick="confirmMarkAsReviewed('{{ job.id }}')" 
+                                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                                           focus:outline-none focus:bg-gray-50">
+                                                ✓ Mark as Reviewed
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <!-- Reviewed State -->
+                                    <span class="text-xs text-green-600 font-medium">Reviewed</span>
+                                    <div class="relative">
+                                        <button onclick="showReviewMenu('{{ job.id }}')" 
+                                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 
+                                                       hover:bg-green-100 transition-colors duration-200 border border-green-200
+                                                       focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                                                title="Review options">
+                                            ⚙️ Review
+                                        </button>
+                                        <div id="review-menu-{{ job.id }}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                            <button onclick="confirmMarkAsUnreviewed('{{ job.id }}')" 
+                                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                                           focus:outline-none focus:bg-gray-50">
+                                                ↺ Mark as Unreviewed
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         {% endif %}
@@ -328,6 +391,113 @@ a:focus-visible {
 
 #sound-toggle.disabled:hover {
     background-color: #fde68a !important; /* Yellow-200 */
+}
+
+/* Toast Notification Styling */
+.toast {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 16px 20px;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.toast.success {
+    border-left: 4px solid #10b981; /* Green-500 */
+}
+
+.toast.warning {
+    border-left: 4px solid #f59e0b; /* Amber-500 */
+}
+
+.toast.error {
+    border-left: 4px solid #ef4444; /* Red-500 */
+}
+
+.toast .toast-icon {
+    font-size: 1.25rem;
+    margin-right: 12px;
+}
+
+.toast .toast-content {
+    flex: 1;
+}
+
+.toast .toast-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #374151; /* Gray-700 */
+    margin-bottom: 2px;
+}
+
+.toast .toast-message {
+    font-size: 0.8rem;
+    color: #6b7280; /* Gray-500 */
+}
+
+.toast .toast-close {
+    background: none;
+    border: none;
+    color: #9ca3af; /* Gray-400 */
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0;
+    margin-left: 12px;
+    transition: color 0.2s;
+}
+
+.toast .toast-close:hover {
+    color: #6b7280; /* Gray-500 */
+}
+
+/* Review Menu Enhanced Styling */
+.review-menu-btn {
+    position: relative;
+}
+
+.review-menu-btn:focus + div,
+.review-menu-btn:focus-within + div {
+    display: block !important;
+}
+
+/* Ensure dropdowns appear above other content */
+.relative .absolute {
+    z-index: 20;
+}
+
+/* Enhanced confirmation modal styling */
+#confirmation-modal {
+    backdrop-filter: blur(5px);
+}
+
+#confirmation-modal .bg-white {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Hide dropdown menus by default */
+[id^="review-menu-"] {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+[id^="review-menu-"].show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 </style>
 
@@ -652,27 +822,65 @@ function createJobCardHtml(job, currentStatus) {
         </div>
     ` : '';
     
-    const markReviewedButton = isUnreviewed && currentStatus === 'UPLOADED' ? `
-        <button onclick="markAsReviewed('${job.id}')" 
-                class="mark-reviewed-btn px-4 py-2 text-sm font-medium rounded-lg">
-            Mark as Reviewed
-        </button>
-    ` : '';
-    
     const actionButtons = currentStatus === 'UPLOADED' ? `
         <div class="mt-6 pt-4 border-t border-gray-200">
-            <div class="flex space-x-3">
-                <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
-                             shadow-md hover:bg-blue-700 hover:shadow-lg 
-                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Review
-                </button>
-                <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
-                             shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
-                             transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                    View Details
-                </button>
-                ${markReviewedButton}
+            <div class="flex items-center justify-between">
+                <!-- Primary Actions (Left) -->
+                <div class="flex space-x-3">
+                    <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
+                                 shadow-md hover:bg-blue-700 hover:shadow-lg 
+                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Review
+                    </button>
+                    <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
+                                 shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
+                                 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                        View Details
+                    </button>
+                </div>
+                
+                <!-- Review Status Actions (Right) -->
+                <div class="flex items-center space-x-2">
+                    ${isUnreviewed ? `
+                        <!-- Unreviewed State -->
+                        <span class="text-xs text-orange-600 font-medium">Unreviewed</span>
+                        <div class="relative">
+                            <button onclick="showReviewMenu('${job.id}')" 
+                                    class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 
+                                           hover:bg-orange-100 transition-colors duration-200 border border-orange-200
+                                           focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1"
+                                    title="Review options">
+                                ⚙️ Review
+                            </button>
+                            <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                <button onclick="confirmMarkAsReviewed('${job.id}')" 
+                                        class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                               focus:outline-none focus:bg-gray-50">
+                                    ✓ Mark as Reviewed
+                                </button>
+                            </div>
+                        </div>
+                    ` : `
+                        <!-- Reviewed State -->
+                        <span class="text-xs text-green-600 font-medium">Reviewed</span>
+                        <div class="relative">
+                            <button onclick="showReviewMenu('${job.id}')" 
+                                    class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 
+                                           hover:bg-green-100 transition-colors duration-200 border border-green-200
+                                           focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                                    title="Review options">
+                                ⚙️ Review
+                            </button>
+                            <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                <button onclick="confirmMarkAsUnreviewed('${job.id}')" 
+                                        class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                               focus:outline-none focus:bg-gray-50">
+                                    ↺ Mark as Unreviewed
+                                </button>
+                            </div>
+                        </div>
+                    `}
+                </div>
             </div>
         </div>
     ` : '';
@@ -852,5 +1060,393 @@ window.addEventListener('beforeunload', function() {
         clearInterval(updateInterval);
     }
 });
+
+// Toast Notification System
+class ToastManager {
+    constructor() {
+        this.container = document.getElementById('toast-container');
+        this.toasts = new Map();
+    }
+
+    show(title, message, type = 'success', duration = 4000) {
+        const toastId = Date.now().toString();
+        const toast = this.createToast(toastId, title, message, type);
+        
+        this.container.appendChild(toast);
+        this.toasts.set(toastId, toast);
+        
+        // Trigger animation
+        requestAnimationFrame(() => {
+            toast.classList.add('show');
+        });
+        
+        // Auto-dismiss
+        if (duration > 0) {
+            setTimeout(() => {
+                this.dismiss(toastId);
+            }, duration);
+        }
+        
+        return toastId;
+    }
+
+    createToast(id, title, message, type) {
+        const icons = {
+            success: '✅',
+            warning: '⚠️',
+            error: '❌',
+            info: 'ℹ️'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.setAttribute('data-toast-id', id);
+        
+        toast.innerHTML = `
+            <div class="flex items-start">
+                <span class="toast-icon">${icons[type] || icons.info}</span>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="toastManager.dismiss('${id}')">&times;</button>
+            </div>
+        `;
+        
+        return toast;
+    }
+
+    dismiss(toastId) {
+        const toast = this.toasts.get(toastId);
+        if (toast) {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+                this.toasts.delete(toastId);
+            }, 300);
+        }
+    }
+
+    dismissAll() {
+        this.toasts.forEach((toast, id) => {
+            this.dismiss(id);
+        });
+    }
+}
+
+// Initialize toast manager
+const toastManager = new ToastManager();
+
+// Confirmation Dialog System
+class ConfirmationDialog {
+    constructor() {
+        this.modal = document.getElementById('confirmation-modal');
+        this.title = document.getElementById('confirmation-title');
+        this.message = document.getElementById('confirmation-message');
+        this.cancelBtn = document.getElementById('confirmation-cancel');
+        this.confirmBtn = document.getElementById('confirmation-confirm');
+        this.currentResolver = null;
+        
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        this.cancelBtn.addEventListener('click', () => {
+            this.hide();
+            if (this.currentResolver) {
+                this.currentResolver(false);
+                this.currentResolver = null;
+            }
+        });
+
+        this.confirmBtn.addEventListener('click', () => {
+            this.hide();
+            if (this.currentResolver) {
+                this.currentResolver(true);
+                this.currentResolver = null;
+            }
+        });
+
+        // ESC key support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                this.cancelBtn.click();
+            }
+        });
+
+        // Click outside to cancel
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.cancelBtn.click();
+            }
+        });
+    }
+
+    show(title, message, confirmText = 'Confirm', cancelText = 'Cancel') {
+        return new Promise((resolve) => {
+            this.currentResolver = resolve;
+            this.title.textContent = title;
+            this.message.textContent = message;
+            this.confirmBtn.textContent = confirmText;
+            this.cancelBtn.textContent = cancelText;
+            
+            this.modal.classList.remove('hidden');
+            this.modal.classList.add('flex');
+            
+            // Focus the confirm button
+            setTimeout(() => {
+                this.confirmBtn.focus();
+            }, 100);
+        });
+    }
+
+    hide() {
+        this.modal.classList.add('hidden');
+        this.modal.classList.remove('flex');
+    }
+}
+
+// Initialize confirmation dialog
+const confirmationDialog = new ConfirmationDialog();
+
+// Review Menu Management
+function showReviewMenu(jobId) {
+    // Hide all other menus first
+    document.querySelectorAll('[id^="review-menu-"]').forEach(menu => {
+        menu.classList.remove('show');
+        menu.classList.add('hidden');
+    });
+
+    const menu = document.getElementById(`review-menu-${jobId}`);
+    if (menu) {
+        menu.classList.remove('hidden');
+        setTimeout(() => {
+            menu.classList.add('show');
+        }, 10);
+    }
+}
+
+function hideReviewMenu(jobId) {
+    const menu = document.getElementById(`review-menu-${jobId}`);
+    if (menu) {
+        menu.classList.remove('show');
+        setTimeout(() => {
+            menu.classList.add('hidden');
+        }, 200);
+    }
+}
+
+// Hide menus when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.review-menu-btn') && !e.target.closest('[id^="review-menu-"]')) {
+        document.querySelectorAll('[id^="review-menu-"]').forEach(menu => {
+            menu.classList.remove('show');
+            setTimeout(() => {
+                menu.classList.add('hidden');
+            }, 200);
+        });
+    }
+});
+
+// Enhanced Review Functions with Confirmation
+async function confirmMarkAsReviewed(jobId) {
+    hideReviewMenu(jobId);
+    
+    const confirmed = await confirmationDialog.show(
+        'Mark as Reviewed',
+        'Are you sure you want to mark this job as reviewed? This will remove the NEW badge and orange highlighting.',
+        'Mark as Reviewed',
+        'Cancel'
+    );
+    
+    if (confirmed) {
+        markAsReviewedWithAudit(jobId);
+    }
+}
+
+async function confirmMarkAsUnreviewed(jobId) {
+    hideReviewMenu(jobId);
+    
+    const confirmed = await confirmationDialog.show(
+        'Mark as Unreviewed',
+        'Are you sure you want to mark this job as unreviewed? This will restore the NEW badge and require staff attention.',
+        'Mark as Unreviewed',
+        'Cancel'
+    );
+    
+    if (confirmed) {
+        markAsUnreviewedWithAudit(jobId);
+    }
+}
+
+// Enhanced API calls with audit trail and toast notifications
+function markAsReviewedWithAudit(jobId) {
+    fetch(`{{ url_for('dashboard.mark_job_reviewed', job_id='') }}${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'mark_reviewed',
+            timestamp: new Date().toISOString(),
+            user_agent: navigator.userAgent
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update UI immediately
+            updateJobReviewState(jobId, true);
+            
+            // Show success toast
+            toastManager.show(
+                'Job Reviewed',
+                `Job has been marked as reviewed. NEW badge removed.`,
+                'success'
+            );
+            
+            console.log('Job marked as reviewed successfully:', jobId);
+        } else {
+            console.error('Failed to mark job as reviewed:', data.error);
+            toastManager.show(
+                'Review Failed',
+                'Failed to mark job as reviewed. Please try again.',
+                'error'
+            );
+        }
+    })
+    .catch(error => {
+        console.error('Error marking job as reviewed:', error);
+        toastManager.show(
+            'Network Error',
+            'Error occurred while updating job status. Please check your connection.',
+            'error'
+        );
+    });
+}
+
+function markAsUnreviewedWithAudit(jobId) {
+    fetch(`{{ url_for('dashboard.mark_job_unreviewed', job_id='') }}${jobId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'mark_unreviewed',
+            timestamp: new Date().toISOString(),
+            user_agent: navigator.userAgent
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update UI immediately
+            updateJobReviewState(jobId, false);
+            
+            // Show success toast
+            toastManager.show(
+                'Job Unreviewed',
+                `Job has been marked as unreviewed. NEW badge restored.`,
+                'warning'
+            );
+            
+            console.log('Job marked as unreviewed successfully:', jobId);
+        } else {
+            console.error('Failed to mark job as unreviewed:', data.error);
+            toastManager.show(
+                'Unreview Failed',
+                'Failed to mark job as unreviewed. Please try again.',
+                'error'
+            );
+        }
+    })
+    .catch(error => {
+        console.error('Error marking job as unreviewed:', error);
+        toastManager.show(
+            'Network Error',
+            'Error occurred while updating job status. Please check your connection.',
+            'error'
+        );
+    });
+}
+
+// Update job visual state immediately for better UX
+function updateJobReviewState(jobId, isReviewed) {
+    const jobCard = document.querySelector(`[data-job-id="${jobId}"]`);
+    if (!jobCard) return;
+
+    if (isReviewed) {
+        // Mark as reviewed
+        jobCard.classList.remove('unreviewed-job');
+        const newBadge = jobCard.querySelector('.new-badge');
+        if (newBadge && newBadge.parentElement) {
+            newBadge.parentElement.remove();
+        }
+        
+        // Update review status indicator
+        const statusIndicator = jobCard.querySelector('.flex.items-center.space-x-2');
+        if (statusIndicator) {
+            statusIndicator.innerHTML = `
+                <span class="text-xs text-green-600 font-medium">Reviewed</span>
+                <div class="relative">
+                    <button onclick="showReviewMenu('${jobId}')" 
+                            class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 
+                                   hover:bg-green-100 transition-colors duration-200 border border-green-200
+                                   focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                            title="Review options">
+                        ⚙️ Review
+                    </button>
+                    <div id="review-menu-${jobId}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                        <button onclick="confirmMarkAsUnreviewed('${jobId}')" 
+                                class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                       focus:outline-none focus:bg-gray-50">
+                            ↺ Mark as Unreviewed
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    } else {
+        // Mark as unreviewed
+        jobCard.classList.add('unreviewed-job');
+        
+        // Add NEW badge
+        const cardContent = jobCard.querySelector('.p-6');
+        if (cardContent && !cardContent.querySelector('.new-badge')) {
+            const newBadgeHtml = `
+                <div class="flex items-center mb-4">
+                    <span class="new-badge px-3 py-1 text-xs rounded-full">NEW</span>
+                </div>
+            `;
+            cardContent.insertAdjacentHTML('afterbegin', newBadgeHtml);
+        }
+        
+        // Update review status indicator
+        const statusIndicator = jobCard.querySelector('.flex.items-center.space-x-2');
+        if (statusIndicator) {
+            statusIndicator.innerHTML = `
+                <span class="text-xs text-orange-600 font-medium">Unreviewed</span>
+                <div class="relative">
+                    <button onclick="showReviewMenu('${jobId}')" 
+                            class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 
+                                   hover:bg-orange-100 transition-colors duration-200 border border-orange-200
+                                   focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1"
+                            title="Review options">
+                        ⚙️ Review
+                    </button>
+                    <div id="review-menu-${jobId}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                        <button onclick="confirmMarkAsReviewed('${jobId}')" 
+                                class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
+                                       focus:outline-none focus:bg-gray-50">
+                            ✓ Mark as Reviewed
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
 </script>
 {% endblock %} 

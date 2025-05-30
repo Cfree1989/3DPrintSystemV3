@@ -393,6 +393,57 @@ This is an initial breakdown. Tasks will be refined and made more granular as th
 
 **Current Status**: ✅ Sound notifications fully functional with fallback beep system
 
+### ✅ JOB AGE CALCULATION TIMEZONE FIX (CRITICAL BUG RESOLUTION)
+
+**Issue Identified**: Job age display showing negative hours (e.g., "-5hrs") due to timezone conversion problems.
+
+**Root Cause**: JavaScript `new Date()` was interpreting UTC timestamps as local time, causing incorrect age calculations when jobs were stored in UTC but interpreted as local timezone.
+
+**Solution Implemented**: Enhanced `calculateJobAge()` function with proper UTC handling:
+
+**Timezone Fix Features**:
+- ✅ **UTC Timezone Detection**: Automatically appends 'Z' to ISO strings without timezone info
+- ✅ **Proper UTC Parsing**: Ensures all timestamps are treated as UTC then converted to local time
+- ✅ **Error Handling**: Validates date parsing success with graceful fallback
+- ✅ **Future Date Protection**: Handles edge cases where timestamps appear in the future
+- ✅ **Enhanced Granularity**: Added minute-level precision for recent jobs ("Just now", "5m ago")
+- ✅ **Robust Validation**: Comprehensive error checking and logging for debugging
+
+**Technical Implementation**:
+```javascript
+// Enhanced timezone-aware age calculation
+function calculateJobAge(createdAtStr) {
+    // Parse ISO string as UTC (add 'Z' if not present)
+    let utcTimeString = createdAtStr;
+    if (!utcTimeString.endsWith('Z') && !utcTimeString.includes('+') && !utcTimeString.includes('-', 10)) {
+        utcTimeString += 'Z'; // Treat as UTC if no timezone specified
+    }
+    
+    const createdAt = new Date(utcTimeString);
+    // ... comprehensive validation and calculation
+}
+```
+
+**Quality Improvements**:
+- **Accuracy**: Correct age display regardless of server/client timezone differences
+- **Reliability**: Handles malformed timestamps with graceful degradation
+- **User Experience**: More precise age display with minute-level accuracy for recent jobs
+- **Debugging**: Enhanced console logging for troubleshooting timestamp issues
+
+**Testing Results**:
+- **All Auto-Update Tests**: ✅ Passing (26.59 seconds execution time)
+- **Timezone Handling**: ✅ Proper UTC to local time conversion
+- **Edge Cases**: ✅ Future dates, invalid timestamps, missing data handled gracefully
+- **Real-Time Updates**: ✅ Age calculations update correctly during auto-refresh cycles
+
+**User Impact**:
+- **Immediate Fix**: Jobs now show correct age ("2h ago", "1d 4h ago") instead of negative values
+- **Consistent Display**: Age calculations work correctly across different timezones
+- **Professional Appearance**: Enhanced granularity ("Just now", "5m ago") for recent submissions
+- **Operational Confidence**: Staff can now trust age display for workflow prioritization
+
+**Current Status**: ✅ Job age calculation fully functional with accurate timezone handling
+
 ### 🔄 NEXT PRIORITY: Phase 3 - Job Status Management (Next Task)
 
 ### 🎯 REMAINING PHASE 3 TASKS:
