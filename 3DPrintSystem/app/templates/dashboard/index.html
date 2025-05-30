@@ -1,9 +1,218 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Staff Dashboard{% endblock %}
+
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Staff Dashboard</h1>
-    <p class="mb-4">Welcome! You are logged in.</p>
-    <a href="{{ url_for('dashboard.logout') }}" class="text-blue-900 hover:underline">Logout</a>
+<div class="min-h-screen bg-gray-100">
+    <!-- Dashboard Header -->
+    <div class="bg-white border-b border-gray-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-900">3D Print Jobs</h1>
+                    <p class="text-gray-600 text-sm">Manage and track all print requests</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Welcome, Staff</span>
+                    <a href="{{ url_for('dashboard.logout') }}" 
+                       class="inline-flex items-center px-4 py-2 border-0 shadow-md text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-200 no-underline">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Apple-Style Status Tabs -->
+        <div class="flex space-x-3 mb-8 overflow-x-auto pb-2">
+            {% for tab_status, config in tabs.items() %}
+            <a href="{{ url_for('dashboard.index', status=tab_status) }}" 
+               class="flex-shrink-0 px-6 py-3 rounded-xl font-medium transition-all duration-200 min-w-fit no-underline
+                      {% if current_status == tab_status %}
+                      bg-blue-600 text-white shadow-lg shadow-blue-600/30
+                      {% else %}
+                      bg-white text-blue-600 shadow-md hover:shadow-lg hover:bg-blue-50 border border-gray-200
+                      {% endif %}">
+                <div class="flex items-center justify-between space-x-3">
+                    <span>{{ config.title }}</span>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                {% if current_status == tab_status %}
+                                bg-blue-500 text-white shadow-sm
+                                {% else %}
+                                bg-blue-100 text-blue-800
+                                {% endif %}">
+                        {{ stats[config.stat_key] or 0 }}
+                    </span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- Job Listing -->
+        {% if jobs %}
+        <div class="space-y-6">
+            {% for job in jobs %}
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200">
+                <div class="p-6">
+                    <div class="flex items-start justify-between">
+                        <!-- Student Information (Primary) -->
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ job.student_name }}</h3>
+                            <p class="text-gray-600 text-sm mb-3">{{ job.display_name or job.original_filename }}</p>
+                            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                <span>{{ job.student_email }}</span>
+                                <span>{{ job.discipline | discipline_name }}</span>
+                                {% if job.class_number %}
+                                <span>{{ job.class_number }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Job Details (Secondary) -->
+                        <div class="ml-6 text-right">
+                            <div class="text-sm text-gray-500 mb-2">
+                                {{ job.created_at | local_datetime }}
+                            </div>
+                            {% if job.printer or job.color or job.material %}
+                            <div class="text-sm space-y-1 text-right">
+                                {% if job.printer %}
+                                <div class="font-medium text-gray-700">{{ job.printer | printer_name }}</div>
+                                {% endif %}
+                                {% if job.color %}
+                                <div class="text-gray-600">{{ job.color | color_name }}</div>
+                                {% endif %}
+                                {% if job.material %}
+                                <div class="text-gray-600">{{ job.material | title }}</div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                            {% if job.cost_usd %}
+                            <div class="text-lg font-semibold text-gray-900 mt-3">
+                                ${{ "%.2f"|format(job.cost_usd) }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Apple-Style Action Buttons -->
+                    {% if current_status == 'UPLOADED' %}
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <div class="flex space-x-3">
+                            <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-0
+                                         shadow-md hover:bg-blue-700 hover:shadow-lg 
+                                         transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                Review
+                            </button>
+                            <button class="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border-0
+                                         shadow-md hover:bg-gray-50 hover:shadow-lg border border-gray-200
+                                         transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Apple-Style Empty State -->
+        <div class="text-center py-16">
+            <div class="text-gray-400 text-6xl mb-4">📋</div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
+            <p class="text-gray-500 max-w-sm mx-auto">
+                {% if current_status and tabs[current_status] %}
+                No jobs are currently in {{ tabs[current_status].title }} status.
+                {% else %}
+                No jobs are available at this time.
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
 </div>
+
+<style>
+/* Enhanced Apple-Style with Better Contrast */
+.bg-white {
+    background-color: rgb(255, 255, 255);
+}
+
+/* Remove all underlines from links */
+a,
+a:hover,
+a:focus,
+a:active {
+    text-decoration: none !important;
+}
+
+/* Ensure no borders on buttons */
+button {
+    border: none !important;
+}
+
+/* Ensure proper tab scrolling on mobile */
+@media (max-width: 640px) {
+    .overflow-x-auto {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+    
+    .flex-shrink-0 {
+        min-width: 120px;
+    }
+}
+
+/* Enhanced focus states for accessibility */
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Smooth hover transforms */
+.hover\:shadow-lg:hover {
+    transform: translateY(-2px);
+}
+
+.hover\:shadow-xl:hover {
+    transform: translateY(-3px);
+}
+
+/* Enhanced Apple-style shadow depths for better visibility */
+.shadow-sm {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Enhanced blue shadow for active tab */
+.shadow-blue-600\/30 {
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3), 0 4px 6px -2px rgba(37, 99, 235, 0.15);
+}
+
+/* Stronger border definitions */
+.border-gray-200 {
+    border-color: rgb(229, 231, 235);
+}
+
+.border-gray-300 {
+    border-color: rgb(209, 213, 219);
+}
+</style>
 {% endblock %} 

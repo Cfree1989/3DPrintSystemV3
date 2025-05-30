@@ -5,6 +5,13 @@ from .extensions import db, migrate
 from .models import Job, Event
 from .routes.dashboard import bp as dashboard_bp
 from .routes.main import bp as main_bp
+from .utils.helpers import (
+    format_printer_name, 
+    format_color_name, 
+    format_discipline_name,
+    format_local_datetime,
+    detailed_local_datetime
+)
 
 def create_app():
     app = Flask(__name__)
@@ -31,6 +38,13 @@ def create_app():
     # Initialize Flask extensions here
     db.init_app(app)
     migrate.init_app(app, db)
+
+    # Register template filters (CRITICAL for display formatting)
+    app.jinja_env.filters['printer_name'] = format_printer_name
+    app.jinja_env.filters['color_name'] = format_color_name  
+    app.jinja_env.filters['discipline_name'] = format_discipline_name
+    app.jinja_env.filters['local_datetime'] = format_local_datetime
+    app.jinja_env.filters['detailed_datetime'] = detailed_local_datetime
 
     # Register blueprints
     app.register_blueprint(dashboard_bp)
