@@ -6,6 +6,98 @@ This project will rebuild a Flask-based 3D print job management system, specific
 
 The project aims to replace potentially ad-hoc or manual 3D print request systems with a **centralized, digitally managed, and workflow-driven platform.** It prioritizes clarity, efficiency, accurate file tracking, and a **strong, non-fragile foundation**, especially addressing the complexities of file changes introduced by slicer software and ensuring resilience. It leverages **modularity, explicit event-driven workflow management, asynchronous processing, and resilient data handling** to improve the experience for both students and the minimal staff managing the service.
 
+### Problem Statement Document Created
+
+**Date**: Current session  
+**Purpose**: Created `problem_statement.md` - a technology-agnostic version of the project requirements
+
+This document strips away all technical implementation details from `masterplanV3.md` to focus purely on the problem being solved and business requirements. The goal is to use this clean problem statement to:
+
+1. **Validate Current Approach**: Test whether other LLMs would suggest similar technical solutions
+2. **Explore Alternatives**: Discover different tech stacks and approaches we might not have considered
+3. **Confirm Requirements**: Ensure our problem understanding is clear and comprehensive
+4. **Future Reference**: Provide a clean business requirements document for stakeholders
+
+The problem statement document excludes:
+- Specific technology choices (Flask, PostgreSQL, etc.)
+- File structure and architecture details
+- Implementation patterns and code examples
+- Technical dependency specifications
+
+It focuses on:
+- Core workflow challenges and business needs
+- User experience requirements for students and staff
+- Operational constraints and success criteria
+- Lab environment and usage context
+
+This approach allows for objective evaluation of our chosen technical approach against alternatives while maintaining focus on solving the actual business problem.
+
+### Solution Architecture Document Created
+
+**Date**: Current session  
+**Purpose**: Created `solution_architecture.md` - a comprehensive, technology-agnostic description of the proposed solution
+
+This document complements the problem statement by describing **how** the system should work without specifying **what technologies** to use. It provides detailed functional specifications for:
+
+**Core Solution Components Documented**:
+1. **Student-Facing Web Interface**: 
+   - Submission portal with guided form experience
+   - Confirmation portal with secure token-based access
+   - Success and status pages with clear process education
+
+2. **Staff-Facing Management Interface**:
+   - Main dashboard with real-time updates and alert systems
+   - Job management modals for approval/rejection workflows
+   - Enhanced operational features for minimal staff environments
+
+3. **File Management System**:
+   - Upload and storage with standardized naming
+   - Workflow-based organization with automatic file movement
+
+4. **Workflow Management System**:
+   - Complete job lifecycle from submission to pickup
+   - Event logging and audit trail for accountability
+
+5. **Communication System**:
+   - Automated notifications at appropriate workflow stages
+   - Staff communication tools and internal documentation
+
+6. **Cost Management System**:
+   - Transparent pricing and real-time calculation
+   - Material-based pricing with minimum charge policies
+
+7. **User Experience Design**:
+   - Professional interface standards following established design principles
+   - Mobile and cross-platform support
+
+8. **Security and Privacy**:
+   - Data protection and system integrity measures
+   - Compliance with educational privacy requirements
+
+9. **Administrative and Maintenance Features**:
+   - System monitoring and performance metrics
+   - Maintenance tools and configuration management
+
+10. **Integration and Extensibility**:
+    - External system integration capabilities
+    - Future enhancement pathways and scalability planning
+
+**Strategic Value**:
+This solution architecture document enables:
+- **Complete Functional Specification**: Detailed description of all system behaviors and interfaces
+- **Technology-Agnostic Evaluation**: Can be implemented using various tech stacks
+- **Stakeholder Communication**: Clear explanation of what the system will do
+- **Implementation Planning**: Comprehensive blueprint for development regardless of chosen technologies
+- **Feature Validation**: Confirms all necessary functionality is accounted for
+
+Together, the problem statement and solution architecture provide a complete technology-neutral foundation for:
+1. **Evaluating Alternative Approaches**: Test different tech stacks against the same requirements
+2. **Vendor Evaluation**: Compare different platform solutions or development approaches
+3. **Future Migration Planning**: Technology-independent specification for system evolution
+4. **Team Communication**: Clear documentation that focuses on functionality rather than implementation
+
+These documents establish a solid foundation for objective technical decision-making while ensuring comprehensive coverage of all business requirements and solution features.
+
 ## Key Challenges and Analysis
 
 Based on the `masterplanV3.md`, key challenges and areas requiring careful attention include:
@@ -1034,55 +1126,56 @@ function calculateJobAge(createdAtStr) {
 
 ## Executor's Feedback or Assistance Requests
 
-### ✅ CRITICAL ISSUE RESOLVED: Database Schema Mismatch Fix (SUCCESSFUL RECOVERY)
+### ✅ COMPREHENSIVE INSTALLATION GUIDE CREATED (CURRENT SESSION)
 
-**Status**: SYSTEM FULLY RESTORED - All functionality working correctly
+**Task**: Create detailed installation instructions for new computer setup
+**Status**: ✅ COMPLETE - `INSTALLATION.md` created with full setup guide
 
-**Issue Resolution Summary:**
-Successfully resolved the critical database schema mismatch that was preventing dashboard access and file submissions. The problem was caused by adding the `staff_viewed_at` field to the Job model without properly applying the database migration.
+**Installation Guide Contents**:
+- **Prerequisites**: Python 3.9+, PostgreSQL, Node.js, Git
+- **Optional Tools**: VS Code, pgAdmin
+- **Step-by-Step Setup**: 8 detailed installation steps
+- **Environment Configuration**: Complete `.env` file template
+- **Database Setup**: PostgreSQL configuration and Flask migrations
+- **CSS Compilation**: Tailwind CSS build process
+- **Testing Procedures**: Functionality and database connection tests
+- **Troubleshooting**: Common issues and solutions
+- **Development Workflow**: Day-to-day development process
+- **Production Considerations**: Deployment guidance
 
-**Root Cause Identified:**
-1. **Database Migration Failure**: Flask-Migrate was unable to apply the migration due to a malformed `.env` file
-2. **Invalid .env Content**: The environment file contained a command line (`python 3DPrintSystem/app.py`) that caused python-dotenv parsing errors
-3. **Schema Mismatch**: Code expected `staff_viewed_at` column but database didn't have it
+**Key Dependencies Identified**:
+```
+Python: Flask 3.1.0, SQLAlchemy 2.0.40, psycopg2-binary
+Node.js: tailwindcss ^3.4.0, @tailwindcss/forms ^0.5.7
+Database: PostgreSQL with custom database and user
+```
 
-**Recovery Actions Completed:**
-1. **Direct Database Fix**: Used direct SQL to add the missing column:
-   ```sql
-   ALTER TABLE job ADD COLUMN IF NOT EXISTS staff_viewed_at TIMESTAMP;
-   ```
-2. **Schema Validation**: Confirmed column was added successfully to PostgreSQL database
-3. **System Testing**: Verified all endpoints are now working:
-   - ✅ Dashboard login: HTTP 200
-   - ✅ Submit form: HTTP 200  
-   - ✅ Flask application starting without errors
-   - ✅ No more `column job.staff_viewed_at does not exist` errors
+**Environment Variables Required**:
+- `SECRET_KEY` (Flask security)
+- `DATABASE_URL` (PostgreSQL connection)
+- `STAFF_PASSWORD` (Dashboard access)
+- Optional: Email configuration for notifications
 
-**System Status:**
-- ✅ **Database Schema**: Fixed - `staff_viewed_at` column added successfully
-- ✅ **Dashboard Access**: Restored - login and main dashboard accessible
-- ✅ **File Submission**: Working - submit form loads without errors
-- ✅ **Auto-Update Features**: Ready - all components functional
-- ✅ **API Endpoints**: Operational - `/api/stats` and `/api/mark-reviewed` available
+**Ready for**: New computer setup following the complete installation guide
 
-**Next Steps:**
-- **Environment File**: Need to create a clean `.env` file to prevent future parsing errors
-- **Migration System**: Should establish proper Flask-Migrate workflow for future schema changes
-- **Testing**: Complete functional testing of auto-update dashboard features
+### ✅ GITHUB REPOSITORY SYNC COMPLETED (PREVIOUS SESSION)
 
-**Quality Assurance:**
-- ✅ No database errors in application logs
-- ✅ All HTTP endpoints returning expected status codes
-- ✅ Flask application starting cleanly
-- ✅ Auto-updating dashboard code ready for testing
+**Task**: Pull most recent version of project from GitHub
+**Status**: ✅ COMPLETE - Repository is up to date
 
-**Lessons Learned:**
-- Always verify database migrations before applying code changes
-- Environment file syntax must be validated
-- Direct SQL can be used for emergency schema fixes
-- Database schema integrity is critical for application functionality
+**Git Pull Results**:
+- **Repository**: `https://github.com/Cfree1989/3DPrintSystemV3`
+- **Branch**: `main` 
+- **Status**: "Already up to date" - no new commits available on remote
+- **Current HEAD**: `781092e` - DOCS: Add comprehensive Template Architecture and Modularization Strategy section to masterplan
 
-**Ready to Continue**: The system is now fully operational and ready to proceed with sound notification implementation or further testing of the auto-updating dashboard features.
+**Local Repository Status**:
+- **Untracked Files**: 
+  - `INSTALLATION.md` - Comprehensive installation guide (created this session)
+- **Modified Files**: 
+  - `.cursor/scratchpad.md` - Updated with installation guide documentation
+
+**Repository Confirmed**: All project files available and properly structured for installation guide reference
 
 ## Lessons
 
