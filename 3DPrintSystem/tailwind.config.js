@@ -93,7 +93,53 @@ module.exports = {
     'text-v0-label',
     'text-v0-dashboard-title',
     'text-v0-job-title',
-    'text-v0-body'
+    'text-v0-body',
+
+    // V0.dev spacing and layout classes
+    'spacing-v0-xs',
+    'spacing-v0-sm',
+    'spacing-v0-base',
+    'spacing-v0-md',
+    'spacing-v0-lg',
+    'spacing-v0-xl',
+    'spacing-v0-2xl',
+    'spacing-v0-3xl',
+    'container-v0',
+    'container-v0-page',
+    'grid-v0-jobs',
+    'grid-v0-details',
+    'section-v0',
+    'card-section-v0',
+    'button-group-v0',
+    'tabs-v0',
+    'header-v0',
+    'header-actions-v0',
+    'job-card-v0',
+    'job-card-content-v0',
+    'job-card-actions-v0',
+
+    // V0.dev utility spacing classes
+    'p-v0-xs',
+    'p-v0-sm',
+    'p-v0-base',
+    'p-v0-md',
+    'p-v0-lg',
+    'p-v0-xl',
+    'p-v0-2xl',
+    'm-v0-xs',
+    'm-v0-sm',
+    'm-v0-base',
+    'm-v0-md',
+    'm-v0-lg',
+    'm-v0-xl',
+    'm-v0-2xl',
+    'gap-v0-xs',
+    'gap-v0-sm',
+    'gap-v0-base',
+    'gap-v0-md',
+    'gap-v0-lg',
+    'gap-v0-xl',
+    'gap-v0-2xl'
   ],
   darkMode: 'class',
   theme: {
@@ -143,7 +189,7 @@ module.exports = {
         ]
       },
       
-      // 8-Point Grid System (Apple Standard)
+      // 8-Point Grid System (Apple Standard) + V0.dev Layout Patterns
       spacing: {
         '0.5': '2px',   // 0.25 * 8pt
         '1': '4px',     // 0.5 * 8pt  
@@ -161,7 +207,17 @@ module.exports = {
         '24': '96px',   // 12 * 8pt
         // Apple minimum touch target: 44pt = 44px
         'touch': '44px',
-        'touch-lg': '48px'
+        'touch-lg': '48px',
+        
+        // V0.dev Layout Patterns
+        'v0-xs': '2px',   // Minimal spacing - border widths, subtle separators
+        'v0-sm': '4px',   // Tab spacing (space-x-1), badge padding vertical
+        'v0-base': '8px', // Button group spacing (space-x-2), grid gap-2
+        'v0-md': '12px',  // Card sections (mb-3), tab padding vertical
+        'v0-lg': '16px',  // Card padding (p-4), grid gap-4, tab padding horizontal
+        'v0-xl': '24px',  // Section margins (mb-6), major layout spacing
+        'v0-2xl': '32px', // Container padding (py-8), major layout sections
+        'v0-3xl': '48px'  // Large section spacing, hero areas
       },
 
       // Apple Color System with Purpose-Driven Colors
@@ -725,6 +781,97 @@ module.exports = {
           lineHeight: theme('fontSize.v0-badge')[1].lineHeight,
           fontWeight: theme('fontSize.v0-badge')[1].fontWeight,
           fontFamily: theme('fontFamily.v0-sans')
+        },
+
+        // V0.dev Layout Component Classes
+        '.container-v0': {
+          maxWidth: '1200px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          paddingLeft: theme('spacing.v0-lg'),
+          paddingRight: theme('spacing.v0-lg')
+        },
+
+        '.container-v0-page': {
+          maxWidth: '1200px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          paddingLeft: theme('spacing.v0-lg'),
+          paddingRight: theme('spacing.v0-lg'),
+          paddingTop: theme('spacing.v0-2xl'),
+          paddingBottom: theme('spacing.v0-2xl')
+        },
+
+        '.grid-v0-jobs': {
+          display: 'grid',
+          gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
+          gap: theme('spacing.v0-lg'),
+          '@media (min-width: 768px)': {
+            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))'
+          },
+          '@media (min-width: 1024px)': {
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))'
+          }
+        },
+
+        '.grid-v0-details': {
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: theme('spacing.v0-base')
+        },
+
+        '.section-v0': {
+          marginBottom: theme('spacing.v0-xl')
+        },
+
+        '.card-section-v0': {
+          marginBottom: theme('spacing.v0-md')
+        },
+
+        '.button-group-v0': {
+          display: 'flex',
+          gap: theme('spacing.v0-base')
+        },
+
+        '.tabs-v0': {
+          display: 'flex',
+          gap: theme('spacing.v0-sm'),
+          marginBottom: theme('spacing.v0-xl'),
+          overflowX: 'auto',
+          paddingBottom: theme('spacing.v0-base')
+        },
+
+        '.header-v0': {
+          display: 'flex',
+          flexDirection: 'column',
+          gap: theme('spacing.v0-lg'),
+          marginBottom: theme('spacing.v0-xl'),
+          '@media (min-width: 768px)': {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }
+        },
+
+        '.header-actions-v0': {
+          display: 'flex',
+          alignItems: 'center',
+          gap: theme('spacing.v0-lg')
+        },
+
+        '.job-card-v0': {
+          padding: theme('spacing.v0-lg')
+        },
+
+        '.job-card-content-v0': {
+          marginBottom: theme('spacing.v0-md')
+        },
+
+        '.job-card-actions-v0': {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: theme('spacing.v0-lg')
         }
       });
     }
