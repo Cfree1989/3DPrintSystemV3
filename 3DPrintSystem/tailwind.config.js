@@ -39,7 +39,42 @@ module.exports = {
     'space-apple',
     'space-apple-md',
     'space-apple-lg',
-    'space-apple-xl'
+    'space-apple-xl',
+
+    // V0.dev color system classes
+    'btn-v0-primary',
+    'btn-v0-secondary',
+    'btn-v0-success',
+    'btn-v0-danger',
+    'btn-v0-warning',
+    'card-v0',
+    'badge-v0-new',
+    'badge-v0-status',
+    'tab-v0-active',
+    'tab-v0-inactive',
+    'input-v0',
+    'text-v0-primary',
+    'text-v0-secondary',
+    'text-v0-muted',
+    'bg-v0-background',
+    'bg-v0-card',
+    'border-v0-border',
+    // Status colors for job age
+    'text-v0-green-600',
+    'text-v0-yellow-600', 
+    'text-v0-orange-600',
+    'text-v0-red-600',
+    // Action button colors
+    'bg-v0-blue-100',
+    'text-v0-blue-700',
+    'bg-v0-green-100',
+    'text-v0-green-700',
+    'bg-v0-red-100',
+    'text-v0-red-700',
+    'bg-v0-purple-100',
+    'text-v0-purple-700',
+    'bg-v0-orange-100',
+    'text-v0-orange-800'
   ],
   darkMode: 'class',
   theme: {
@@ -158,7 +193,120 @@ module.exports = {
         'system-red': '#FF3B30', 
         'system-green': '#34C759',
         'system-orange': '#FF9500',
-        'system-yellow': '#FFCC00'
+        'system-yellow': '#FFCC00',
+
+        // V0.DEV UI Color System (extracted from v0.dev generated design)
+        'v0-background': '#ffffff',
+        'v0-foreground': '#0a0a0a',
+        'v0-card': '#ffffff',
+        'v0-card-foreground': '#0a0a0a',
+        'v0-popover': '#ffffff',
+        'v0-popover-foreground': '#0a0a0a',
+        'v0-primary': '#171717',
+        'v0-primary-foreground': '#fafafa',
+        'v0-secondary': '#f5f5f5',
+        'v0-secondary-foreground': '#171717',
+        'v0-muted': '#f5f5f5',
+        'v0-muted-foreground': '#737373',
+        'v0-accent': '#f5f5f5',
+        'v0-accent-foreground': '#171717',
+        'v0-destructive': '#ef4444',
+        'v0-destructive-foreground': '#fafafa',
+        'v0-border': '#e5e5e5',
+        'v0-input': '#e5e5e5',
+        'v0-ring': '#0a0a0a',
+
+        // V0.DEV Status & Action Colors
+        'v0-blue': {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',  // Primary blue
+          600: '#2563eb',  // Active tab blue
+          700: '#1d4ed8',  // Hover blue
+          800: '#1e40af',
+          900: '#1e3a8a'
+        },
+
+        'v0-gray': {
+          50: '#f9fafb',   // Very light background
+          100: '#f3f4f6',
+          200: '#e5e7eb',  // Card borders, inactive tab borders
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827'
+        },
+
+        'v0-green': {
+          50: '#f0fdf4',
+          100: '#dcfce7',  // Success button background
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#10b981',  // Success icons
+          600: '#059669',  // Job age < 24h
+          700: '#047857',  // Success button text
+          800: '#065f46',
+          900: '#064e3b'
+        },
+
+        'v0-yellow': {
+          50: '#fffbeb',
+          100: '#fef3c7',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#fbbf24',
+          500: '#f59e0b',
+          600: '#d97706',  // Job age 24-48h
+          700: '#b45309',
+          800: '#92400e',
+          900: '#78350f'
+        },
+
+        'v0-orange': {
+          50: '#fff7ed',
+          100: '#fed7aa',  // NEW badge background
+          200: '#fed7d7',
+          300: '#fdba74',
+          400: '#fb923c',  // Unreviewed job border
+          500: '#f97316',  // Orange alerts
+          600: '#ea580c',  // Job age 48-72h
+          700: '#c2410c',
+          800: '#9a3412',  // NEW badge text
+          900: '#7c2d12'
+        },
+
+        'v0-red': {
+          50: '#fef2f2',
+          100: '#fee2e2',  // Danger button background
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#ef4444',  // Destructive color
+          600: '#dc2626',  // Job age > 72h
+          700: '#b91c1c',  // Danger button text
+          800: '#991b1b',
+          900: '#7f1d1d'
+        },
+
+        'v0-purple': {
+          50: '#faf5ff',
+          100: '#f3e8ff',  // Purple button background
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7c3aed',  // Purple button text
+          800: '#6b21a8',
+          900: '#581c87'
+        }
       },
 
       // Apple-style Border Radius
@@ -274,6 +422,91 @@ module.exports = {
             boxShadow: theme('boxShadow.apple')
           }
         },
+
+        // V0.dev Button Components
+        '.btn-v0-primary': {
+          backgroundColor: theme('colors.v0-blue.600'),
+          color: 'white',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '20px',
+          transition: 'all 200ms',
+          border: 'none',
+          '&:hover': {
+            backgroundColor: theme('colors.v0-blue.700'),
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          }
+        },
+
+        '.btn-v0-success': {
+          backgroundColor: theme('colors.v0-green.100'),
+          color: theme('colors.v0-green.700'),
+          padding: '8px 12px',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '20px',
+          transition: 'all 200ms',
+          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          '&:hover': {
+            backgroundColor: theme('colors.v0-green.200')
+          }
+        },
+
+        '.btn-v0-danger': {
+          backgroundColor: theme('colors.v0-red.100'),
+          color: theme('colors.v0-red.700'),
+          padding: '8px 12px',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '20px',
+          transition: 'all 200ms',
+          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          '&:hover': {
+            backgroundColor: theme('colors.v0-red.200')
+          }
+        },
+
+        '.btn-v0-secondary': {
+          backgroundColor: theme('colors.v0-blue.100'),
+          color: theme('colors.v0-blue.700'),
+          padding: '8px 12px',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '20px',
+          transition: 'all 200ms',
+          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          '&:hover': {
+            backgroundColor: theme('colors.v0-blue.200')
+          }
+        },
+
+        '.btn-v0-warning': {
+          backgroundColor: theme('colors.v0-purple.100'),
+          color: theme('colors.v0-purple.700'),
+          padding: '8px 12px',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '20px',
+          transition: 'all 200ms',
+          border: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          '&:hover': {
+            backgroundColor: theme('colors.v0-purple.200')
+          }
+        },
         '.btn-apple-destructive': {
           backgroundColor: theme('colors.apple-red.600'),
           color: 'white',
@@ -305,6 +538,90 @@ module.exports = {
             borderColor: theme('colors.apple-blue.600'),
             boxShadow: `0 0 0 3px ${theme('colors.apple-blue.600')}20`,
             transform: 'translateY(-1px)'
+          }
+        },
+
+        // V0.dev Card Components
+        '.card-v0': {
+          backgroundColor: theme('colors.v0-card'),
+          borderRadius: '12px',
+          border: '1px solid',
+          borderColor: theme('colors.v0-gray.200'),
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          transition: 'all 200ms',
+          '&:hover': {
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          }
+        },
+
+        '.card-v0-unreviewed': {
+          backgroundColor: theme('colors.v0-card'),
+          borderRadius: '12px',
+          border: '1px solid',
+          borderColor: theme('colors.v0-orange.400'),
+          boxShadow: '0 1px 3px 0 rgba(251, 146, 60, 0.1)',
+          transition: 'all 200ms'
+        },
+
+        // V0.dev Badge Components
+        '.badge-v0-new': {
+          backgroundColor: theme('colors.v0-orange.100'),
+          color: theme('colors.v0-orange.800'),
+          fontSize: '12px',
+          fontWeight: '600',
+          padding: '4px 8px',
+          borderRadius: '9999px'
+        },
+
+        '.badge-v0-status': {
+          fontSize: '12px',
+          fontWeight: '600',
+          padding: '4px 8px',
+          borderRadius: '9999px'
+        },
+
+        // V0.dev Tab Components
+        '.tab-v0-active': {
+          backgroundColor: theme('colors.v0-blue.600'),
+          color: 'white',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          border: '1px solid',
+          borderColor: theme('colors.v0-blue.600'),
+          fontWeight: '500',
+          boxShadow: '0 2px 4px -1px rgba(0, 0, 0, 0.1)',
+          transition: 'all 200ms'
+        },
+
+        '.tab-v0-inactive': {
+          backgroundColor: theme('colors.v0-card'),
+          color: theme('colors.v0-blue.600'),
+          padding: '12px 16px',
+          borderRadius: '12px',
+          border: '1px solid',
+          borderColor: theme('colors.v0-gray.200'),
+          fontWeight: '500',
+          transition: 'all 200ms',
+          '&:hover': {
+            backgroundColor: theme('colors.v0-blue.50'),
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+          }
+        },
+
+        // V0.dev Input Components
+        '.input-v0': {
+          backgroundColor: theme('colors.v0-card'),
+          border: '1px solid',
+          borderColor: theme('colors.v0-input'),
+          borderRadius: '6px',
+          padding: '8px 12px',
+          fontSize: '14px',
+          lineHeight: '20px',
+          transition: 'all 200ms',
+          '&:focus': {
+            outline: 'none',
+            borderColor: theme('colors.v0-ring'),
+            boxShadow: '0 0 0 2px rgba(0, 0, 0, 0.05)'
           }
         }
       });
