@@ -2,7 +2,7 @@
 {% block title %}Staff Dashboard{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-100">
+<div class="min-h-screen bg-v0-background">
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
     
@@ -33,20 +33,20 @@
         </div>
     </div>
 
-    <!-- Dashboard Header -->
-    <div class="bg-white border-b border-gray-300 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-6">
+    <!-- V0.dev Dashboard Header -->
+    <div class="header-v0 bg-v0-background border-b border-v0-border">
+        <div class="container-v0">
+            <div class="header-v0">
                 <div>
-                    <h1 class="text-2xl font-semibold text-gray-900">3D Print Jobs</h1>
-                    <p class="text-gray-600 text-sm">Manage and track all print requests</p>
+                    <h1 class="text-v0-dashboard-title">3D Print Jobs</h1>
+                    <p class="text-v0-detail">Manage and track all print requests</p>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="header-actions-v0">
                     {% include 'staff/dashboard/components/_last_updated_timestamp.html' %}
                     {% include 'staff/dashboard/components/_sound_toggle_button.html' %}
-                    <span class="text-sm text-gray-600">Welcome, Staff</span>
+                    <span class="text-v0-body">Welcome, Staff</span>
                     <a href="{{ url_for('dashboard.logout') }}" 
-                       class="inline-flex items-center px-4 py-2 border-0 shadow-md text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 hover:shadow-lg transition-all duration-200 no-underline">
+                       class="btn-v0-secondary no-underline">
                         Logout
                     </a>
                 </div>
@@ -54,25 +54,25 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Apple-Style Status Tabs -->
+    <!-- V0.dev Main Content -->
+    <div class="container-v0-page">
+        <!-- V0.dev Status Tabs -->
         {% include 'staff/dashboard/components/_dashboard_tabs.html' %}
 
-        <!-- Job Listing -->
-        <div id="job-listing">
+        <!-- V0.dev Job Listing -->
+        <div id="job-listing" class="section-v0">
             {% if jobs %}
-            <div class="space-y-6">
+            <div class="grid-v0-jobs">
                 {% for job in jobs %}
                 {% include 'staff/dashboard/components/_job_card.html' %}
                 {% endfor %}
             </div>
             {% else %}
-            <!-- Apple-Style Empty State -->
-            <div class="text-center py-16">
-                <div class="text-gray-400 text-6xl mb-4">📋</div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
-                <p class="text-gray-500 max-w-sm mx-auto">
+            <!-- V0.dev Empty State -->
+            <div class="text-center section-v0">
+                <div class="text-v0-gray-400 text-6xl mb-v0-lg">📋</div>
+                <h3 class="text-v0-job-title mb-v0-base">No jobs found</h3>
+                <p class="text-v0-detail max-w-sm mx-auto">
                     {% if current_status and tabs[current_status] %}
                     No jobs are currently in {{ tabs[current_status].title }} status.
                     {% else %}
@@ -814,65 +814,61 @@ function formatDisciplineName(discipline) {
 function createJobCardHtml(job, currentStatus) {
     const isUnreviewed = !job.staff_viewed_at;
     const newBadge = isUnreviewed ? `
-        <div class="flex items-center mb-4">
-            <span class="new-badge px-3 py-1 text-xs rounded-full">NEW</span>
+        <div class="flex items-center mb-v0-lg">
+            <span class="badge-v0-new">NEW</span>
         </div>
     ` : '';
     
     const actionButtons = currentStatus === 'UPLOADED' ? `
-        <div class="mt-6 pt-4 border-t border-gray-200">
+        <div class="job-card-actions-v0 border-t border-v0-border">
             <div class="flex items-center justify-between">
                 <!-- Primary Actions (Left) -->
-                <div class="flex space-x-3">
+                <div class="button-group-v0">
                     <button onclick="handleApprovalClick(event, '${job.id}')" 
-                            class="btn-approve action-button">
+                            class="btn-v0-success">
                         ✓ Approve
                     </button>
                     <button onclick="handleRejectionClick(event, '${job.id}')"
-                            class="btn-reject action-button">
+                            class="btn-v0-danger">
                         ✗ Reject
                     </button>
-                    <button onclick="event.stopPropagation(); event.preventDefault();" class="btn-view-details action-button">
+                    <button onclick="event.stopPropagation(); event.preventDefault();" class="btn-v0-secondary">
                         📋 View Details
                     </button>
                 </div>
                 
                 <!-- Review Status Actions (Right) -->
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center gap-v0-base">
                     ${isUnreviewed ? `
                     <!-- Unreviewed State -->
-                    <span class="text-xs text-orange-600 font-medium">Unreviewed</span>
+                    <span class="text-v0-badge text-v0-orange-600 font-medium">Unreviewed</span>
                     <div class="relative">
                         <button onclick="showReviewMenu('${job.id}')" 
-                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 
-                                       hover:bg-orange-100 transition-colors duration-200 border border-orange-200
-                                       focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-1"
+                                class="btn-v0-warning text-v0-badge"
                                 title="Review options">
                             ⚙️ Review
                         </button>
-                        <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                        <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 card-v0 z-10">
                             <button onclick="confirmMarkAsReviewed('${job.id}')" 
-                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
-                                           focus:outline-none focus:bg-gray-50">
+                                    class="w-full text-left p-v0-base text-v0-body hover:bg-v0-gray-50 rounded-t-lg
+                                           focus:outline-none focus:bg-v0-gray-50">
                                 ✓ Mark as Reviewed
                             </button>
                         </div>
                     </div>
                     ` : `
                     <!-- Reviewed State -->
-                    <span class="text-xs text-green-600 font-medium">Reviewed</span>
+                    <span class="text-v0-badge text-v0-green-600 font-medium">Reviewed</span>
                     <div class="relative">
                         <button onclick="showReviewMenu('${job.id}')" 
-                                class="review-menu-btn px-3 py-1 text-xs font-medium rounded-md bg-green-50 text-green-700 
-                                       hover:bg-green-100 transition-colors duration-200 border border-green-200
-                                       focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                                class="btn-v0-success text-v0-badge"
                                 title="Review options">
                             ⚙️ Review
                         </button>
-                        <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                        <div id="review-menu-${job.id}" class="hidden absolute right-0 mt-1 w-48 card-v0 z-10">
                             <button onclick="confirmMarkAsUnreviewed('${job.id}')" 
-                                    class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg
-                                           focus:outline-none focus:bg-gray-50">
+                                    class="w-full text-left p-v0-base text-v0-body hover:bg-v0-gray-50 rounded-t-lg
+                                           focus:outline-none focus:bg-v0-gray-50">
                                 ↺ Mark as Unreviewed
                             </button>
                         </div>
@@ -884,41 +880,40 @@ function createJobCardHtml(job, currentStatus) {
     ` : '';
     
     return `
-        <div class="job-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-200
-                   ${isUnreviewed ? 'unreviewed-job' : ''}" 
+        <div class="card-v0 job-card-v0 ${isUnreviewed ? 'card-v0-unreviewed' : ''}" 
              data-job-id="${job.id}">
-            <div class="p-6">
-                ${newBadge}
+            ${newBadge}
+            <div class="job-card-content-v0">
                 <div class="flex items-start justify-between">
                     <div class="flex-1 min-w-0">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-1">${job.student_name || ''}</h3>
-                        <p class="text-gray-600 text-sm mb-3">${job.display_name || job.original_filename || ''}</p>
-                        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                        <h3 class="text-v0-job-title mb-v0-xs">${job.student_name || ''}</h3>
+                        <p class="text-v0-body mb-v0-md">${job.display_name || job.original_filename || ''}</p>
+                        <div class="grid-v0-details text-v0-detail">
                             <span>${job.student_email || ''}</span>
                             <span>${formatDisciplineName(job.discipline)}</span>
                             ${job.class_number ? `<span>${job.class_number}</span>` : ''}
                         </div>
                     </div>
-                    <div class="ml-6 text-right">
-                        <div class="text-sm text-gray-500 mb-2">
+                    <div class="ml-v0-xl text-right">
+                        <div class="text-v0-detail mb-v0-base">
                             <span class="job-age" data-created-at="${job.created_at || ''}"></span>
                         </div>
                         ${job.printer || job.color || job.material ? `
-                        <div class="text-sm space-y-1 text-right">
-                            ${job.printer ? `<div class="font-medium text-gray-700">${formatPrinterName(job.printer)}</div>` : ''}
-                            ${job.color ? `<div class="text-gray-600">${formatColorName(job.color)}</div>` : ''}
-                            ${job.material ? `<div class="text-gray-600">${job.material.charAt(0).toUpperCase() + job.material.slice(1)}</div>` : ''}
+                        <div class="text-v0-sm space-y-v0-xs text-right">
+                            ${job.printer ? `<div class="text-v0-body font-medium">${formatPrinterName(job.printer)}</div>` : ''}
+                            ${job.color ? `<div class="text-v0-detail">${formatColorName(job.color)}</div>` : ''}
+                            ${job.material ? `<div class="text-v0-detail">${job.material.charAt(0).toUpperCase() + job.material.slice(1)}</div>` : ''}
                         </div>
                         ` : ''}
                         ${job.cost_usd ? `
-                            <div class="text-lg font-semibold text-gray-900 mt-3">
+                            <div class="text-v0-lg font-semibold text-v0-primary mt-v0-md">
                                 $${parseFloat(job.cost_usd).toFixed(2)}
                             </div>
                         ` : ''}
                     </div>
                 </div>
-                ${actionButtons}
             </div>
+            ${actionButtons}
         </div>
     `;
 }
