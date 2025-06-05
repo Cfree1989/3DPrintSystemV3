@@ -47,7 +47,7 @@ The project aims to replace potentially ad-hoc or manual 3D print request system
     - pytz>=2023.3 (required for timezone handling)
     - Celery/RQ dependencies.
     - **UI Dependencies**:
-        - Tailwind CSS 3.x (for Apple-style design system)
+        - Tailwind CSS 3.x (for modern design system)
         - Alpine.js 3.x (for dynamic form behavior and dashboard interactivity)
         - PostCSS 8.x (for Tailwind processing)
     - **System Dependencies**:
@@ -81,14 +81,14 @@ Based on operational needs, the following UX features are critical:
     - Ensure the submission form and dashboard are fully functional and readable on mobile devices.
     - Test UI components with screen readers for basic WCAG 2.1 compliance.
     - Ensure keyboard-only navigation works for all modals and interactive elements.
--   **Apple UI/UX Compliance**:
-    - All UI components must follow Apple Human Interface Guidelines
-    - Use 8pt spacing grid system
-    - Implement proper depth and translucency effects
-    - Support Dynamic Type and reduced motion
-    - Maintain minimum touch target size (44x44pt)
-    - Use system font stack (SF Pro / system-ui)
-    - Follow Apple's color palette guidelines
+-   **Professional UI Design Standards**:
+    - All UI components must follow modern web design best practices
+    - Use consistent spacing system (multiples of 4px or 8px)
+    - Implement proper visual hierarchy with appropriate typography scales
+    - Support system font preferences and user accessibility settings
+    - Maintain minimum touch target size (44px minimum)
+    - Use professional color palette with sufficient contrast ratios
+    - Follow responsive design principles for all screen sizes
 
 
 #### 2.4.1 Required Submission Form Introduction Text
@@ -347,11 +347,11 @@ class Event(db.Model):
 
 **UI/UX Implementation Notes:**
 - All status changes must provide immediate visual feedback
-- Use Apple-style loading indicators for async operations
+- Use professional loading indicators for async operations
 - Implement smooth transitions between states
 - Provide clear error states with recovery options
 - Use consistent iconography across all status indicators
-- Follow Apple's animation timing guidelines
+- Follow modern web animation timing guidelines
 
 ## 4. Technical Deep Dive: Direct File Access
 
@@ -624,7 +624,7 @@ class Event(db.Model):
 - Always implement form validation with real-time feedback
 - Use proper error scrolling to guide users
 - Implement loading states for all async operations
-- Follow Apple's accessibility guidelines strictly
+- Follow modern accessibility guidelines strictly
 - Test all UI components across different screen sizes
 - Ensure proper keyboard navigation support
 
@@ -652,7 +652,7 @@ class Event(db.Model):
    - Regular backup verification
 
 2. **User Experience:**
-   - Strict adherence to Apple UI/UX guidelines
+   - Strict adherence to modern UI/UX design principles
    - Consistent feedback for all operations
    - Clear error messages and recovery paths
    - Proper form validation and guidance
@@ -1477,7 +1477,7 @@ The Enhanced Operational Dashboard provides comprehensive real-time visibility a
 
 **Technical Implementation**:
 - **Confirmation Dialog System**: Modal interfaces with visual icons and contextual messaging
-- **Toast Notification Framework**: Apple-style notifications for system feedback
+- **Toast Notification Framework**: Professional notifications for system feedback
 - **Dropdown Menu Interface**: Review controls positioned in safer, secondary location
 - **Audit Trail Enhancement**: Comprehensive logging with timestamps and user agent tracking
 - **Perfect Viewport Centering**: Modal positioning optimized for any scroll position
@@ -1534,7 +1534,7 @@ async function confirmMarkAsUnreviewed(jobId)
 **Quality Achievements**:
 - **Single Source of Truth**: Each action has one clear confirmation mechanism
 - **Visual Clarity**: Icons and colors immediately communicate action type
-- **Professional Appearance**: Consistent with Apple UI guidelines
+- **Professional Appearance**: Consistent with modern UI design principles
 - **Error Handling**: Toast notifications reserved for actual system errors only
 - **Accessibility**: Full keyboard navigation and screen reader support
 

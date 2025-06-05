@@ -282,7 +282,7 @@ def approve_job(job_id):
         
         # Move file from Uploaded to Pending directory
         try:
-            new_file_path = _move_file_between_status_dirs(
+            new_file_path, new_metadata_path = _move_file_between_status_dirs(
                 job.file_path, 'Uploaded', 'Pending'
             )
         except Exception as e:
@@ -299,6 +299,8 @@ def approve_job(job_id):
         job.material = material or job.material
         job.cost_usd = calculated_cost
         job.file_path = new_file_path
+        if new_metadata_path:
+            job.metadata_path = new_metadata_path
         job.last_updated_by = 'staff'
         job.staff_viewed_at = datetime.utcnow()  # Mark as reviewed during approval
         if notes:
@@ -451,8 +453,9 @@ def _move_file_between_status_dirs(current_path, from_status, to_status):
     # Also move metadata file if it exists
     metadata_filename = os.path.splitext(filename)[0] + '.metadata.json'
     current_metadata_path = os.path.join(os.path.dirname(current_path), metadata_filename)
+    new_metadata_path = None
     if os.path.exists(current_metadata_path):
         new_metadata_path = os.path.join(target_dir, metadata_filename)
         os.rename(current_metadata_path, new_metadata_path)
-    
-    return new_path
+
+    return new_path, new_metadata_path
