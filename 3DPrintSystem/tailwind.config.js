@@ -74,7 +74,26 @@ module.exports = {
     'bg-v0-purple-100',
     'text-v0-purple-700',
     'bg-v0-orange-100',
-    'text-v0-orange-800'
+    'text-v0-orange-800',
+
+    // V0.dev typography classes
+    'font-v0-sans',
+    'font-v0-mono',
+    'text-v0-xs',
+    'text-v0-sm',
+    'text-v0-base',
+    'text-v0-lg',
+    'text-v0-xl',
+    'text-v0-2xl',
+    'text-v0-3xl',
+    'text-v0-button',
+    'text-v0-tab',
+    'text-v0-badge',
+    'text-v0-detail',
+    'text-v0-label',
+    'text-v0-dashboard-title',
+    'text-v0-job-title',
+    'text-v0-body'
   ],
   darkMode: 'class',
   theme: {
@@ -100,6 +119,26 @@ module.exports = {
           'Roboto Mono',
           'source-code-pro',
           'Menlo',
+          'monospace'
+        ],
+        // V0.dev Font Stack (clean, web-safe fonts)
+        'v0-sans': [
+          'Arial',
+          'Helvetica',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'sans-serif'
+        ],
+        'v0-mono': [
+          'ui-monospace',
+          'SFMono-Regular',
+          'Monaco',
+          'Consolas',
+          'Liberation Mono',
+          'Courier New',
           'monospace'
         ]
       },
@@ -342,7 +381,23 @@ module.exports = {
         'apple-title3': ['20px', { lineHeight: '25px', fontWeight: '400' }],
         'apple-title2': ['22px', { lineHeight: '28px', fontWeight: '400' }],
         'apple-title1': ['28px', { lineHeight: '34px', fontWeight: '400' }],
-        'apple-large-title': ['34px', { lineHeight: '41px', fontWeight: '400' }]
+        'apple-large-title': ['34px', { lineHeight: '41px', fontWeight: '400' }],
+
+        // V0.dev Typography Scale (matches component usage)
+        'v0-xs': ['12px', { lineHeight: '16px', fontWeight: '600' }],      // badges, small buttons
+        'v0-sm': ['14px', { lineHeight: '20px', fontWeight: '400' }],      // body text, details
+        'v0-base': ['16px', { lineHeight: '24px', fontWeight: '400' }],    // default text
+        'v0-lg': ['18px', { lineHeight: '28px', fontWeight: '600' }],      // job card titles
+        'v0-xl': ['20px', { lineHeight: '28px', fontWeight: '500' }],      // section headings
+        'v0-2xl': ['24px', { lineHeight: '32px', fontWeight: '700' }],     // dashboard title
+        'v0-3xl': ['30px', { lineHeight: '36px', fontWeight: '800' }],     // large headings
+        
+        // V0.dev specific component sizes
+        'v0-button': ['14px', { lineHeight: '20px', fontWeight: '500' }],  // button text
+        'v0-tab': ['14px', { lineHeight: '20px', fontWeight: '500' }],     // tab labels
+        'v0-badge': ['12px', { lineHeight: '16px', fontWeight: '600' }],   // badge text
+        'v0-detail': ['14px', { lineHeight: '20px', fontWeight: '400' }],  // detail text
+        'v0-label': ['14px', { lineHeight: '20px', fontWeight: '400' }]    // form labels
       },
 
       // Backdrop Blur for Glassmorphism
@@ -608,7 +663,7 @@ module.exports = {
           }
         },
 
-        // V0.dev Input Components
+                 // V0.dev Input Components
         '.input-v0': {
           backgroundColor: theme('colors.v0-card'),
           border: '1px solid',
@@ -623,6 +678,53 @@ module.exports = {
             borderColor: theme('colors.v0-ring'),
             boxShadow: '0 0 0 2px rgba(0, 0, 0, 0.05)'
           }
+        },
+
+        // V0.dev Typography Components
+        '.text-v0-dashboard-title': {
+          fontSize: theme('fontSize.v0-2xl')[0],
+          lineHeight: theme('fontSize.v0-2xl')[1].lineHeight,
+          fontWeight: theme('fontSize.v0-2xl')[1].fontWeight,
+          color: theme('colors.v0-gray.900'),
+          fontFamily: theme('fontFamily.v0-sans')
+        },
+
+        '.text-v0-job-title': {
+          fontSize: theme('fontSize.v0-lg')[0],
+          lineHeight: theme('fontSize.v0-lg')[1].lineHeight,
+          fontWeight: theme('fontSize.v0-lg')[1].fontWeight,
+          color: theme('colors.v0-gray.900'),
+          fontFamily: theme('fontFamily.v0-sans')
+        },
+
+        '.text-v0-body': {
+          fontSize: theme('fontSize.v0-sm')[0],
+          lineHeight: theme('fontSize.v0-sm')[1].lineHeight,
+          fontWeight: theme('fontSize.v0-sm')[1].fontWeight,
+          color: theme('colors.v0-gray.600'),
+          fontFamily: theme('fontFamily.v0-sans')
+        },
+
+        '.text-v0-detail': {
+          fontSize: theme('fontSize.v0-detail')[0],
+          lineHeight: theme('fontSize.v0-detail')[1].lineHeight,
+          fontWeight: theme('fontSize.v0-detail')[1].fontWeight,
+          color: theme('colors.v0-gray.500'),
+          fontFamily: theme('fontFamily.v0-sans')
+        },
+
+        '.text-v0-button': {
+          fontSize: theme('fontSize.v0-button')[0],
+          lineHeight: theme('fontSize.v0-button')[1].lineHeight,
+          fontWeight: theme('fontSize.v0-button')[1].fontWeight,
+          fontFamily: theme('fontFamily.v0-sans')
+        },
+
+        '.text-v0-badge': {
+          fontSize: theme('fontSize.v0-badge')[0],
+          lineHeight: theme('fontSize.v0-badge')[1].lineHeight,
+          fontWeight: theme('fontSize.v0-badge')[1].fontWeight,
+          fontFamily: theme('fontFamily.v0-sans')
         }
       });
     }
