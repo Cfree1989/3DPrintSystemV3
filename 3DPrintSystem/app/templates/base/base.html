@@ -5,43 +5,57 @@
     <title>{% block title %}3D Print System{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Apple-optimized CSS -->
+    <!-- V0.dev-optimized CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
     <!-- Alpine.js for interactive components -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
-    <!-- Apple-style meta tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#007AFF">
+    <!-- Modern web app meta tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#3b82f6">
     
     {% block head %}{% endblock %}
 </head>
-<body class="bg-apple-gray-50 min-h-screen antialiased">
-    <!-- Apple-style Navigation -->
-    <nav class="nav-apple sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div class="flex justify-between items-center">
-                <h1 class="text-apple-title3 font-semibold text-apple-gray-900">
+<body class="bg-v0-background min-h-screen antialiased">
+    <!-- V0.dev Navigation -->
+    <nav class="bg-white border-b border-v0-border sticky top-0 z-50">
+        <div class="container-v0">
+            <div class="flex justify-between items-center py-v0-lg">
+                <h1 class="text-v0-job-title font-semibold text-v0-gray-900">
                     3D Print System
                 </h1>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content with Apple spacing -->
-    <main class="max-w-7xl mx-auto px-6 py-8">
-        <!-- Flash Messages with Apple styling -->
+    <!-- Main Content with V0.dev spacing -->
+    <main class="container-v0-page">
+        <!-- Flash Messages with V0.dev styling -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="mb-8 space-apple">
+                <div class="mb-v0-2xl space-y-v0-md">
                     {% for category, message in messages %}
-                        <div class="alert-apple{% if category == 'error' %}-error{% elif category == 'warning' %}-warning{% elif category == 'success' %}-success{% endif %}" role="alert">
-                            <strong class="font-medium">
-                                {% if category == 'error' %}Error:{% elif category == 'warning' %}Warning:{% elif category == 'success' %}Success:{% else %}Info:{% endif %}
-                            </strong>
-                            {{ message }}
+                        <div class="{% if category == 'error' %}bg-v0-red-50 border-l-4 border-v0-red-400 text-v0-red-800{% elif category == 'warning' %}bg-v0-orange-50 border-l-4 border-v0-orange-400 text-v0-orange-800{% elif category == 'success' %}bg-v0-green-50 border-l-4 border-v0-green-400 text-v0-green-800{% else %}bg-v0-blue-50 border-l-4 border-v0-blue-400 text-v0-blue-800{% endif %} p-v0-lg rounded-v0" role="alert">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    {% if category == 'error' %}
+                                        <span class="text-v0-red-500">⚠️</span>
+                                    {% elif category == 'warning' %}
+                                        <span class="text-v0-orange-500">⚠️</span>
+                                    {% elif category == 'success' %}
+                                        <span class="text-v0-green-500">✓</span>
+                                    {% else %}
+                                        <span class="text-v0-blue-500">ℹ️</span>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-v0-md">
+                                    <strong class="font-medium text-v0-body">
+                                        {% if category == 'error' %}Error:{% elif category == 'warning' %}Warning:{% elif category == 'success' %}Success:{% else %}Info:{% endif %}
+                                    </strong>
+                                    <span class="text-v0-body ml-v0-sm">{{ message }}</span>
+                                </div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -51,17 +65,17 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Apple-style footer -->
-    <footer class="mt-16 py-8 border-t border-apple-gray-200">
-        <div class="max-w-7xl mx-auto px-6">
-            <p class="text-apple-footnote text-apple-gray-500 text-center">
-                3D Print System &copy; 2025. Designed with Apple Human Interface Guidelines.
+    <!-- V0.dev footer -->
+    <footer class="mt-v0-3xl py-v0-2xl border-t border-v0-border bg-white">
+        <div class="container-v0">
+            <p class="text-v0-detail text-v0-gray-500 text-center">
+                3D Print System &copy; 2025. Professional design powered by v0.dev patterns.
             </p>
         </div>
     </footer>
 
     <!-- Accessibility: Skip to main content -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 btn-apple-primary z-50">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 btn-v0-primary z-50">
         Skip to main content
     </a>
 </body>

@@ -1,0 +1,109 @@
+<!-- Loading Spinner Component -->
+{% macro loading_spinner(size="md", color="blue") %}
+<div class="inline-flex items-center">
+    <svg class="animate-spin {% if size == 'sm' %}-ml-1 mr-2 h-4 w-4{% elif size == 'lg' %}h-8 w-8{% else %}h-5 w-5{% endif %} text-v0-{{ color }}-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+</div>
+{% endmacro %}
+
+<!-- Loading Text with Spinner -->
+{% macro loading_text(text="Loading...", size="md", color="blue") %}
+<div class="inline-flex items-center text-v0-body text-v0-{{ color }}-600">
+    {{ loading_spinner(size=size, color=color) }}
+    {% if size != "sm" %}<span class="ml-v0-sm">{{ text }}</span>{% endif %}
+</div>
+{% endmacro %}
+
+<!-- Form Submission Loading State -->
+{% macro form_loading_state() %}
+<div x-show="isSubmitting" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center" style="display: none;">
+    <div class="bg-white rounded-v0 p-v0-2xl shadow-xl max-w-sm mx-auto text-center">
+        <div class="mb-v0-lg">
+            {{ loading_spinner(size="lg", color="blue") }}
+        </div>
+        <h3 class="text-v0-body font-medium text-v0-gray-900 mb-v0-sm">Processing Your Submission</h3>
+        <p class="text-v0-detail text-v0-gray-600">Please wait while we process your request...</p>
+    </div>
+</div>
+{% endmacro %}
+
+<!-- Page Loading State -->
+{% macro page_loading_state(message="Loading page...") %}
+<div id="page-loading" class="fixed inset-0 bg-white z-50 flex items-center justify-center" style="display: none;">
+    <div class="text-center">
+        <div class="mb-v0-lg">
+            {{ loading_spinner(size="lg", color="blue") }}
+        </div>
+        <h3 class="text-v0-body font-medium text-v0-gray-900 mb-v0-sm">{{ message }}</h3>
+        <p class="text-v0-detail text-v0-gray-600">This should only take a moment...</p>
+    </div>
+</div>
+{% endmacro %}
+
+<!-- Button Loading State -->
+{% macro button_loading_state(default_text="Submit", loading_text="Processing...") %}
+<span x-show="!isSubmitting">{{ default_text }}</span>
+<span x-show="isSubmitting" class="flex items-center">
+    {{ loading_spinner(size="sm", color="white") }}
+    <span class="ml-v0-sm">{{ loading_text }}</span>
+</span>
+{% endmacro %}
+
+<!-- Progress Bar Component -->
+{% macro progress_bar(progress=0, show_percentage=true) %}
+<div class="w-full bg-v0-gray-200 rounded-full h-2 mb-v0-sm">
+    <div class="bg-v0-blue-600 h-2 rounded-full transition-all duration-300" style="width: {{ progress }}%"></div>
+</div>
+{% if show_percentage %}
+<div class="text-v0-detail text-v0-gray-600 text-center">{{ progress }}% complete</div>
+{% endif %}
+{% endmacro %}
+
+<!-- Skeleton Loader for Cards -->
+{% macro skeleton_card() %}
+<div class="card-v0 p-v0-lg animate-pulse">
+    <div class="space-y-v0-md">
+        <div class="h-4 bg-v0-gray-300 rounded w-3/4"></div>
+        <div class="h-3 bg-v0-gray-300 rounded w-1/2"></div>
+        <div class="h-3 bg-v0-gray-300 rounded w-2/3"></div>
+        <div class="flex space-x-v0-sm mt-v0-lg">
+            <div class="h-8 bg-v0-gray-300 rounded w-20"></div>
+            <div class="h-8 bg-v0-gray-300 rounded w-16"></div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+<!-- JavaScript for Loading States -->
+<script>
+// Show page loading
+function showPageLoading(message = 'Loading page...') {
+    const loader = document.getElementById('page-loading');
+    if (loader) {
+        const messageEl = loader.querySelector('h3');
+        if (messageEl) messageEl.textContent = message;
+        loader.style.display = 'flex';
+    }
+}
+
+// Hide page loading
+function hidePageLoading() {
+    const loader = document.getElementById('page-loading');
+    if (loader) {
+        loader.style.display = 'none';
+    }
+}
+
+// Auto-hide page loading when content is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Hide loading after a short delay to ensure content is visible
+    setTimeout(hidePageLoading, 100);
+});
+
+// Show loading on navigation
+window.addEventListener('beforeunload', function() {
+    showPageLoading('Leaving page...');
+});
+</script> 

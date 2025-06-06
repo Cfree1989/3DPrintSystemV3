@@ -1,0 +1,103 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ error_title or 'Error' }}{% endblock %}
+
+{% block content %}
+<div class="container-v0-page min-h-[60vh] flex items-center justify-center">
+    <div class="text-center max-w-md mx-auto">
+        <!-- Error Icon and Code -->
+        <div class="mb-v0-2xl">
+            <div class="text-6xl {{ error_icon_color or 'text-v0-gray-400' }} mb-v0-lg">
+                {{ error_icon or '❗' }}
+            </div>
+            {% if error_code %}
+            <div class="text-v0-dashboard-title text-v0-gray-900 mb-v0-md">{{ error_code }}</div>
+            {% endif %}
+            <h1 class="text-v0-job-title text-v0-gray-900 mb-v0-md">
+                {{ error_title or 'An Error Occurred' }}
+            </h1>
+            <p class="text-v0-body text-v0-gray-600">
+                {{ error_message or 'Something unexpected happened. Please try again.' }}
+            </p>
+        </div>
+
+        <!-- Error Details Card -->
+        <div class="card-v0 p-v0-lg mb-v0-2xl text-left">
+            <h2 class="text-v0-body font-medium text-v0-gray-900 mb-v0-lg">
+                {{ details_title or 'What you can do:' }}
+            </h2>
+            {% if error_suggestions %}
+            <ul class="space-y-v0-md text-v0-body text-v0-gray-600">
+                {% for suggestion in error_suggestions %}
+                <li class="flex items-start space-x-v0-sm">
+                    <span class="text-v0-blue-600 mt-1">•</span>
+                    <span>{{ suggestion }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <ul class="space-y-v0-md text-v0-body text-v0-gray-600">
+                <li class="flex items-start space-x-v0-sm">
+                    <span class="text-v0-blue-600 mt-1">•</span>
+                    <span>Refresh the page and try again</span>
+                </li>
+                <li class="flex items-start space-x-v0-sm">
+                    <span class="text-v0-blue-600 mt-1">•</span>
+                    <span>Go back to the previous page</span>
+                </li>
+                <li class="flex items-start space-x-v0-sm">
+                    <span class="text-v0-blue-600 mt-1">•</span>
+                    <span>Contact support if the issue persists</span>
+                </li>
+            </ul>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-v0-md">
+            <div class="flex flex-col sm:flex-row gap-v0-md justify-center">
+                {% if show_refresh %}
+                <button onclick="location.reload()" class="btn-v0-primary">
+                    Refresh Page
+                </button>
+                {% endif %}
+                <button onclick="history.back()" class="btn-v0-{{ 'secondary' if show_refresh else 'primary' }}">
+                    Go Back
+                </button>
+                {% if show_home %}
+                <a href="{{ url_for('main.submit') }}" class="btn-v0-secondary">
+                    Go to Homepage
+                </a>
+                {% endif %}
+            </div>
+            <div class="text-center">
+                <p class="text-v0-detail text-v0-gray-500 mb-v0-sm">
+                    Need help? Contact support:
+                </p>
+                <a href="mailto:coad-fablab@lsu.edu" class="text-v0-blue-600 hover:underline text-v0-body">
+                    coad-fablab@lsu.edu
+                </a>
+            </div>
+        </div>
+
+        <!-- Technical Info (optional) -->
+        {% if show_technical_info %}
+        <div class="mt-v0-2xl text-center">
+            <details class="text-left">
+                <summary class="text-v0-detail text-v0-gray-500 cursor-pointer hover:text-v0-gray-700">
+                    Technical Details
+                </summary>
+                <div class="mt-v0-md p-v0-md bg-v0-gray-100 rounded-v0 font-mono text-v0-sm text-v0-gray-700">
+                    {% if error_code %}
+                    <p>Error Code: {{ error_code }}</p>
+                    {% endif %}
+                    {% if technical_message %}
+                    <p>Details: {{ technical_message }}</p>
+                    {% endif %}
+                    <p>Timestamp: {{ moment().format('YYYY-MM-DD HH:mm:ss') if moment else 'N/A' }}</p>
+                </div>
+            </details>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

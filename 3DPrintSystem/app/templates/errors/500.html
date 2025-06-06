@@ -1,0 +1,85 @@
+{% extends 'base/base.html' %}
+{% block title %}Server Error{% endblock %}
+
+{% block content %}
+<div class="container-v0-page min-h-[60vh] flex items-center justify-center">
+    <div class="text-center max-w-md mx-auto">
+        <!-- Error Icon and Code -->
+        <div class="mb-v0-2xl">
+            <div class="text-6xl text-v0-red-500 mb-v0-lg">⚠️</div>
+            <div class="text-v0-dashboard-title text-v0-gray-900 mb-v0-md">500</div>
+            <h1 class="text-v0-job-title text-v0-gray-900 mb-v0-md">
+                Internal Server Error
+            </h1>
+            <p class="text-v0-body text-v0-gray-600">
+                Something went wrong on our end. We're working to fix this issue.
+            </p>
+        </div>
+
+        <!-- Error Details Card -->
+        <div class="card-v0 p-v0-lg mb-v0-2xl text-left">
+            <h2 class="text-v0-body font-medium text-v0-gray-900 mb-v0-lg">
+                What happened:
+            </h2>
+            <div class="bg-v0-red-50 border-l-4 border-v0-red-400 p-v0-md rounded-v0">
+                <p class="text-v0-body text-v0-red-800">
+                    The server encountered an unexpected error and was unable to complete your request.
+                </p>
+            </div>
+            <div class="mt-v0-lg">
+                <h3 class="text-v0-body font-medium text-v0-gray-900 mb-v0-sm">
+                    You can try:
+                </h3>
+                <ul class="space-y-v0-sm text-v0-body text-v0-gray-600">
+                    <li class="flex items-start space-x-v0-sm">
+                        <span class="text-v0-blue-600 mt-1">•</span>
+                        <span>Refreshing the page</span>
+                    </li>
+                    <li class="flex items-start space-x-v0-sm">
+                        <span class="text-v0-blue-600 mt-1">•</span>
+                        <span>Waiting a few minutes and trying again</span>
+                    </li>
+                    <li class="flex items-start space-x-v0-sm">
+                        <span class="text-v0-blue-600 mt-1">•</span>
+                        <span>Going back to the previous page</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-v0-md">
+            <div class="flex flex-col sm:flex-row gap-v0-md justify-center">
+                <button onclick="location.reload()" class="btn-v0-primary">
+                    Refresh Page
+                </button>
+                <button onclick="history.back()" class="btn-v0-secondary">
+                    Go Back
+                </button>
+            </div>
+            <div class="text-center">
+                <p class="text-v0-detail text-v0-gray-500 mb-v0-sm">
+                    If the problem persists, please contact support:
+                </p>
+                <a href="mailto:coad-fablab@lsu.edu" class="text-v0-blue-600 hover:underline text-v0-body">
+                    coad-fablab@lsu.edu
+                </a>
+            </div>
+        </div>
+
+        <!-- Technical Info (for staff) -->
+        <div class="mt-v0-2xl text-center">
+            <details class="text-left">
+                <summary class="text-v0-detail text-v0-gray-500 cursor-pointer hover:text-v0-gray-700">
+                    Technical Details (for staff)
+                </summary>
+                <div class="mt-v0-md p-v0-md bg-v0-gray-100 rounded-v0 font-mono text-v0-sm text-v0-gray-700">
+                    <p>Error Type: 500 Internal Server Error</p>
+                    <p>Timestamp: {{ moment().format('YYYY-MM-DD HH:mm:ss') if moment else 'N/A' }}</p>
+                    <p>User Agent: <span class="text-xs break-all">{{ request.headers.get('User-Agent', 'Unknown') if request else 'Unknown' }}</span></p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>
+{% endblock %} 
