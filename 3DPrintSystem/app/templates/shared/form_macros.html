@@ -1,39 +1,39 @@
 <!-- Reusable Form Field Component -->
 {% macro text_field(name, label, type="text", placeholder="", required=true, min_length=None, max_length=None, hint=None) %}
 <div>
-    <label for="{{ name }}" class="form-label">{{ label }}</label>
+    <label for="{{ name }}" class="text-v0-detail text-v0-gray-700 font-medium mb-v0-sm block">{{ label }}</label>
     <input 
         type="{{ type }}" 
         id="{{ name }}" 
         name="{{ name }}" 
         x-model="form.{{ name | replace('_', '') | replace('-', '') }}"
         @blur="validateField('{{ name | replace('_', '') | replace('-', '') }}')"
-        :class="{ 'form-input--error': errors.{{ name | replace('_', '') | replace('-', '') }} }"
-        class="form-input w-full"
+        :class="{ 'border-v0-red-500 ring-v0-red-200': errors.{{ name | replace('_', '') | replace('-', '') }} }"
+        class="input-v0 w-full"
         {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
         {% if required %}required{% endif %}
         {% if min_length %}minlength="{{ min_length }}"{% endif %}
         {% if max_length %}maxlength="{{ max_length }}"{% endif %}
     >
     <template x-if="errors.{{ name | replace('_', '') | replace('-', '') }}">
-        <p class="form-error" x-text="errors.{{ name | replace('_', '') | replace('-', '') }}"></p>
+        <p class="text-v0-sm text-v0-red-600 mt-v0-xs" x-text="errors.{{ name | replace('_', '') | replace('-', '') }}"></p>
     </template>
     {% if hint %}
-        <p class="form-hint">{{ hint }}</p>
+        <p class="text-v0-sm text-v0-gray-500 mt-v0-xs">{{ hint }}</p>
     {% endif %}
 </div>
 {% endmacro %}
 
 {% macro select_field(name, label, options, required=true, hint=None, disabled_condition=None) %}
 <div>
-    <label for="{{ name }}" class="form-label">{{ label }}</label>
+    <label for="{{ name }}" class="text-v0-detail text-v0-gray-700 font-medium mb-v0-sm block">{{ label }}</label>
     <select 
         id="{{ name }}" 
         name="{{ name }}" 
         x-model="form.{{ name | replace('_', '') | replace('-', '') }}"
         @change="validateField('{{ name | replace('_', '') | replace('-', '') }}')"
-        :class="{ 'form-select--error': errors.{{ name | replace('_', '') | replace('-', '') }} }"
-        class="form-select w-full"
+        :class="{ 'border-v0-red-500 ring-v0-red-200': errors.{{ name | replace('_', '') | replace('-', '') }} }"
+        class="input-v0 w-full"
         {% if disabled_condition %}:disabled="{{ disabled_condition }}"{% endif %}
         {% if required %}required{% endif %}
     >
@@ -43,10 +43,10 @@
         {% endfor %}
     </select>
     <template x-if="errors.{{ name | replace('_', '') | replace('-', '') }}">
-        <p class="form-error" x-text="errors.{{ name | replace('_', '') | replace('-', '') }}"></p>
+        <p class="text-v0-sm text-v0-red-600 mt-v0-xs" x-text="errors.{{ name | replace('_', '') | replace('-', '') }}"></p>
     </template>
     {% if hint %}
-        <p class="form-hint">{{ hint }}</p>
+        <p class="text-v0-sm text-v0-gray-500 mt-v0-xs">{{ hint }}</p>
     {% endif %}
 </div>
 {% endmacro %} 

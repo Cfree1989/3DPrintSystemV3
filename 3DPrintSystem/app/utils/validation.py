@@ -53,6 +53,22 @@ def validate_file(file: Any, field_name: str, allowed_types: Optional[List[str]]
     if max_size_mb and file.content_length > max_size_mb * 1024 * 1024:
         raise ValidationError(f"{field_name} must be less than {max_size_mb}MB")
 
+def validate_file_required(file: Any, field_name: str, display_name: str = None) -> None:
+    """Validate that a required file is uploaded"""
+    display = display_name or field_name
+    if not file or not file.filename:
+        raise ValidationError(f"{display} is required")
+    
+    # Additional file validation
+    allowed_extensions = ['.stl', '.obj', '.3mf']
+    filename = file.filename.lower()
+    if not any(filename.endswith(ext) for ext in allowed_extensions):
+        raise ValidationError(f"{display} must be a 3D model file (.stl, .obj, or .3mf)")
+    
+    # Check file size (100MB limit)
+    if hasattr(file, 'content_length') and file.content_length and file.content_length > 100 * 1024 * 1024:
+        raise ValidationError(f"{display} must be less than 100MB")
+
 def validate_form_data(schema: Dict[str, List[callable]]) -> Dict[str, Any]:
     """Validate form data against a schema"""
     errors = {}

@@ -4,7 +4,7 @@
 {% block title %}Submit a Print Job{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
+<div class="container-v0-page">
     {% include 'student/submission/components/_form_header.html' %}
     {% include 'student/submission/components/_guidelines_warning.html' %}
 
@@ -39,7 +39,7 @@
             }
         }"""
     ) %}
-        <div class="space-y-10">
+        <div class="space-y-v0-xl">
             {% include 'student/submission/components/_personal_info_fields.html' %}
             {% include 'student/submission/components/_print_method_selection.html' %}
             {% include 'student/submission/components/_printer_selection.html' %}
@@ -47,7 +47,7 @@
             {% include 'student/submission/components/_consent_and_upload.html' %}
         </div>
         
-        <div class="mt-8 pt-8 border-t border-gray-200 flex items-center justify-end space-x-4">
+        <div class="mt-v0-xl pt-v0-xl border-t border-v0-border flex items-center justify-end gap-v0-base">
             {{ reset_button(text='Reset Form') }}
             {{ submit_button(text='Submit Job') }}
         </div>
