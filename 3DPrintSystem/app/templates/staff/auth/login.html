@@ -1,23 +1,166 @@
 {% extends 'base/base.html' %}
+{% from "shared/components/_loading_states.html" import loading_spinner, form_loading_state %}
+
 {% block title %}Staff Login{% endblock %}
+
 {% block content %}
-<div class="max-w-md mx-auto bg-white p-8 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4">Staff Login</h1>
-    <form method="post" class="space-y-4">
-        <div>
-            <label for="password" class="block font-semibold">Password:</label>
-            <input type="password" id="password" name="password" required class="w-full border rounded px-3 py-2">
+<div class="container-v0-page min-h-[60vh] flex items-center justify-center">
+    <div class="card-v0 p-v0-2xl max-w-md w-full mx-auto">
+        <!-- Login Header -->
+        <div class="text-center mb-v0-2xl">
+            <div class="text-4xl mb-v0-lg">🔐</div>
+            <h1 class="text-v0-dashboard-title text-v0-gray-900 mb-v0-sm">
+                Staff Login
+            </h1>
+            <p class="text-v0-body text-v0-gray-600">
+                Enter the staff password to access the dashboard
+            </p>
         </div>
-        <button type="submit" class="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
-    </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="mt-4">
-        {% for category, message in messages %}
-          <li class="text-sm {% if category == 'danger' %}text-red-600{% elif category == 'success' %}text-green-600{% else %}text-black{% endif %}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+
+        <!-- Login Form -->
+        <form 
+            method="post" 
+            class="space-y-v0-lg"
+            x-data="{ 
+                isSubmitting: false,
+                password: '',
+                showPassword: false,
+                async submitForm(e) {
+                    if (this.isSubmitting) return;
+                    this.isSubmitting = true;
+                    // Form will submit naturally - this just shows loading state
+                    setTimeout(() => {
+                        if (!window.location.href.includes('dashboard')) {
+                            this.isSubmitting = false;
+                        }
+                    }, 2000);
+                }
+            }"
+            @submit="submitForm"
+        >
+            <!-- Password Field -->
+            <div class="space-y-v0-sm">
+                <label for="password" class="text-v0-detail text-v0-gray-700 font-medium block">
+                    Staff Password *
+                </label>
+                <div class="relative">
+                    <input 
+                        :type="showPassword ? 'text' : 'password'"
+                        id="password" 
+                        name="password" 
+                        x-model="password"
+                        required 
+                        class="input-v0 w-full pr-12"
+                        placeholder="Enter staff password"
+                        autocomplete="current-password"
+                        :disabled="isSubmitting"
+                    >
+                    <button 
+                        type="button"
+                        @click="showPassword = !showPassword"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-v0-gray-400 hover:text-v0-gray-600"
+                        :disabled="isSubmitting"
+                        tabindex="-1"
+                    >
+                        <span x-text="showPassword ? '🙈' : '👁️'" class="text-lg"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+                type="submit" 
+                class="btn-v0-primary w-full flex justify-center items-center py-v0-md px-v0-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="isSubmitting || !password.trim()"
+            >
+                <span x-show="!isSubmitting">Access Dashboard</span>
+                <span x-show="isSubmitting" class="flex items-center">
+                    {{ loading_spinner(size="sm", color="white") }}
+                    <span class="ml-v0-sm">Authenticating...</span>
+                </span>
+            </button>
+
+            <!-- Security Notice -->
+            <div class="bg-v0-blue-50 border-l-4 border-v0-blue-400 p-v0-md rounded-v0 mt-v0-lg">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <span class="text-v0-blue-500">🛡️</span>
+                    </div>
+                    <div class="ml-v0-sm">
+                        <p class="text-v0-body text-v0-blue-800">
+                            <strong class="font-medium">Security Notice:</strong> This is a staff-only area. Unauthorized access is prohibited.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Enhanced Error Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mt-v0-lg space-y-v0-sm">
+                    {% for category, message in messages %}
+                        <div class="{% if category == 'danger' or category == 'error' %}bg-v0-red-50 border-l-4 border-v0-red-400 text-v0-red-800{% elif category == 'success' %}bg-v0-green-50 border-l-4 border-v0-green-400 text-v0-green-800{% elif category == 'warning' %}bg-v0-orange-50 border-l-4 border-v0-orange-400 text-v0-orange-800{% else %}bg-v0-blue-50 border-l-4 border-v0-blue-400 text-v0-blue-800{% endif %} p-v0-md rounded-v0">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    {% if category == 'danger' or category == 'error' %}
+                                        <span class="text-v0-red-500">❌</span>
+                                    {% elif category == 'success' %}
+                                        <span class="text-v0-green-500">✅</span>
+                                    {% elif category == 'warning' %}
+                                        <span class="text-v0-orange-500">⚠️</span>
+                                    {% else %}
+                                        <span class="text-v0-blue-500">ℹ️</span>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-v0-sm">
+                                    <p class="text-v0-body font-medium">
+                                        {% if category == 'danger' or category == 'error' %}
+                                            Authentication Failed
+                                        {% elif category == 'success' %}
+                                            Success
+                                        {% elif category == 'warning' %}
+                                            Warning
+                                        {% else %}
+                                            Information
+                                        {% endif %}
+                                    </p>
+                                    <p class="text-v0-body mt-v0-xs">{{ message }}</p>
+                                    {% if category == 'danger' or category == 'error' %}
+                                    <p class="text-v0-detail mt-v0-sm">
+                                        Please verify the staff password and try again.
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Help Section -->
+        <div class="mt-v0-2xl pt-v0-lg border-t border-v0-border text-center">
+            <p class="text-v0-detail text-v0-gray-500 mb-v0-sm">
+                Need help with access?
+            </p>
+            <a href="mailto:coad-fablab@lsu.edu" class="text-v0-blue-600 hover:underline text-v0-body">
+                Contact System Administrator
+            </a>
+        </div>
+    </div>
 </div>
+
+<!-- Form Loading Overlay -->
+{{ form_loading_state() }}
+
+<!-- Auto-focus password field -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('password');
+    if (passwordField && !passwordField.value) {
+        passwordField.focus();
+    }
+});
+</script>
 {% endblock %} 

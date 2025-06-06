@@ -1,0 +1,303 @@
+/* V0.dev Micro-interactions and Animations */
+
+/* Button Hover Enhancements */
+.btn-v0-primary,
+.btn-v0-secondary,
+.btn-v0-success,
+.btn-v0-danger,
+.btn-v0-warning {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+}
+
+.btn-v0-primary:hover,
+.btn-v0-secondary:hover,
+.btn-v0-success:hover,
+.btn-v0-danger:hover,
+.btn-v0-warning:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 15px -5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-v0-primary:active,
+.btn-v0-secondary:active,
+.btn-v0-success:active,
+.btn-v0-danger:active,
+.btn-v0-warning:active {
+    transform: translateY(0);
+    transition: all 0.1s;
+}
+
+/* Card Hover Effects */
+.card-v0 {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-v0:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Job Card Interactive Enhancements */
+.job-card-v0 {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.job-card-v0:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.15);
+}
+
+.job-card-v0::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.job-card-v0:hover::before {
+    opacity: 1;
+}
+
+/* Input Field Focus Animations */
+.input-v0 {
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.input-v0:focus {
+    transform: scale(1.01);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Tab Animations */
+.tab-v0-active,
+.tab-v0-inactive {
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-v0-inactive:hover {
+    transform: translateY(-1px);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Badge Pulse Animation for New Items */
+.badge-v0-new {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(249, 115, 22, 0.5);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.8);
+        transform: scale(1.05);
+    }
+}
+
+/* Loading State Enhancements */
+.loading-spinner {
+    animation: spin-enhanced 1s linear infinite;
+}
+
+@keyframes spin-enhanced {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modal Entrance Animations */
+.modal-v0 {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-v0.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+    transition: backdrop-filter 0.3s ease;
+}
+
+/* Success Checkmark Animation */
+.success-checkmark {
+    animation: checkmark-draw 0.6s ease-in-out;
+}
+
+@keyframes checkmark-draw {
+    0% {
+        transform: scale(0) rotate(45deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2) rotate(45deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(45deg);
+        opacity: 1;
+    }
+}
+
+/* Error Shake Animation */
+.error-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Navigation Smooth Transitions */
+nav a {
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #3b82f6;
+    transition: width 0.3s ease;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+/* Alert Slide-in Animation */
+.alert-v0 {
+    animation: slide-in 0.4s ease-out;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Dropdown Menu Animations */
+.dropdown-menu {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Progress Bar Animations */
+.progress-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: progress-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes progress-shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Stagger Animation for Lists */
+.stagger-animation > * {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: stagger-fade-in 0.5s ease-out forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes stagger-fade-in {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth Scrolling Enhancement */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus Visible Enhancements */
+*:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    outline-style: solid;
+    transition: outline 0.2s ease;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .card-v0,
+    .btn-v0-primary,
+    .btn-v0-secondary {
+        border: 2px solid;
+    }
+} 
