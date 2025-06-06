@@ -1,29 +1,30 @@
 <!-- V0.dev Job Card Component -->
 <div class="card-v0 job-card-v0 {% if job.staff_viewed_at is none %}card-v0-unreviewed{% endif %} 
-            hover:shadow-v0-lg transition-all duration-200 ease-in-out" 
+            hover:shadow-v0-lg transition-all duration-200 ease-in-out
+            w-full max-w-full" 
      data-job-id="{{ job.id }}">
     <!-- Status Badge -->
     {% if job.staff_viewed_at is none %}
-    <div class="flex items-center mb-v0-lg">
+    <div class="flex items-center mb-v0-lg px-v0-lg sm:px-v0-xl">
         <span class="badge-v0-new bg-v0-orange-100 text-v0-orange-700 px-v0-base py-v0-xs rounded-full text-v0-sm font-medium
                      hover:bg-v0-orange-200 transition-colors duration-200">NEW</span>
     </div>
     {% endif %}
 
     <!-- Main Content -->
-    <div class="job-card-content-v0 p-v0-lg">
-        <div class="flex items-start justify-between gap-v0-xl">
+    <div class="job-card-content-v0 p-v0-lg sm:p-v0-xl">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-v0-lg sm:gap-v0-xl">
             <!-- Left Column: Student Info -->
             <div class="flex-1 min-w-0 space-y-v0-md">
                 <div>
                     <h3 class="text-v0-job-title mb-v0-xs hover:text-v0-primary transition-colors duration-200">{{ job.student_name }}</h3>
-                    <p class="text-v0-body text-v0-gray-600 hover:text-v0-gray-800 transition-colors duration-200">{{ job.display_name or job.original_filename }}</p>
+                    <p class="text-v0-body text-v0-gray-600 hover:text-v0-gray-800 transition-colors duration-200 break-words">{{ job.display_name or job.original_filename }}</p>
                 </div>
                 
                 <div class="grid-v0-details text-v0-detail space-y-v0-xs">
                     <div class="flex items-center gap-v0-base group">
                         <span class="text-v0-gray-500 group-hover:text-v0-primary transition-colors duration-200">📧</span>
-                        <span class="group-hover:text-v0-gray-800 transition-colors duration-200">{{ job.student_email }}</span>
+                        <span class="group-hover:text-v0-gray-800 transition-colors duration-200 break-all">{{ job.student_email }}</span>
                     </div>
                     <div class="flex items-center gap-v0-base group">
                         <span class="text-v0-gray-500 group-hover:text-v0-primary transition-colors duration-200">🎓</span>
@@ -39,13 +40,13 @@
             </div>
 
             <!-- Right Column: Job Details -->
-            <div class="flex flex-col items-end gap-v0-md">
+            <div class="flex flex-col items-start sm:items-end gap-v0-md mt-v0-lg sm:mt-0">
                 <div class="text-v0-detail text-v0-gray-500 hover:text-v0-gray-700 transition-colors duration-200">
                     <span class="job-age" data-created-at="{{ job.created_at.isoformat() if job.created_at }}"></span>
                 </div>
                 
                 {% if job.printer or job.color or job.material %}
-                <div class="flex flex-col items-end gap-v0-xs">
+                <div class="flex flex-col items-start sm:items-end gap-v0-xs">
                     {% if job.printer %}
                     <div class="text-v0-body font-medium hover:text-v0-primary transition-colors duration-200">{{ job.printer | printer_name }}</div>
                     {% endif %}
@@ -69,35 +70,38 @@
 
     <!-- Action Buttons -->
     {% if current_status == 'UPLOADED' %}
-    <div class="job-card-actions-v0 border-t border-v0-border p-v0-lg">
-        <div class="flex items-center justify-between">
+    <div class="job-card-actions-v0 border-t border-v0-border p-v0-lg sm:p-v0-xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-v0-lg sm:gap-v0-base">
             <!-- Primary Actions -->
-            <div class="button-group-v0 flex items-center gap-v0-base">
+            <div class="button-group-v0 flex flex-wrap items-center gap-v0-base">
                 <button onclick="handleApprovalClick(event, '{{ job.id }}')" 
                         class="btn-v0-success px-v0-lg py-v0-base rounded-lg bg-v0-green-600 text-white font-medium
                                hover:bg-v0-green-700 focus:ring-2 focus:ring-v0-green-500 focus:ring-offset-2
                                transform hover:scale-105 active:scale-95
-                               transition-all duration-200 ease-in-out">
+                               transition-all duration-200 ease-in-out
+                               w-full sm:w-auto">
                     Approve
                 </button>
                 <button onclick="handleRejectionClick(event, '{{ job.id }}')"
                         class="btn-v0-danger px-v0-lg py-v0-base rounded-lg bg-v0-red-600 text-white font-medium
                                hover:bg-v0-red-700 focus:ring-2 focus:ring-v0-red-500 focus:ring-offset-2
                                transform hover:scale-105 active:scale-95
-                               transition-all duration-200 ease-in-out">
+                               transition-all duration-200 ease-in-out
+                               w-full sm:w-auto">
                     Reject
                 </button>
                 <button onclick="event.stopPropagation(); event.preventDefault();" 
                         class="btn-v0-secondary px-v0-lg py-v0-base rounded-lg bg-v0-gray-100 text-v0-gray-700 font-medium
                                hover:bg-v0-gray-200 focus:ring-2 focus:ring-v0-gray-500 focus:ring-offset-2
                                transform hover:scale-105 active:scale-95
-                               transition-all duration-200 ease-in-out">
+                               transition-all duration-200 ease-in-out
+                               w-full sm:w-auto">
                     📋 View Details
                 </button>
             </div>
             
             <!-- Review Status -->
-            <div class="flex items-center gap-v0-base">
+            <div class="flex items-center gap-v0-base justify-center sm:justify-end">
                 {% if job.staff_viewed_at is none %}
                 <span class="badge-v0-status bg-v0-orange-100 text-v0-orange-700 px-v0-base py-v0-xs rounded-full text-v0-sm font-medium
                             hover:bg-v0-orange-200 transition-colors duration-200">Unreviewed</span>
@@ -106,7 +110,8 @@
                             class="btn-v0-warning px-v0-lg py-v0-base rounded-lg bg-v0-orange-100 text-v0-orange-700 font-medium
                                    hover:bg-v0-orange-200 focus:ring-2 focus:ring-v0-orange-500 focus:ring-offset-2
                                    transform hover:scale-105 active:scale-95
-                                   transition-all duration-200 ease-in-out"
+                                   transition-all duration-200 ease-in-out
+                                   w-full sm:w-auto"
                             title="Review options">
                         Review
                     </button>
@@ -129,7 +134,8 @@
                             class="btn-v0-success px-v0-lg py-v0-base rounded-lg bg-v0-green-100 text-v0-green-700 font-medium
                                    hover:bg-v0-green-200 focus:ring-2 focus:ring-v0-green-500 focus:ring-offset-2
                                    transform hover:scale-105 active:scale-95
-                                   transition-all duration-200 ease-in-out"
+                                   transition-all duration-200 ease-in-out
+                                   w-full sm:w-auto"
                             title="Review options">
                         ⚙️ Review
                     </button>

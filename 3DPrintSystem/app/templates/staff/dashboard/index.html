@@ -1056,6 +1056,131 @@ window.addEventListener('beforeunload', function() {
 
 // Continue with the rest of the JavaScript functions...
 // [Additional JavaScript functions continue here]
+
+// Modal Management
+function showApprovalModal(jobId) {
+    document.getElementById('approval-job-id').value = jobId;
+    showModal('approval-modal');
+    
+    // Reset form and cost display
+    const form = document.getElementById('approval-form');
+    form.reset();
+    const costDisplay = document.getElementById('approval-cost-display');
+    costDisplay.classList.add('hidden');
+    
+    // Add event listeners for cost calculation
+    const weightInput = document.getElementById('weight_g');
+    const timeInput = document.getElementById('time_hours');
+    const materialSelect = document.getElementById('material');
+    
+    [weightInput, timeInput, materialSelect].forEach(input => {
+        input.addEventListener('input', calculateCost);
+    });
+}
+
+function showRejectionModal(jobId) {
+    document.getElementById('rejection-job-id').value = jobId;
+    showModal('rejection-modal');
+    
+    // Reset form
+    const form = document.getElementById('rejection-form');
+    form.reset();
+}
+
+// Form Submission
+async function submitApproval() {
+    const form = document.getElementById('approval-form');
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch('/api/jobs/approve', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) throw new Error('Failed to approve job');
+        
+        showToast('Job approved successfully', 'success');
+        closeModal('approval-modal');
+        refreshDashboard();
+    } catch (error) {
+        console.error('Error approving job:', error);
+        showToast('Failed to approve job', 'error');
+    }
+}
+
+async function submitRejection() {
+    const form = document.getElementById('rejection-form');
+    const formData = new FormData(form);
+    
+    // Validate that at least one reason is selected
+    const reasons = formData.getAll('rejection_reasons');
+    if (reasons.length === 0) {
+        showToast('Please select at least one rejection reason', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/jobs/reject', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) throw new Error('Failed to reject job');
+        
+        showToast('Job rejected successfully', 'success');
+        closeModal('rejection-modal');
+        refreshDashboard();
+    } catch (error) {
+        console.error('Error rejecting job:', error);
+        showToast('Failed to reject job', 'error');
+    }
+}
+
+// Cost Calculation
+function calculateCost() {
+    const weight = parseFloat(document.getElementById('weight_g').value) || 0;
+    const time = parseFloat(document.getElementById('time_hours').value) || 0;
+    const material = document.getElementById('material').value;
+    
+    let costPerGram = 0;
+    switch (material) {
+        case 'Filament':
+            costPerGram = 0.10;
+            break;
+        case 'Resin':
+            costPerGram = 0.20;
+            break;
+        default:
+            costPerGram = 0.15; // Default to average
+    }
+    
+    let cost = weight * costPerGram;
+    cost = Math.max(cost, 3.00); // Minimum charge of $3.00
+    
+    const costDisplay = document.getElementById('approval-cost-display');
+    const costAmount = document.getElementById('approval-cost-amount');
+    
+    if (weight > 0 && time > 0) {
+        costAmount.textContent = cost.toFixed(2);
+        costDisplay.classList.remove('hidden');
+    } else {
+        costDisplay.classList.add('hidden');
+    }
+}
+
+// Event Handlers
+function handleApprovalClick(event, jobId) {
+    event.stopPropagation();
+    event.preventDefault();
+    showApprovalModal(jobId);
+}
+
+function handleRejectionClick(event, jobId) {
+    event.stopPropagation();
+    event.preventDefault();
+    showRejectionModal(jobId);
+}
 </script>
 
 <!-- Include Modal Components -->

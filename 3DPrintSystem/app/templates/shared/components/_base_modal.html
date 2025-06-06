@@ -1,0 +1,90 @@
+<!-- Base Modal Component -->
+<div id="{{ modal_id }}" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" role="dialog" aria-modal="true" aria-labelledby="{{ modal_id }}-title">
+    <div class="w-full h-full flex items-center justify-center p-4" @click="closeOnBackdropClick && close()">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full transform scale-95 transition-all duration-300" @click.stop>
+            <div class="p-6 relative">
+                <!-- Close button -->
+                <button onclick="closeModal('{{ modal_id }}')" 
+                        class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-gray-600" 
+                        aria-label="Close modal">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                
+                <!-- Modal Header -->
+                <div class="flex items-center mb-4">
+                    {% if icon %}
+                    <div class="text-2xl mr-3">{{ icon }}</div>
+                    {% endif %}
+                    <h3 id="{{ modal_id }}-title" class="text-lg font-semibold text-gray-900">{{ title }}</h3>
+                </div>
+                
+                <!-- Modal Description -->
+                {% if description %}
+                <div class="mb-6 text-sm text-gray-600">
+                    {{ description }}
+                </div>
+                {% endif %}
+                
+                <!-- Modal Content -->
+                <div class="modal-content">
+                    {{ content | safe }}
+                </div>
+                
+                <!-- Modal Footer -->
+                {% if show_footer %}
+                <div class="flex space-x-3 mt-6 pt-4 border-t border-gray-200">
+                    {% if cancel_text %}
+                    <button onclick="closeModal('{{ modal_id }}')" 
+                            class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                        {{ cancel_text }}
+                    </button>
+                    {% endif %}
+                    {% if confirm_text %}
+                    <button onclick="{{ confirm_action }}" 
+                            id="{{ modal_id }}-confirm-btn"
+                            class="flex-1 px-4 py-2 {{ confirm_button_class }} text-white rounded-lg hover:opacity-90 transition-colors duration-200">
+                        {{ confirm_text }}
+                    </button>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        // Reset any form fields if needed
+        const form = modal.querySelector('form');
+        if (form) form.reset();
+    }
+}
+
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        // Focus the first interactive element
+        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusableElements.length > 0) {
+            focusableElements[0].focus();
+        }
+    }
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const openModal = document.querySelector('.fixed.inset-0:not(.hidden)');
+        if (openModal) {
+            closeModal(openModal.id);
+        }
+    }
+});
+</script> 
