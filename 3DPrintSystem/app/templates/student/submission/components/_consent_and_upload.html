@@ -1,22 +1,19 @@
-<!-- Consent and File Upload -->
-<div class="form-group-apple">
-    <label for="acknowledged_minimum_charge" class="label-apple">I understand there is a minimum $3.00 charge for all print jobs, and that the final cost may be higher based on material and time.</label>
-    <select id="acknowledged_minimum_charge" name="acknowledged_minimum_charge" required class="select-apple">
-        <option value="">-- Select --</option>
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-    </select>
-</div>
+{% from "shared/form_macros.html" import checkbox_field, input_field %}
 
-<div class="form-group-apple">
-    <label for="file" class="label-apple">Upload 3D Model File (.stl, .obj, .3mf)</label>
-    <input type="file" 
-           id="file"
-           name="file" 
-           required 
-           accept=".stl,.obj,.3mf" 
-           class="input-apple file:mr-4 file:py-2 file:px-4 file:rounded-apple file:border-0 file:bg-apple-blue-50 file:text-apple-blue-700 hover:file:bg-apple-blue-100">
-    <small class="text-apple-footnote text-apple-gray-500 mt-1 block">
-        Accepted formats: .stl, .obj, .3mf (maximum 50MB)
-    </small>
+<div class="space-y-6">
+    {{ checkbox_field(
+        name='acknowledged_minimum_charge',
+        label='I acknowledge the $3.00 minimum charge for all prints.',
+        value='yes',
+        required=true,
+        validation_rules=['required']
+    ) }}
+
+    {{ input_field(
+        name='file',
+        label='Upload File',
+        type='file',
+        required=true,
+        validation_rules=['required', 'fileType:["stl", "obj", "3mf"]', 'fileSize:100']
+    ) }}
 </div> 

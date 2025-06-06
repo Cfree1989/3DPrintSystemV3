@@ -1,20 +1,20 @@
+{% from "shared/form_macros.html" import select_field %}
+
 <!-- Printer Selection -->
-<div class="form-group-apple">
-    <label for="printer" class="label-apple">Which printer do you think your model fits on?</label>
-    <select id="printer" 
-            name="printer" 
-            required 
-            class="select-apple"
-            :disabled="!printMethod"
-            :class="{ 'disabled-apple': !printMethod }">
-        <option value="">-- Select --</option>
-        <template x-for="printer in printerOptions" :key="printer">
-            <option :value="printer" x-text="printer"></option>
-        </template>
-    </select>
-    <template x-if="!printMethod">
-        <small class="text-apple-footnote text-apple-gray-400 mt-1 block">
-            Please select a print method first
-        </small>
-    </template>
-</div> 
+{{ select_field(
+    name='printer',
+    label='Printer',
+    required=true,
+    validation_rules=['required'],
+    options_alpine="printers[printMethod] || []",
+    attributes={
+        'x-model': 'printer',
+        ':disabled': "!printMethod"
+    }
+) }}
+
+<template x-if="!printMethod">
+    <small class="text-apple-footnote text-apple-gray-400 mt-1 block">
+        Please select a print method first
+    </small>
+</template> 

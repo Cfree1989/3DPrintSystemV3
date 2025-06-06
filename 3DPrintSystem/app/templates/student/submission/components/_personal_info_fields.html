@@ -1,46 +1,36 @@
-<!-- Personal Information Fields -->
-<div class="form-group-apple">
-    <label for="student_name" class="label-apple">Full Name</label>
-    <input type="text" 
-           id="student_name"
-           name="student_name" 
-           required 
-           minlength="2" 
-           maxlength="100" 
-           class="input-apple">
-</div>
+{% from "shared/form_macros.html" import input_field %}
 
-<div class="form-group-apple">
-    <label for="student_email" class="label-apple">Email Address</label>
-    <input type="email" 
-           id="student_email"
-           name="student_email" 
-           required 
-           maxlength="100" 
-           class="input-apple">
-</div>
+<div class="space-y-6">
+    {{ input_field(
+        name='student_name',
+        label='Full Name',
+        placeholder='Enter your full name',
+        required=true,
+        validation_rules=['required', 'minLength:2', 'maxLength:100']
+    ) }}
 
-<div class="form-group-apple">
-    <label for="discipline" class="label-apple">Discipline/Major</label>
-    <select id="discipline" name="discipline" required class="select-apple">
-        <option value="">-- Select Discipline --</option>
-        <option>Art</option>
-        <option>Architecture</option>
-        <option>Landscape Architecture</option>
-        <option>Interior Design</option>
-        <option>Engineering</option>
-        <option>Hobby/Personal</option>
-        <option>Other</option>
-    </select>
-</div>
+    {{ input_field(
+        name='student_email',
+        label='Email Address',
+        type='email',
+        placeholder='Enter your email address',
+        required=true,
+        validation_rules=['required', 'email']
+    ) }}
 
-<div class="form-group-apple">
-    <label for="class_number" class="label-apple">Class Number (e.g., ARCH 4000 or N/A)</label>
-    <input type="text" 
-           id="class_number"
-           name="class_number" 
-           required 
-           maxlength="50" 
-           placeholder="ARCH 4000"
-           class="input-apple">
+    {{ input_field(
+        name='discipline',
+        label='Discipline',
+        placeholder='e.g., Architecture, Industrial Design',
+        required=true,
+        validation_rules=['required', 'minLength:2', 'maxLength:50']
+    ) }}
+
+    {{ input_field(
+        name='class_number',
+        label='Class Number',
+        placeholder='e.g., ARCH-497, ID-345',
+        required=true,
+        validation_rules=['required', 'minLength:2', 'maxLength:20']
+    ) }}
 </div> 

@@ -1,54 +1,56 @@
-{% extends 'base/base.html' %}
-{% block title %}Submit 3D Print Job{% endblock %}
+{% extends "base/base.html" %}
+{% from "shared/components/_form.html" import form, submit_button, reset_button %}
+
+{% block title %}Submit a Print Job{% endblock %}
 
 {% block content %}
-<div id="main-content" class="max-w-4xl mx-auto">
-    <!-- Form Header -->
+<div class="container mx-auto px-4 py-8">
     {% include 'student/submission/components/_form_header.html' %}
-
-    <!-- Important Guidelines Warning -->
     {% include 'student/submission/components/_guidelines_warning.html' %}
 
-    <!-- Main Form -->
-    <div class="card-apple p-8">
-        <form method="post" enctype="multipart/form-data" class="space-apple-lg" x-data="{
+    {% set validation_schema = {
+        'student_name': ['required', 'minLength:2', 'maxLength:100'],
+        'student_email': ['required', 'email'],
+        'discipline': ['required', 'minLength:2', 'maxLength:50'],
+        'class_number': ['required', 'minLength:2', 'maxLength:20'],
+        'print_method': ['required'],
+        'color': ['required'],
+        'printer': ['required'],
+        'acknowledged_minimum_charge': ['required'],
+        'file': ['required', 'fileType:["stl", "obj", "3mf"]', 'fileSize:100']
+    } %}
+
+    {% call form(
+        action=url_for('main.submit'),
+        method="POST",
+        enctype="multipart/form-data",
+        validation_schema=validation_schema,
+        alpine_data="""{
             printMethod: '',
-            filamentColors: [
-                'True Red','True Orange','Light Orange','True Yellow','Dark Yellow','Lime Green','Green','Forest Green','Blue','Electric Blue','Midnight Purple','Light Purple','Clear','True White','Gray','True Black','Brown','Copper','Bronze','True Silver','True Gold','Glow in the Dark','Color Changing'
-            ],
-            resinColors: ['Black','White','Gray','Clear'],
-            filamentPrinters: ['Prusa MK4S', 'Prusa XL', 'Raise3D Pro 2 Plus'],
-            resinPrinters: ['Formlabs Form 3'],
-            get colorOptions() {
-                if (this.printMethod === 'Filament') return this.filamentColors;
-                if (this.printMethod === 'Resin') return this.resinColors;
-                return [];
+            printer: '',
+            color: '',
+            colors: {
+                'Filament': ['True Black', 'True White', 'Gray', 'Royal Blue', 'Red', 'Orange', 'Yellow', 'Forest Green'],
+                'Resin': ['White', 'Gray', 'Clear', 'Black', 'Flexible', 'Tough']
             },
-            get printerOptions() {
-                if (this.printMethod === 'Filament') return this.filamentPrinters;
-                if (this.printMethod === 'Resin') return this.resinPrinters;
-                return [];
+            printers: {
+                'Filament': ['Prusa MK4S', 'Prusa Mini', 'Bambu A1 Mini', 'Bambu X1 Carbon'],
+                'Resin': ['Formlabs Form 3', 'Formlabs Form 3L']
             }
-        }">
-            
-            <!-- Personal Information -->
+        }"""
+    ) %}
+        <div class="space-y-10">
             {% include 'student/submission/components/_personal_info_fields.html' %}
-
-            <!-- Print Method and Color Selection -->
             {% include 'student/submission/components/_print_method_selection.html' %}
-
-            <!-- Printer Dimensions Information -->
-            {% include 'student/submission/components/_printer_dimensions_info.html' %}
-
-            <!-- Printer Selection -->
             {% include 'student/submission/components/_printer_selection.html' %}
-
-            <!-- Consent and File Upload -->
+            {% include 'student/submission/components/_printer_dimensions_info.html' %}
             {% include 'student/submission/components/_consent_and_upload.html' %}
-
-            <!-- Submit Button -->
-            {% include 'student/submission/components/_submit_button.html' %}
-        </form>
-    </div>
+        </div>
+        
+        <div class="mt-8 pt-8 border-t border-gray-200 flex items-center justify-end space-x-4">
+            {{ reset_button(text='Reset Form') }}
+            {{ submit_button(text='Submit Job') }}
+        </div>
+    {% endcall %}
 </div>
 {% endblock %} 
