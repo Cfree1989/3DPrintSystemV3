@@ -36,6 +36,22 @@ Rebuilding a Flask-based 3D print job management system for an academic/makerspa
 - Celery/RQ dependencies for async processing
 - ImageMagick (for thumbnail generation)
 
+### File System Dependencies and Issues (NEW ANALYSIS - Dec 2024)
+**Comprehensive dependency analysis completed - identified cleanup opportunities:**
+
+**Active System Architecture:**
+- **Entry Point**: `app.py` → `app/__init__.py` (app factory pattern working correctly)
+- **Active Blueprints**: `main.py` (student routes), `dashboard.py` (staff routes) - both properly registered
+- **Template Inheritance**: `base/base.html` serves as root for all active templates
+- **Modular Components**: Student submission (8 components), staff dashboard (7 components) - all actively used
+- **Static Assets**: Core CSS (`style.css`, `v0dev-animations.css`) and sound files properly referenced
+
+**Critical Issues Identified:**
+1. **Broken Template Reference**: `test/validation_test.html` extends `"base.html"` instead of `"base/base.html"`
+2. **Unregistered Blueprint**: `app/routes/test.py` exists but not registered in app factory
+3. **Missing Error Handlers**: Error templates (404, 500, generic) exist but no `@app.errorhandler` decorators registered
+4. **Orphaned Static Files**: `static/css/input.css` and `static/js/validation.js` not referenced anywhere
+
 ### Job Lifecycle (Event-Driven)
 1. **Uploaded**: Student submits → file stored, metadata.json created, thumbnail task queued
 2. **Pending**: Staff approves → confirmation email sent, awaiting student confirmation
@@ -47,9 +63,35 @@ Rebuilding a Flask-based 3D print job management system for an academic/makerspa
 
 ## High-Level Task Breakdown
 
-### 🎯 CURRENT PRIORITY: Core System Implementation
+### 🎯 IMMEDIATE PRIORITY: Codebase Cleanup (HIGH IMPACT, LOW EFFORT)
 
-#### Phase 1: Database Foundation (NEXT)
+#### Phase 0: File System Cleanup and Fixes (IMMEDIATE - 30 minutes)
+**Objective**: Clean up identified unused files and fix critical template/routing issues
+
+**Tasks**:
+- [ ] **0.1: Remove Unused Files (5 minutes)**
+  - [ ] Delete `static/css/input.css` (not referenced anywhere)
+  - [ ] Delete `static/js/validation.js` (not referenced anywhere)  
+  - [ ] Delete `student/submission/components/_submit_button.html` (unused component)
+  - [ ] Success Criteria: No broken references, cleaner file structure
+
+- [ ] **0.2: Fix Template Issues (10 minutes)**
+  - [ ] Fix `test/validation_test.html` base template reference: `"base.html"` → `"base/base.html"`
+  - [ ] Success Criteria: Test template renders without errors
+
+- [ ] **0.3: Register Error Handlers (10 minutes)**
+  - [ ] Add `@app.errorhandler(404)` and `@app.errorhandler(500)` decorators in `app/__init__.py`
+  - [ ] Point to existing error templates: `errors/404.html`, `errors/500.html`
+  - [ ] Success Criteria: Error pages display properly when triggered
+
+- [ ] **0.4: Blueprint Decision (5 minutes)**
+  - [ ] Either register `test.py` blueprint in app factory OR delete the file entirely
+  - [ ] Recommend: Delete if not needed for core functionality
+  - [ ] Success Criteria: No orphaned route files
+
+### 🎯 NEXT PRIORITY: Core System Implementation
+
+#### Phase 1: Database Foundation (AFTER CLEANUP)
 **Objective**: Establish robust PostgreSQL database with proper models and migrations
 
 **Tasks**:
@@ -179,7 +221,7 @@ Rebuilding a Flask-based 3D print job management system for an academic/makerspa
 - [x] **Phase 3.2**: Student Success Pages Enhancement - COMPLETED ✅
 
 ### 🔄 IN PROGRESS
-**Current Focus**: Ready to proceed with core system implementation (Phase 1)
+**Current Focus**: Phase 0 - Codebase cleanup and fixes (30-minute high-impact task)
 
 ### 📋 PENDING
 - Database setup and configuration
@@ -191,16 +233,15 @@ Rebuilding a Flask-based 3D print job management system for an academic/makerspa
 
 ## Current Status / Progress Tracking
 
-**Last Updated**: Phase 3.2 Student Success Pages Enhancement COMPLETED
+**Last Updated**: Comprehensive Dependency Analysis Completed
 
 **Recently Completed**:
-- ✅ **Success Page Redesign**: Applied v0.dev confirmation patterns to submit success page
-- ✅ **Error Page Enhancement**: Created v0.dev error page templates (404, 500, generic)
-- ✅ **Navigation Consistency**: Updated base template with v0.dev styling for seamless experience
-- ✅ **Loading States**: Added professional loading indicators component
-- ✅ **Responsive Polish**: Verified mobile experience across student pages
+- ✅ **Complete Dependency Mapping**: Analyzed all Python imports, template relationships, and static file usage
+- ✅ **File System Audit**: Identified active vs unused files across entire codebase
+- ✅ **Architecture Validation**: Confirmed v0.dev integration is clean with minimal redundancy
+- ✅ **Issue Identification**: Found 4 critical cleanup opportunities for immediate resolution
 
-**Immediate Next Step**: Phase 1.1 - Create Job and Event models with PostgreSQL configuration
+**Immediate Next Step**: Phase 0.1 - Remove unused files (5-minute task with immediate impact)
 
 **Blockers**: None identified - ready to proceed with database implementation
 
@@ -241,6 +282,16 @@ Successfully completed ALL phases of the v0.dev integration project:
 - Production-ready implementation
 
 **READY FOR CORE SYSTEM IMPLEMENTATION**: The v0.dev interface foundation is complete. Ready to proceed with database implementation and core functionality development.
+
+**🔍 DEPENDENCY ANALYSIS COMPLETE**: Comprehensive codebase audit completed with the following findings:
+- **Architecture Status**: Clean, well-organized Flask application with proper separation of concerns
+- **Template System**: Excellent modular structure with 15 active components, minimal redundancy
+- **File Dependencies**: 4 minor cleanup opportunities identified for immediate resolution
+- **Blueprint Registration**: All core routes properly registered, one test route needs attention
+- **Static Assets**: Core files actively used, 2 orphaned files ready for removal
+- **Error Handling**: Templates exist but handlers need registration for proper functionality
+
+**IMMEDIATE ACTION REQUIRED**: 30-minute cleanup phase will provide significant value before proceeding with core development.
 
 ## Lessons
 
