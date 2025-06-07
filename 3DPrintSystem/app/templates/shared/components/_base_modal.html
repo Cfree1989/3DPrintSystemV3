@@ -1,3 +1,4 @@
+{% macro base_modal(modal_id, title, description=None, icon=None, content='', show_footer=true, cancel_text='Cancel', confirm_text='Confirm', confirm_action='', confirm_button_class='bg-blue-600 hover:bg-blue-700') %}
 <!-- Base Modal Component -->
 <div id="{{ modal_id }}" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" role="dialog" aria-modal="true" aria-labelledby="{{ modal_id }}-title">
     <div class="w-full h-full flex items-center justify-center p-4" @click="closeOnBackdropClick && close()">
@@ -54,6 +55,7 @@
         </div>
     </div>
 </div>
+{% endmacro %}
 
 <script>
 function closeModal(modalId) {
