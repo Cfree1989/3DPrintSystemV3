@@ -1,0 +1,84 @@
+Python Module Import Tree
+
+app.py (Entry Point)
+├── app/__init__.py (App Factory)
+    ├── app.config.Config
+    ├── app.extensions.db, migrate
+    ├── app.models.Job, Event
+    ├── app.routes.dashboard.bp
+    ├── app.routes.main.bp
+    └── app.utils.helpers (format functions)
+
+app/routes/main.py
+├── app.extensions.db
+├── app.models.job.Job
+├── app.models.event.Event
+├── app.services.file_service.save_uploaded_file
+├── app.utils.form_handler.FormHandler
+└── app.utils.validation (validation functions)
+
+app/routes/dashboard.py
+├── app.models.job.Job
+├── app.models.event.Event
+├── app.extensions.db
+└── app.utils.tokens.generate_confirmation_token
+
+app/routes/test.py
+├── app.utils.validation (validation functions)
+└── app.utils.form_handler.FormHandler
+
+app/services/file_service.py (standalone)
+app/utils/helpers.py (standalone)
+app/utils/validation.py (standalone)
+app/utils/form_handler.py
+└── app.utils.validation
+
+app/models/job.py
+└── app.extensions.db
+
+app/models/event.py
+└── app.extensions.db
+
+
+
+Template Extend/Include Tree
+
+base/base.html (Base Template)
+├── student/submission/submit.html
+│   ├── student/submission/components/_form_header.html
+│   ├── student/submission/components/_guidelines_warning.html
+│   ├── student/submission/components/_personal_info_fields.html
+│   ├── student/submission/components/_print_method_selection.html
+│   ├── student/submission/components/_printer_selection.html
+│   ├── student/submission/components/_printer_dimensions_info.html
+│   └── student/submission/components/_consent_and_upload.html
+├── student/submission/submit_success.html
+├── staff/auth/login.html
+├── staff/dashboard/index.html
+│   ├── staff/dashboard/components/_last_updated_timestamp.html
+│   ├── staff/dashboard/components/_sound_toggle_button.html
+│   ├── staff/dashboard/components/_dashboard_tabs.html
+│   ├── staff/dashboard/components/_job_card.html
+│   ├── staff/dashboard/components/_loading_indicator.html
+│   ├── staff/dashboard/components/_approval_modal.html
+│   └── staff/dashboard/components/_rejection_modal.html
+├── errors/404.html
+├── errors/500.html
+└── errors/generic.html
+
+ORPHANED:
+test/validation_test.html (extends "base.html" - WRONG PATH!)
+
+
+Static File Usage
+
+base/base.html references:
+├── static/css/style.css ✓
+└── static/css/v0dev-animations.css ✓
+
+staff/dashboard/index.html references:
+└── static/sounds/new-job.mp3 ✓
+
+UNUSED:
+├── static/css/input.css ❌
+└── static/js/validation.js ❌
