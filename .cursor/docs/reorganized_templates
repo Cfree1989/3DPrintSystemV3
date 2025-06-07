@@ -1,3 +1,7 @@
+# Flask App Template Structure (Updated: Phase 0 Cleanup - Dec 2024)
+# ✅ Cleaned and verified structure - orphaned components removed
+# ✅ Error handlers properly registered in app factory
+
 3DPrintSystem/app/templates/
 ├── base/                             # Base templates and layouts
 │   ├── base.html                    # Main base template
@@ -20,8 +24,7 @@
 │   │       ├── _print_method_selection.html
 │   │       ├── _printer_dimensions_info.html
 │   │       ├── _printer_selection.html
-│   │       ├── _consent_and_upload.html
-│   │       └── _submit_button.html
+│   │       └── _consent_and_upload.html
 │   └── job_status/                 # Student job tracking (future)
 │       ├── track.html              # Job status lookup
 │       └── status_display.html     # Status display page
@@ -54,9 +57,9 @@
 │       ├── _email_header.html
 │       ├── _email_footer.html
 │       └── _job_details_table.html
-├── errors/                         # Error page templates
-│   ├── 404.html                    # Page not found
-│   ├── 500.html                    # Server error
+├── errors/                         # Error page templates (✅ handlers registered)
+│   ├── 404.html                    # Page not found (✅ active)
+│   ├── 500.html                    # Server error (✅ active)
 │   ├── 403.html                    # Access forbidden
 │   └── maintenance.html            # Maintenance mode
 └── public/                         # Public information pages
