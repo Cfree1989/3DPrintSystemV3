@@ -59,4 +59,18 @@ def create_app():
         """Redirect root to submit form - main entry point for students"""
         return redirect(url_for('main.submit'))
 
+    # Register error handlers
+    @app.errorhandler(404)
+    def not_found_error(error):
+        """Handle 404 errors with custom template"""
+        from flask import render_template
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        """Handle 500 errors with custom template"""
+        from flask import render_template
+        db.session.rollback()
+        return render_template('errors/500.html'), 500
+
     return app 
