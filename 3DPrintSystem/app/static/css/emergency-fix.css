@@ -1,0 +1,230 @@
+/*
+ * EMERGENCY CSS HOTFIX
+ * Critical UI Layout Fixes for Mobile Responsiveness
+ * 
+ * Issue: Dashboard tabs cut off on mobile, modal overlays conflict
+ * Solution: Immediate scrolling fixes and z-index management
+ * 
+ * Applied: Current Session
+ * Incident: UI_INCIDENT_ROOT_CAUSE_ANALYSIS.md
+ * Architecture: UI_SOLUTIONS_ARCHITECTURE.md
+ */
+
+/* ==========================================================================
+   TAB OVERFLOW EMERGENCY FIX
+   ========================================================================== */
+
+/* Fix tab container overflow - enable horizontal scrolling */
+.tabs-v0 {
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+  scroll-behavior: smooth !important;
+  padding-bottom: 8px !important;
+}
+
+/* Webkit scrollbar styling for tabs */
+.tabs-v0::-webkit-scrollbar {
+  height: 6px !important;
+  display: block !important;
+}
+
+.tabs-v0::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 3px !important;
+}
+
+.tabs-v0::-webkit-scrollbar-thumb {
+  background: #c1c1c1 !important;
+  border-radius: 3px !important;
+}
+
+.tabs-v0::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1 !important;
+}
+
+/* Ensure tabs maintain minimum width and don't shrink */
+.tab-v0-active,
+.tab-v0-inactive {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  min-width: fit-content !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINT FIXES
+   ========================================================================== */
+
+/* Mobile portrait optimizations */
+@media (max-width: 640px) {
+  .tab-v0-active,
+  .tab-v0-inactive {
+    min-width: 100px !important;
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  /* Ensure scrollbar is visible on mobile */
+  .tabs-v0::-webkit-scrollbar {
+    height: 8px !important;
+  }
+  
+  /* Make scroll indicators more visible on touch devices */
+  .tabs-v0 {
+    scrollbar-width: auto !important;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .tab-v0-active,
+  .tab-v0-inactive {
+    min-width: 90px !important;
+    font-size: 0.8125rem !important;
+    padding: 0.375rem 0.5rem !important;
+  }
+  
+  /* Badge adjustments for small screens */
+  .badge-v0-status {
+    font-size: 0.625rem !important;
+    padding: 2px 6px !important;
+    min-width: 16px !important;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .tab-v0-active,
+  .tab-v0-inactive {
+    min-width: 120px !important;
+  }
+}
+
+/* ==========================================================================
+   Z-INDEX STACKING FIXES
+   ========================================================================== */
+
+/* Fix modal backdrop stacking issues */
+#confirmation-modal {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+/* Ensure toast notifications appear above everything */
+#toast-container {
+  z-index: 10000 !important;
+  position: fixed !important;
+}
+
+/* Navigation sticky header z-index */
+.sticky {
+  z-index: 1000 !important;
+}
+
+/* Modal content stacking */
+#confirmation-content {
+  position: relative !important;
+  z-index: 10001 !important;
+}
+
+/* ==========================================================================
+   LAYOUT SHIFT PREVENTION
+   ========================================================================== */
+
+/* Prevent layout shifts during tab interaction */
+.tabs-v0 {
+  contain: layout !important;
+}
+
+/* Ensure modal doesn't cause layout shifts */
+#confirmation-modal {
+  contain: layout style paint !important;
+}
+
+/* ==========================================================================
+   TOUCH INTERACTION IMPROVEMENTS
+   ========================================================================== */
+
+/* Improve touch targets on mobile */
+@media (max-width: 640px) {
+  .tab-v0-active,
+  .tab-v0-inactive {
+    min-height: 44px !important; /* Apple HIG minimum touch target */
+    display: flex !important;
+    align-items: center !important;
+  }
+}
+
+/* Enhanced scroll physics for touch devices */
+.tabs-v0 {
+  -webkit-overflow-scrolling: touch !important;
+  scroll-snap-type: x proximity !important;
+}
+
+.tab-v0-active,
+.tab-v0-inactive {
+  scroll-snap-align: start !important;
+}
+
+/* ==========================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ========================================================================== */
+
+/* Ensure sufficient color contrast for scrollbars */
+@media (prefers-contrast: high) {
+  .tabs-v0::-webkit-scrollbar-thumb {
+    background: #666666 !important;
+  }
+  
+  .tabs-v0::-webkit-scrollbar-track {
+    background: #e0e0e0 !important;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .tabs-v0 {
+    scroll-behavior: auto !important;
+  }
+  
+  .tab-v0-active,
+  .tab-v0-inactive {
+    transition: none !important;
+  }
+}
+
+/* ==========================================================================
+   DEBUGGING AIDS (Remove in production)
+   ========================================================================== */
+
+/* Debug border for tab container - helps verify scrolling */
+.tabs-v0 {
+  /* Uncomment for debugging: border: 2px dashed red !important; */
+}
+
+/* Debug info for developers */
+.tabs-v0::before {
+  content: "Emergency Fix Applied" !important;
+  position: absolute !important;
+  top: -20px !important;
+  left: 0 !important;
+  font-size: 10px !important;
+  color: #ff6b6b !important;
+  font-weight: bold !important;
+  /* Remove this section in production */
+  display: none !important;
+}
+
+/* ==========================================================================
+   EMERGENCY FIX VALIDATION
+   ========================================================================== */
+
+/*
+ * Success Criteria Checklist:
+ * [ ] Mobile tabs scroll horizontally (320px+)
+ * [ ] Scroll indicators visible and functional
+ * [ ] Modal overlays display correctly
+ * [ ] Desktop functionality unchanged (1024px+)
+ * [ ] Cross-browser compatibility maintained
+ * [ ] No layout shifts during interaction
+ * [ ] Touch targets meet accessibility guidelines (44px min)
+ */ 

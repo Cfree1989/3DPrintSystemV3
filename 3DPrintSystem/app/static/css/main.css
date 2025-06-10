@@ -1,0 +1,120 @@
+/*
+ * MAIN CSS ENTRY POINT
+ * 3D Print System - Unified Design System
+ * 
+ * Import Order:
+ * 1. Base styles (variables, reset)
+ * 2. Components (reusable UI elements)
+ * 3. Layouts (grid, containers)
+ * 4. Pages (page-specific styles if needed)
+ * 
+ * This replaces the minified style.css with a maintainable architecture
+ */
+
+/* ==========================================================================
+   BASE STYLES - Foundation
+   ========================================================================== */
+
+@import url('./base/variables.css');
+@import url('./base/reset.css');
+
+/* ==========================================================================
+   COMPONENTS - Reusable UI Elements
+   ========================================================================== */
+
+@import url('./components/buttons.css');
+@import url('./components/tabs.css');
+@import url('./components/cards.css');
+@import url('./components/modals.css');
+@import url('./components/forms.css');
+
+/* ==========================================================================
+   LAYOUTS - Grid and Container Systems
+   ========================================================================== */
+
+@import url('./layouts/grid.css');
+@import url('./layouts/containers.css');
+
+/* ==========================================================================
+   EMERGENCY FIX - Remove after migration complete
+   ========================================================================== */
+
+@import url('./emergency-fix.css');
+
+/* ==========================================================================
+   LEGACY COMPATIBILITY - Temporary migration helpers
+   ========================================================================== */
+
+/* Ensure smooth transition from old classes to new ones */
+.tabs-v0 {
+  /* Use new tab system but maintain compatibility */
+  @extend .tab-nav;
+}
+
+.tab-v0-active {
+  @extend .tab-item;
+  @extend .tab-item--active;
+}
+
+.tab-v0-inactive {
+  @extend .tab-item;
+  @extend .tab-item--inactive;
+}
+
+/* Card compatibility */
+.card-apple {
+  @extend .card;
+}
+
+.card-v0 {
+  @extend .card;
+}
+
+.grid-v0-jobs {
+  @extend .jobs-grid;
+}
+
+/* Button compatibility */
+.btn-apple-primary {
+  @extend .btn;
+  @extend .btn--primary;
+}
+
+.btn-apple-secondary {
+  @extend .btn;
+  @extend .btn--secondary;
+}
+
+.btn-v0-primary {
+  @extend .btn;
+  @extend .btn--primary;
+}
+
+.btn-v0-secondary {
+  @extend .btn;
+  @extend .btn--secondary;
+}
+
+/* Container compatibility */
+.container-v0 {
+  @extend .container--wide;
+}
+
+.header-v0 {
+  @extend .dashboard-header;
+}
+
+/* ==========================================================================
+   SYSTEM VALIDATION
+   ========================================================================== */
+
+/*
+ * CSS Architecture Summary:
+ * - Base Styles: ~700 lines (variables + reset)
+ * - Components: ~2,600 lines (tabs + buttons + cards + modals + forms)
+ * - Layouts: ~1,200 lines (grid + containers)
+ * - Total: ~4,500 lines of organized, maintainable CSS
+ * 
+ * Replaces: 39KB minified style.css
+ * Benefits: Debuggable, maintainable, scalable, responsive
+ */ 

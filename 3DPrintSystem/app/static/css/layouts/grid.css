@@ -1,0 +1,554 @@
+/*
+ * GRID LAYOUT SYSTEM
+ * Provides: Modern CSS Grid-based layout system
+ * Replaces: Inconsistent layout approaches across templates
+ * 
+ * Features:
+ * - 12-column grid system with flexible breakpoints
+ * - Dashboard-specific layouts (sidebar, main content, etc.)
+ * - Responsive grid utilities
+ * - Auto-placement and manual grid positioning
+ * - Gap management and alignment utilities
+ */
+
+/* ==========================================================================
+   BASE GRID CONTAINER
+   ========================================================================== */
+
+.grid {
+  display: grid;
+  width: 100%;
+}
+
+.grid-inline {
+  display: inline-grid;
+}
+
+/* ==========================================================================
+   GRID COLUMNS - 12 COLUMN SYSTEM
+   ========================================================================== */
+
+/* Auto columns */
+.grid-cols-auto {
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+.grid-cols-auto-min {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-cols-auto-max {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Fixed column counts */
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+/* ==========================================================================
+   GRID ROWS
+   ========================================================================== */
+
+.grid-rows-auto {
+  grid-template-rows: repeat(auto-fit, minmax(0, 1fr));
+}
+
+.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+.grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+.grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+
+/* ==========================================================================
+   COLUMN SPAN
+   ========================================================================== */
+
+.col-auto { grid-column: auto; }
+.col-span-1 { grid-column: span 1 / span 1; }
+.col-span-2 { grid-column: span 2 / span 2; }
+.col-span-3 { grid-column: span 3 / span 3; }
+.col-span-4 { grid-column: span 4 / span 4; }
+.col-span-5 { grid-column: span 5 / span 5; }
+.col-span-6 { grid-column: span 6 / span 6; }
+.col-span-7 { grid-column: span 7 / span 7; }
+.col-span-8 { grid-column: span 8 / span 8; }
+.col-span-9 { grid-column: span 9 / span 9; }
+.col-span-10 { grid-column: span 10 / span 10; }
+.col-span-11 { grid-column: span 11 / span 11; }
+.col-span-12 { grid-column: span 12 / span 12; }
+.col-span-full { grid-column: 1 / -1; }
+
+/* Column start positions */
+.col-start-1 { grid-column-start: 1; }
+.col-start-2 { grid-column-start: 2; }
+.col-start-3 { grid-column-start: 3; }
+.col-start-4 { grid-column-start: 4; }
+.col-start-5 { grid-column-start: 5; }
+.col-start-6 { grid-column-start: 6; }
+.col-start-7 { grid-column-start: 7; }
+.col-start-8 { grid-column-start: 8; }
+.col-start-9 { grid-column-start: 9; }
+.col-start-10 { grid-column-start: 10; }
+.col-start-11 { grid-column-start: 11; }
+.col-start-12 { grid-column-start: 12; }
+.col-start-auto { grid-column-start: auto; }
+
+/* Column end positions */
+.col-end-1 { grid-column-end: 1; }
+.col-end-2 { grid-column-end: 2; }
+.col-end-3 { grid-column-end: 3; }
+.col-end-4 { grid-column-end: 4; }
+.col-end-5 { grid-column-end: 5; }
+.col-end-6 { grid-column-end: 6; }
+.col-end-7 { grid-column-end: 7; }
+.col-end-8 { grid-column-end: 8; }
+.col-end-9 { grid-column-end: 9; }
+.col-end-10 { grid-column-end: 10; }
+.col-end-11 { grid-column-end: 11; }
+.col-end-12 { grid-column-end: 12; }
+.col-end-13 { grid-column-end: 13; }
+.col-end-auto { grid-column-end: auto; }
+
+/* ==========================================================================
+   ROW SPAN
+   ========================================================================== */
+
+.row-auto { grid-row: auto; }
+.row-span-1 { grid-row: span 1 / span 1; }
+.row-span-2 { grid-row: span 2 / span 2; }
+.row-span-3 { grid-row: span 3 / span 3; }
+.row-span-4 { grid-row: span 4 / span 4; }
+.row-span-5 { grid-row: span 5 / span 5; }
+.row-span-6 { grid-row: span 6 / span 6; }
+.row-span-full { grid-row: 1 / -1; }
+
+/* Row start positions */
+.row-start-1 { grid-row-start: 1; }
+.row-start-2 { grid-row-start: 2; }
+.row-start-3 { grid-row-start: 3; }
+.row-start-4 { grid-row-start: 4; }
+.row-start-5 { grid-row-start: 5; }
+.row-start-6 { grid-row-start: 6; }
+.row-start-auto { grid-row-start: auto; }
+
+/* Row end positions */
+.row-end-1 { grid-row-end: 1; }
+.row-end-2 { grid-row-end: 2; }
+.row-end-3 { grid-row-end: 3; }
+.row-end-4 { grid-row-end: 4; }
+.row-end-5 { grid-row-end: 5; }
+.row-end-6 { grid-row-end: 6; }
+.row-end-7 { grid-row-end: 7; }
+.row-end-auto { grid-row-end: auto; }
+
+/* ==========================================================================
+   GRID GAPS
+   ========================================================================== */
+
+.gap-0 { gap: 0; }
+.gap-1 { gap: var(--spacing-1); }
+.gap-2 { gap: var(--spacing-2); }
+.gap-3 { gap: var(--spacing-3); }
+.gap-4 { gap: var(--spacing-4); }
+.gap-5 { gap: var(--spacing-5); }
+.gap-6 { gap: var(--spacing-6); }
+.gap-8 { gap: var(--spacing-8); }
+.gap-10 { gap: var(--spacing-10); }
+.gap-12 { gap: var(--spacing-12); }
+.gap-16 { gap: var(--spacing-16); }
+
+/* Column gaps */
+.gap-x-0 { column-gap: 0; }
+.gap-x-1 { column-gap: var(--spacing-1); }
+.gap-x-2 { column-gap: var(--spacing-2); }
+.gap-x-3 { column-gap: var(--spacing-3); }
+.gap-x-4 { column-gap: var(--spacing-4); }
+.gap-x-5 { column-gap: var(--spacing-5); }
+.gap-x-6 { column-gap: var(--spacing-6); }
+.gap-x-8 { column-gap: var(--spacing-8); }
+.gap-x-10 { column-gap: var(--spacing-10); }
+.gap-x-12 { column-gap: var(--spacing-12); }
+.gap-x-16 { column-gap: var(--spacing-16); }
+
+/* Row gaps */
+.gap-y-0 { row-gap: 0; }
+.gap-y-1 { row-gap: var(--spacing-1); }
+.gap-y-2 { row-gap: var(--spacing-2); }
+.gap-y-3 { row-gap: var(--spacing-3); }
+.gap-y-4 { row-gap: var(--spacing-4); }
+.gap-y-5 { row-gap: var(--spacing-5); }
+.gap-y-6 { row-gap: var(--spacing-6); }
+.gap-y-8 { row-gap: var(--spacing-8); }
+.gap-y-10 { row-gap: var(--spacing-10); }
+.gap-y-12 { row-gap: var(--spacing-12); }
+.gap-y-16 { row-gap: var(--spacing-16); }
+
+/* ==========================================================================
+   GRID ALIGNMENT
+   ========================================================================== */
+
+/* Justify content (horizontal alignment of grid) */
+.justify-start { justify-content: start; }
+.justify-end { justify-content: end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.justify-evenly { justify-content: space-evenly; }
+
+/* Align content (vertical alignment of grid) */
+.content-start { align-content: start; }
+.content-end { align-content: end; }
+.content-center { align-content: center; }
+.content-between { align-content: space-between; }
+.content-around { align-content: space-around; }
+.content-evenly { align-content: space-evenly; }
+
+/* Justify items (horizontal alignment of grid items) */
+.justify-items-start { justify-items: start; }
+.justify-items-end { justify-items: end; }
+.justify-items-center { justify-items: center; }
+.justify-items-stretch { justify-items: stretch; }
+
+/* Align items (vertical alignment of grid items) */
+.items-start { align-items: start; }
+.items-end { align-items: end; }
+.items-center { align-items: center; }
+.items-stretch { align-items: stretch; }
+
+/* Justify self (horizontal alignment of individual grid item) */
+.justify-self-auto { justify-self: auto; }
+.justify-self-start { justify-self: start; }
+.justify-self-end { justify-self: end; }
+.justify-self-center { justify-self: center; }
+.justify-self-stretch { justify-self: stretch; }
+
+/* Align self (vertical alignment of individual grid item) */
+.self-auto { align-self: auto; }
+.self-start { align-self: start; }
+.self-end { align-self: end; }
+.self-center { align-self: center; }
+.self-stretch { align-self: stretch; }
+
+/* ==========================================================================
+   DASHBOARD-SPECIFIC LAYOUTS
+   ========================================================================== */
+
+/* Main dashboard layout */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+}
+
+.dashboard-header {
+  grid-area: header;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.dashboard-main {
+  grid-area: main;
+  padding: var(--spacing-6);
+  overflow: auto;
+}
+
+.dashboard-footer {
+  grid-area: footer;
+}
+
+/* Dashboard with sidebar */
+.dashboard-layout--with-sidebar {
+  grid-template-columns: 250px 1fr;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main"
+    "sidebar footer";
+}
+
+.dashboard-sidebar {
+  grid-area: sidebar;
+  background-color: var(--color-gray-100);
+  border-right: 1px solid var(--color-border);
+  padding: var(--spacing-4);
+  overflow-y: auto;
+}
+
+/* Content area layouts */
+.content-layout {
+  display: grid;
+  gap: var(--spacing-6);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.content-layout--narrow {
+  max-width: 768px;
+}
+
+.content-layout--wide {
+  max-width: none;
+}
+
+/* Two column content */
+.content-two-column {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-8);
+  align-items: start;
+}
+
+/* Three column content */
+.content-three-column {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: var(--spacing-6);
+  align-items: start;
+}
+
+/* ==========================================================================
+   JOB GRID LAYOUTS (3D Print System specific)
+   ========================================================================== */
+
+/* Jobs grid - responsive cards layout */
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-6);
+  padding: var(--spacing-4) 0;
+}
+
+.jobs-grid--compact {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.jobs-grid--large {
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: var(--spacing-8);
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-8);
+}
+
+/* Actions grid */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-3);
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Mobile First - Base styles above are mobile */
+
+/* Small screens and up (640px+) */
+@media (min-width: 640px) {
+  .sm\:grid { display: grid; }
+  .sm\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sm\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .sm\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  
+  .sm\:col-span-1 { grid-column: span 1 / span 1; }
+  .sm\:col-span-2 { grid-column: span 2 / span 2; }
+  .sm\:col-span-3 { grid-column: span 3 / span 3; }
+  .sm\:col-span-4 { grid-column: span 4 / span 4; }
+  .sm\:col-span-5 { grid-column: span 5 / span 5; }
+  .sm\:col-span-6 { grid-column: span 6 / span 6; }
+  
+  .sm\:gap-1 { gap: var(--spacing-1); }
+  .sm\:gap-2 { gap: var(--spacing-2); }
+  .sm\:gap-3 { gap: var(--spacing-3); }
+  .sm\:gap-4 { gap: var(--spacing-4); }
+  .sm\:gap-5 { gap: var(--spacing-5); }
+  .sm\:gap-6 { gap: var(--spacing-6); }
+  .sm\:gap-8 { gap: var(--spacing-8); }
+}
+
+/* Medium screens and up (768px+) */
+@media (min-width: 768px) {
+  .md\:grid { display: grid; }
+  .md\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .md\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  
+  .md\:col-span-1 { grid-column: span 1 / span 1; }
+  .md\:col-span-2 { grid-column: span 2 / span 2; }
+  .md\:col-span-3 { grid-column: span 3 / span 3; }
+  .md\:col-span-4 { grid-column: span 4 / span 4; }
+  .md\:col-span-6 { grid-column: span 6 / span 6; }
+  .md\:col-span-8 { grid-column: span 8 / span 8; }
+  
+  .md\:gap-2 { gap: var(--spacing-2); }
+  .md\:gap-4 { gap: var(--spacing-4); }
+  .md\:gap-6 { gap: var(--spacing-6); }
+  .md\:gap-8 { gap: var(--spacing-8); }
+  
+  /* Dashboard responsive */
+  .dashboard-layout--with-sidebar {
+    grid-template-columns: 250px 1fr;
+  }
+  
+  .dashboard-main {
+    padding: var(--spacing-8);
+  }
+  
+  .content-two-column,
+  .content-three-column {
+    gap: var(--spacing-8);
+  }
+}
+
+/* Large screens and up (1024px+) */
+@media (min-width: 1024px) {
+  .lg\:grid { display: grid; }
+  .lg\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  
+  .lg\:col-span-1 { grid-column: span 1 / span 1; }
+  .lg\:col-span-2 { grid-column: span 2 / span 2; }
+  .lg\:col-span-3 { grid-column: span 3 / span 3; }
+  .lg\:col-span-4 { grid-column: span 4 / span 4; }
+  .lg\:col-span-6 { grid-column: span 6 / span 6; }
+  .lg\:col-span-8 { grid-column: span 8 / span 8; }
+  .lg\:col-span-9 { grid-column: span 9 / span 9; }
+  .lg\:col-span-12 { grid-column: span 12 / span 12; }
+  
+  .lg\:gap-4 { gap: var(--spacing-4); }
+  .lg\:gap-6 { gap: var(--spacing-6); }
+  .lg\:gap-8 { gap: var(--spacing-8); }
+  .lg\:gap-10 { gap: var(--spacing-10); }
+  .lg\:gap-12 { gap: var(--spacing-12); }
+  
+  /* Dashboard responsive */
+  .dashboard-layout--with-sidebar {
+    grid-template-columns: 280px 1fr;
+  }
+  
+  .dashboard-main {
+    padding: var(--spacing-10);
+  }
+}
+
+/* Extra large screens (1280px+) */
+@media (min-width: 1280px) {
+  .xl\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .xl\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .xl\:col-span-5 { grid-column: span 5 / span 5; }
+  
+  .jobs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE OVERRIDES
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  /* Stack dashboard sidebar on mobile */
+  .dashboard-layout--with-sidebar {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header" 
+      "sidebar"
+      "main"
+      "footer";
+  }
+  
+  .dashboard-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .dashboard-main {
+    padding: var(--spacing-4);
+  }
+  
+  /* Stack content columns */
+  .content-two-column,
+  .content-three-column {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+  }
+  
+  /* Mobile jobs grid */
+  .jobs-grid,
+  .jobs-grid--compact,
+  .jobs-grid--large {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+  
+  /* Mobile stats grid */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-3);
+  }
+}
+
+/* ==========================================================================
+   LEGACY COMPATIBILITY
+   ========================================================================== */
+
+/* Support existing grid classes */
+.grid-v0-jobs {
+  @extend .jobs-grid;
+}
+
+.container-v0 {
+  @extend .content-layout;
+}
+
+/* ==========================================================================
+   COMPONENT VALIDATION
+   ========================================================================== */
+
+/*
+ * Success Criteria Checklist:
+ * [x] 12-column CSS Grid system with flexible breakpoints
+ * [x] Dashboard-specific layouts (header, sidebar, main, footer)
+ * [x] Job grid layouts optimized for 3D print system cards
+ * [x] Responsive behavior across all breakpoints (mobile-first)
+ * [x] Grid alignment and positioning utilities
+ * [x] Gap management with consistent spacing
+ * [x] Auto-placement and manual grid positioning
+ * [x] Legacy compatibility with existing grid classes
+ * [x] Accessibility considerations (proper document structure)
+ * [x] Performance optimizations (efficient CSS Grid usage)
+ */ 

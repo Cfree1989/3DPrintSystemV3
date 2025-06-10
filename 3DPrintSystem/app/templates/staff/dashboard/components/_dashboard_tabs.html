@@ -1,20 +1,14 @@
-<!-- V0.dev Status Tabs -->
-<div class="tabs-v0" id="status-tabs">
+<!-- Dashboard Status Tabs -->
+<nav class="tab-nav" id="status-tabs" aria-label="Job status navigation">
     {% for tab_status, config in tabs.items() %}
     <a href="{{ url_for('dashboard.index', status=tab_status) }}" 
        data-status="{{ tab_status }}"
-       class="{% if current_status == tab_status %}tab-v0-active{% else %}tab-v0-inactive{% endif %} no-underline">
-        <div class="flex items-center justify-between gap-v0-base">
-            <span class="text-v0-tab">{{ config.title }}</span>
-            <span class="badge-v0-status
-                        {% if current_status == tab_status %}
-                        bg-v0-blue-500 text-white
-                        {% else %}
-                        bg-v0-blue-100 text-v0-blue-700
-                        {% endif %}">
-                {{ stats[config.stat_key] or 0 }}
-            </span>
-        </div>
+       class="tab-item {% if current_status == tab_status %}tab-item--active{% else %}tab-item--inactive{% endif %}"
+       aria-current="{% if current_status == tab_status %}page{% else %}false{% endif %}">
+        <span>{{ config.title }}</span>
+        <span class="tab-badge {% if current_status == tab_status %}tab-badge--active{% else %}tab-badge--inactive{% endif %}">
+            {{ stats[config.stat_key] or 0 }}
+        </span>
     </a>
     {% endfor %}
-</div> 
+</nav> 

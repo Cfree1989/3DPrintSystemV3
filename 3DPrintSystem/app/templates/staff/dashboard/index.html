@@ -2,77 +2,73 @@
 {% block title %}Staff Dashboard{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-v0-background">
+<div class="dashboard-container">
     <!-- Toast Notification Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    <div id="toast-container" class="toast-container"></div>
     
     <!-- Confirmation Dialog Modal -->
-    <div id="confirmation-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50" style="display: none;">
-        <div class="w-full h-full flex items-center justify-center p-4">
-            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all scale-95 opacity-0" id="confirmation-content">
-                <div class="p-6">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
-                            <span id="confirmation-icon" class="text-2xl">❓</span>
-                        </div>
-                        <h3 id="confirmation-title" class="text-lg font-semibold text-gray-900">Confirm Action</h3>
+    <div id="confirmation-modal" class="modal-backdrop hidden">
+        <div class="modal-container">
+            <div class="modal-content" id="confirmation-content">
+                <div class="modal-header">
+                    <div class="modal-icon">
+                        <span id="confirmation-icon">❓</span>
                     </div>
-                    <p id="confirmation-message" class="text-gray-600 mb-6 ml-16">Are you sure you want to proceed?</p>
-                    <div class="flex space-x-3 justify-end">
-                        <button id="confirmation-cancel" class="px-6 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg
-                                                                hover:bg-gray-200 transition-colors duration-200 border-0 shadow-sm">
-                            Cancel
-                        </button>
-                        <button id="confirmation-confirm" class="px-6 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg
-                                                                 hover:bg-blue-700 transition-colors duration-200 border-0 shadow-md">
-                            Confirm
-                        </button>
-                    </div>
+                    <h3 id="confirmation-title" class="modal-title">Confirm Action</h3>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmation-message" class="modal-text">Are you sure you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirmation-cancel" class="btn btn--secondary">
+                        Cancel
+                    </button>
+                    <button id="confirmation-confirm" class="btn btn--primary">
+                        Confirm
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- V0.dev Dashboard Header -->
-    <div class="header-v0 bg-v0-background border-b border-v0-border">
-        <div class="container-v0">
-            <div class="header-v0">
-                <div>
-                    <h1 class="text-v0-dashboard-title">3D Print Jobs</h1>
-                    <p class="text-v0-detail">Manage and track all print requests</p>
-                </div>
-                <div class="header-actions-v0">
-                    {% include 'staff/dashboard/components/_last_updated_timestamp.html' %}
-                    {% include 'staff/dashboard/components/_sound_toggle_button.html' %}
-                    <span class="text-v0-body">Welcome, Staff</span>
-                    <a href="{{ url_for('dashboard.logout') }}" 
-                       class="btn-v0-secondary no-underline">
-                        Logout
-                    </a>
-                </div>
+    <!-- Dashboard Header -->
+    <div class="dashboard-section">
+        <div class="dashboard-header-content">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">3D Print Jobs</h1>
+                <p class="text-sm text-gray-600">Manage and track all print requests</p>
+            </div>
+            <div class="flex items-center gap-4">
+                {% include 'staff/dashboard/components/_last_updated_timestamp.html' %}
+                {% include 'staff/dashboard/components/_sound_toggle_button.html' %}
+                <span class="text-sm text-gray-700">Welcome, Staff</span>
+                <a href="{{ url_for('dashboard.logout') }}" 
+                   class="btn btn--secondary">
+                    Logout
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- V0.dev Main Content -->
-    <div class="container-v0-page">
-        <!-- V0.dev Status Tabs -->
+    <!-- Main Content -->
+    <div class="dashboard-content">
+        <!-- Status Tabs -->
         {% include 'staff/dashboard/components/_dashboard_tabs.html' %}
 
-        <!-- V0.dev Job Listing -->
-        <div id="job-listing" class="section-v0">
+        <!-- Job Listing -->
+        <div id="job-listing" class="dashboard-section">
             {% if jobs %}
-            <div class="grid-v0-jobs">
+            <div class="jobs-grid">
                 {% for job in jobs %}
                 {% include 'staff/dashboard/components/_job_card.html' %}
                 {% endfor %}
             </div>
             {% else %}
-            <!-- V0.dev Empty State -->
-            <div class="text-center section-v0">
-                <div class="text-v0-gray-400 text-6xl mb-v0-lg">📋</div>
-                <h3 class="text-v0-job-title mb-v0-base">No jobs found</h3>
-                <p class="text-v0-detail max-w-sm mx-auto">
+            <!-- Empty State -->
+            <div class="card card--empty">
+                <div class="card-icon">📋</div>
+                <h3 class="card-title">No jobs found</h3>
+                <p class="card-message">
                     {% if current_status and tabs[current_status] %}
                     No jobs are currently in {{ tabs[current_status].title }} status.
                     {% else %}

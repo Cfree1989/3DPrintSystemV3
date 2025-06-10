@@ -5,9 +5,12 @@
     <title>{% block title %}3D Print System{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- V0.dev-optimized CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/v0dev-animations.css') }}">
+    <!-- NEW UNIFIED CSS ARCHITECTURE: Replaces style.css + v0dev-animations.css + emergency-fix.css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    <!-- LEGACY BACKUP: Keep original CSS commented for rollback if needed -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/v0dev-animations.css') }}"> -->
     
     <!-- Alpine.js for interactive components -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -18,47 +21,47 @@
     
     {% block head %}{% endblock %}
 </head>
-<body class="bg-v0-background min-h-screen antialiased">
-    <!-- V0.dev Navigation -->
-    <nav class="bg-white border-b border-v0-border sticky top-0 z-50">
-        <div class="container-v0">
-            <div class="flex justify-between items-center py-v0-lg">
-                <h1 class="text-v0-job-title font-semibold text-v0-gray-900">
-                    3D Print System
-                </h1>
-            </div>
+<body class="content-wrapper">
+    <!-- Dashboard Header -->
+    <header class="dashboard-header-container">
+        <div class="dashboard-header-content">
+            <h1 class="text-lg font-semibold text-gray-900">
+                3D Print System
+            </h1>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content with V0.dev spacing -->
-    <main class="container-v0-page">
-        <!-- Flash Messages with V0.dev styling -->
+    <!-- Main Content -->
+    <main class="content-main" id="main-content">
+        <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="mb-v0-2xl space-y-v0-md">
-                    {% for category, message in messages %}
-                        <div class="{% if category == 'error' %}bg-v0-red-50 border-l-4 border-v0-red-400 text-v0-red-800{% elif category == 'warning' %}bg-v0-orange-50 border-l-4 border-v0-orange-400 text-v0-orange-800{% elif category == 'success' %}bg-v0-green-50 border-l-4 border-v0-green-400 text-v0-green-800{% else %}bg-v0-blue-50 border-l-4 border-v0-blue-400 text-v0-blue-800{% endif %} p-v0-lg rounded-v0" role="alert">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    {% if category == 'error' %}
-                                        <span class="text-v0-red-500">⚠️</span>
-                                    {% elif category == 'warning' %}
-                                        <span class="text-v0-orange-500">⚠️</span>
-                                    {% elif category == 'success' %}
-                                        <span class="text-v0-green-500">✓</span>
-                                    {% else %}
-                                        <span class="text-v0-blue-500">ℹ️</span>
-                                    {% endif %}
-                                </div>
-                                <div class="ml-v0-md">
-                                    <strong class="font-medium text-v0-body">
-                                        {% if category == 'error' %}Error:{% elif category == 'warning' %}Warning:{% elif category == 'success' %}Success:{% else %}Info:{% endif %}
-                                    </strong>
-                                    <span class="text-v0-body ml-v0-sm">{{ message }}</span>
+                <div class="alert-container">
+                    <div class="space-y-4">
+                        {% for category, message in messages %}
+                            <div class="toast toast--{% if category == 'error' %}danger{% elif category == 'warning' %}warning{% elif category == 'success' %}success{% else %}info{% endif %}" role="alert">
+                                <div class="toast-content">
+                                    <div class="toast-icon">
+                                        {% if category == 'error' %}
+                                            <span>⚠️</span>
+                                        {% elif category == 'warning' %}
+                                            <span>⚠️</span>
+                                        {% elif category == 'success' %}
+                                            <span>✓</span>
+                                        {% else %}
+                                            <span>ℹ️</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="toast-message">
+                                        <strong class="toast-title">
+                                            {% if category == 'error' %}Error:{% elif category == 'warning' %}Warning:{% elif category == 'success' %}Success:{% else %}Info:{% endif %}
+                                        </strong>
+                                        <span class="toast-text">{{ message }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
         {% endwith %}
@@ -66,17 +69,17 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- V0.dev footer -->
-    <footer class="mt-v0-3xl py-v0-2xl border-t border-v0-border bg-white">
-        <div class="container-v0">
-            <p class="text-v0-detail text-v0-gray-500 text-center">
-                3D Print System &copy; 2025. Professional design powered by v0.dev patterns.
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="container text-center">
+            <p class="text-sm text-gray-500">
+                3D Print System &copy; 2025. Modern, accessible design.
             </p>
         </div>
     </footer>
 
     <!-- Accessibility: Skip to main content -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 btn-v0-primary z-50">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute top-4 left-4 btn btn--primary z-50">
         Skip to main content
     </a>
 </body>

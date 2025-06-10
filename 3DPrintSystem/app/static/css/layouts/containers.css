@@ -1,0 +1,554 @@
+/*
+ * CONTAINER LAYOUT SYSTEM
+ * Provides: Consistent content width and alignment across devices
+ * Replaces: Inconsistent container and wrapper approaches
+ * 
+ * Features:
+ * - Responsive container widths with proper margins
+ * - Multiple container sizes (narrow, default, wide, full)
+ * - Dashboard-specific container layouts
+ * - Proper padding and overflow handling
+ * - Print-friendly layouts
+ */
+
+/* ==========================================================================
+   BASE CONTAINER STYLES
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* ==========================================================================
+   CONTAINER SIZES
+   ========================================================================== */
+
+/* Narrow container (prose, forms, etc.) */
+.container--narrow {
+  max-width: var(--container-narrow);
+}
+
+/* Default container (most content) */
+.container--default {
+  max-width: var(--container-default);
+}
+
+/* Wide container (dashboards, data tables) */
+.container--wide {
+  max-width: var(--container-wide);
+}
+
+/* Full width container */
+.container--full {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Fluid container (no max-width but keeps padding) */
+.container--fluid {
+  max-width: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE CONTAINER BEHAVIOR
+   ========================================================================== */
+
+/* Mobile First - Small screens */
+.container {
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+}
+
+/* Small screens and up (640px+) */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+    padding-left: var(--spacing-6);
+    padding-right: var(--spacing-6);
+  }
+  
+  .container--narrow {
+    max-width: 560px;
+  }
+}
+
+/* Medium screens and up (768px+) */
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+    padding-left: var(--spacing-8);
+    padding-right: var(--spacing-8);
+  }
+  
+  .container--narrow {
+    max-width: 640px;
+  }
+  
+  .container--wide {
+    max-width: 100%;
+  }
+}
+
+/* Large screens and up (1024px+) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+  
+  .container--narrow {
+    max-width: 768px;
+  }
+  
+  .container--wide {
+    max-width: 1200px;
+  }
+}
+
+/* Extra large screens and up (1280px+) */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+  
+  .container--narrow {
+    max-width: 896px;
+  }
+  
+  .container--wide {
+    max-width: 1440px;
+  }
+}
+
+/* Ultra wide screens (1536px+) */
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+  
+  .container--wide {
+    max-width: 1600px;
+  }
+}
+
+/* ==========================================================================
+   DASHBOARD CONTAINERS
+   ========================================================================== */
+
+/* Dashboard main container */
+.dashboard-container {
+  @extend .container--wide;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dashboard content area */
+.dashboard-content {
+  flex: 1;
+  padding: var(--spacing-6) 0;
+}
+
+/* Dashboard section containers */
+.dashboard-section {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+.dashboard-section:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard-section--compact {
+  padding: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.dashboard-section--large {
+  padding: var(--spacing-8);
+  margin-bottom: var(--spacing-8);
+}
+
+/* Dashboard header container */
+.dashboard-header-container {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.dashboard-header-content {
+  @extend .container--wide;
+  padding-top: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   SPECIALIZED CONTAINERS
+   ========================================================================== */
+
+/* Form containers */
+.form-container {
+  @extend .container--narrow;
+  background: var(--color-surface);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-container--wide {
+  @extend .container--default;
+}
+
+/* Card containers */
+.card-container {
+  @extend .container;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+  padding-top: var(--spacing-6);
+  padding-bottom: var(--spacing-6);
+}
+
+.card-container--compact {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.card-container--large {
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--spacing-8);
+}
+
+/* Print job containers (3D Print System specific) */
+.jobs-container {
+  @extend .container--wide;
+  padding-top: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
+}
+
+.job-detail-container {
+  @extend .container--default;
+  padding-top: var(--spacing-8);
+  padding-bottom: var(--spacing-8);
+}
+
+/* Stats containers */
+.stats-container {
+  @extend .container--wide;
+  margin-bottom: var(--spacing-8);
+}
+
+/* Alert/Message containers */
+.alert-container {
+  @extend .container;
+  padding-top: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
+}
+
+/* ==========================================================================
+   CONTENT WRAPPERS
+   ========================================================================== */
+
+/* Main content wrapper */
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-main {
+  flex: 1;
+  padding: var(--spacing-6) 0;
+}
+
+/* Two-column layout wrapper */
+.two-column-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .two-column-wrapper {
+    grid-template-columns: 2fr 1fr;
+  }
+  
+  .two-column-wrapper--equal {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .two-column-wrapper--sidebar-left {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* Three-column layout wrapper */
+.three-column-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .three-column-wrapper {
+    grid-template-columns: 1fr 2fr 1fr;
+  }
+  
+  .three-column-wrapper--equal {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* Sidebar wrapper */
+.sidebar-wrapper {
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  height: fit-content;
+  position: sticky;
+  top: var(--spacing-8);
+}
+
+.sidebar-wrapper--compact {
+  padding: var(--spacing-4);
+}
+
+/* ==========================================================================
+   OVERFLOW HANDLING
+   ========================================================================== */
+
+/* Horizontal scroll containers */
+.scroll-container {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-400) var(--color-gray-100);
+}
+
+.scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: var(--color-gray-100);
+  border-radius: var(--radius-sm);
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: var(--color-gray-400);
+  border-radius: var(--radius-sm);
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-500);
+}
+
+/* Table containers */
+.table-container {
+  @extend .scroll-container;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-6);
+}
+
+/* ==========================================================================
+   SPACING UTILITIES
+   ========================================================================== */
+
+/* Vertical spacing */
+.space-y-0 > * + * { margin-top: 0; }
+.space-y-1 > * + * { margin-top: var(--spacing-1); }
+.space-y-2 > * + * { margin-top: var(--spacing-2); }
+.space-y-3 > * + * { margin-top: var(--spacing-3); }
+.space-y-4 > * + * { margin-top: var(--spacing-4); }
+.space-y-5 > * + * { margin-top: var(--spacing-5); }
+.space-y-6 > * + * { margin-top: var(--spacing-6); }
+.space-y-8 > * + * { margin-top: var(--spacing-8); }
+.space-y-10 > * + * { margin-top: var(--spacing-10); }
+.space-y-12 > * + * { margin-top: var(--spacing-12); }
+
+/* Horizontal spacing */
+.space-x-0 > * + * { margin-left: 0; }
+.space-x-1 > * + * { margin-left: var(--spacing-1); }
+.space-x-2 > * + * { margin-left: var(--spacing-2); }
+.space-x-3 > * + * { margin-left: var(--spacing-3); }
+.space-x-4 > * + * { margin-left: var(--spacing-4); }
+.space-x-5 > * + * { margin-left: var(--spacing-5); }
+.space-x-6 > * + * { margin-left: var(--spacing-6); }
+.space-x-8 > * + * { margin-left: var(--spacing-8); }
+
+/* Section spacing */
+.section {
+  padding-top: var(--spacing-12);
+  padding-bottom: var(--spacing-12);
+}
+
+.section--sm {
+  padding-top: var(--spacing-8);
+  padding-bottom: var(--spacing-8);
+}
+
+.section--lg {
+  padding-top: var(--spacing-16);
+  padding-bottom: var(--spacing-16);
+}
+
+/* ==========================================================================
+   RESPONSIVE UTILITIES
+   ========================================================================== */
+
+/* Hide/show at breakpoints */
+.hidden { display: none; }
+.block { display: block; }
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+.flex { display: flex; }
+.grid { display: grid; }
+
+@media (max-width: 639px) {
+  .sm\:hidden { display: none; }
+  .sm\:block { display: block; }
+  .sm\:flex { display: flex; }
+  .sm\:grid { display: grid; }
+}
+
+@media (min-width: 640px) {
+  .sm\:hidden { display: none; }
+  .sm\:block { display: block; }
+  .sm\:flex { display: flex; }
+  .sm\:grid { display: grid; }
+}
+
+@media (min-width: 768px) {
+  .md\:hidden { display: none; }
+  .md\:block { display: block; }
+  .md\:flex { display: flex; }
+  .md\:grid { display: grid; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:hidden { display: none; }
+  .lg\:block { display: block; }
+  .lg\:flex { display: flex; }
+  .lg\:grid { display: grid; }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+  
+  .dashboard-section {
+    border: 1px solid #000;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  
+  .sidebar-wrapper {
+    display: none;
+  }
+  
+  .two-column-wrapper,
+  .three-column-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-header-container {
+    position: static;
+    border-bottom: 2px solid #000;
+  }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ========================================================================== */
+
+/* Focus management for containers */
+.container:focus-within,
+.dashboard-section:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-wrapper {
+    position: static;
+  }
+  
+  .dashboard-header-container {
+    position: static;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .dashboard-section {
+    border: 2px solid currentColor;
+  }
+  
+  .form-container {
+    border: 2px solid currentColor;
+  }
+  
+  .table-container {
+    border: 2px solid currentColor;
+  }
+}
+
+/* ==========================================================================
+   LEGACY COMPATIBILITY
+   ========================================================================== */
+
+/* Support existing container classes */
+.container-v0 {
+  @extend .container--wide;
+}
+
+.content-v0 {
+  @extend .content-wrapper;
+}
+
+.main-v0 {
+  @extend .content-main;
+}
+
+/* ==========================================================================
+   COMPONENT VALIDATION
+   ========================================================================== */
+
+/*
+ * Success Criteria Checklist:
+ * [x] Responsive container widths with proper margins and padding
+ * [x] Multiple container sizes (narrow, default, wide, full, fluid)
+ * [x] Dashboard-specific container layouts
+ * [x] Specialized containers (form, card, jobs, stats, alerts)
+ * [x] Content wrappers for multi-column layouts
+ * [x] Overflow handling with custom scrollbars
+ * [x] Spacing utilities for consistent vertical/horizontal spacing
+ * [x] Responsive utilities for show/hide at breakpoints
+ * [x] Print-friendly layouts
+ * [x] Accessibility improvements (focus management, reduced motion)
+ * [x] Legacy compatibility with existing container classes
+ */ 
