@@ -4,6 +4,8 @@
 
 Rebuilding a Flask-based 3D print job management system for an academic/makerspace setting operating as an **extremely small lab with at most two employees working as a duo, often on the same computer using a single, shared password**. The system handles workflow from student submission to completion, with file tracking, staff approval, and the ability to open uploaded files directly in local applications.
 
+**NEW REQUEST - COMPREHENSIVE CODEBASE CLEANUP**: After successful completion of Phases 0-2 (infrastructure recovery and CSS consolidation), the user has identified that the mixed codebase still contains overlapping/duplicate files from the v0 dashboard integration with Cursor AI. A comprehensive dependency analysis and cleanup is needed to identify dead code, duplicates, and build system inefficiencies.
+
 **Core Objectives:**
 1. **Student submission process**: Upload 3D model files (.stl, .obj, .3mf) with metadata
 2. **Staff approval workflow**: Review, slice files, approve/reject jobs  
@@ -12,11 +14,13 @@ Rebuilding a Flask-based 3D print job management system for an academic/makerspa
 5. **Job status tracking & Event Logging**: Clear progression through status workflow with immutable event log
 6. **Email notifications**: Asynchronously send automated updates to students
 7. **Direct file opening**: Custom protocol handler to open local files in slicer software
+8. **🆕 COMPREHENSIVE CODEBASE CLEANUP**: Remove dead code, eliminate duplicates, optimize build system
 
 **Target Environment**: System can run on up to two staff computers, as long as both use the same shared storage and database.
 
 - **Backend**: Modular Flask (Blueprints) with SQLAlchemy (PostgreSQL)
 - **Frontend**: Tailwind CSS with professional card-style UI, Alpine.js for interactivity  
+- **Build System**: Node.js + PostCSS + Tailwind CSS compilation pipeline
 - **Task Queue**: Celery or RQ for asynchronous processing (emails, thumbnails)
 - **Authentication**: Simple staff-wide shared password with session management
 - **File Storage**: Shared network storage with standardized naming and status-based directory structure
@@ -24,6 +28,167 @@ Rebuilding a Flask-based 3D print job management system for an academic/makerspa
 - **Database**: PostgreSQL with Flask-Migrate for schema management
 - **Time Display**: Central Time (America/Chicago) with automatic DST handling
 - **Pricing**: Weight-based ($0.10/gram filament, $0.20/gram resin, $3.00 minimum)
+
+## Key Challenges and Analysis
+
+### 🔍 CODEBASE CLEANUP ANALYSIS (CURRENT SESSION)
+
+**Technology Stack Identified**:
+- **Backend**: Flask + SQLAlchemy + PostgreSQL (Python)
+- **Frontend**: Tailwind CSS + Alpine.js + PostCSS build pipeline (Node.js)
+- **Entry Points**: 
+  - `3DPrintSystem/app.py` (main Flask app)
+  - `3DPrintSystem/app/__init__.py` (app factory)
+  - `package.json` scripts for CSS build system
+
+**Current File Structure Issues**:
+1. **Multiple CSS Systems**: Found overlapping CSS files in `app/static/css/`:
+   - `main.css` (5.8KB) - Primary stylesheet 
+   - `style.css` (39KB, minified) - Legacy large stylesheet
+   - `style.css.backup` (39KB) - Backup of legacy stylesheet
+   - `emergency-fix.css` (6.3KB) - Emergency fixes from previous session
+   - `input.css` (5.4KB) - Tailwind input file
+   - `v0dev-animations.css` (6.1KB) - v0.dev specific animations
+   - Organized directories: `base/`, `components/`, `layouts/`, `dist/`
+
+2. **Template Structure**: Well-organized template hierarchy in `app/templates/`:
+   - `base/`, `errors/`, `shared/`, `student/`, `staff/`, `test/`
+   - Potential for duplicate components between shared/ and other directories
+
+3. **Build System Complexity**: 
+   - Node.js build pipeline with PostCSS, Tailwind, and multiple optimization tools
+   - Multiple CSS files suggest incomplete consolidation from v0 integration
+
+4. **Dependency Web**: Python imports show clean modular structure:
+   - Flask app factory pattern properly implemented
+   - Blueprint-based routing in `app/routes/`
+   - Service layer in `app/services/`
+   - Proper separation of concerns
+
+**Critical Findings**:
+- **CSS Debt**: 39KB minified CSS file indicates unprocessed legacy code
+- **Build System Duplication**: Multiple CSS entry points suggest incomplete migration
+- **Template Complexity**: Multiple template directories may contain duplicates
+- **Previous Cleanup Success**: Phase 0 removed 98 files, but v0 integration likely added new duplicates
+
+## High-Level Task Breakdown
+
+### 🚀 **PHASE 3: COMPREHENSIVE DEPENDENCY ANALYSIS & CLEANUP** (PLANNING)
+
+#### **Task 3.1: Complete Dependency Mapping** ⏱️ 45 minutes
+**Objective**: Create comprehensive dependency graph of all Python and JavaScript/CSS files
+- [ ] **Python Dependency Analysis**: 
+  - Scan all `.py` files for import statements using grep/ripgrep
+  - Map internal imports (`from app.*`) vs external imports
+  - Identify circular dependencies and unused imports
+  - Generate dependency graph visualization
+- [ ] **Frontend Dependency Analysis**:
+  - Analyze CSS import chains in PostCSS build system
+  - Map template dependencies (extends, includes, imports)
+  - Identify JavaScript dependencies and Alpine.js integrations
+  - Document build system input/output relationships
+- [ ] **Cross-System Dependencies**:
+  - Map template-to-CSS class usage
+  - Identify Python route-to-template relationships
+  - Document static file references
+- [ ] **Success Criteria**: Complete dependency map with visualization, all import relationships documented
+
+#### **Task 3.2: Entry Point Tracing & Reachability Analysis** ⏱️ 60 minutes  
+**Objective**: Trace all code paths from main entry points to identify reachable vs unreachable code
+- [ ] **Flask Application Tracing**:
+  - Start from `app.py` → `app/__init__.py` (app factory)
+  - Trace all Blueprint registrations in `app/routes/`
+  - Map route handlers to service layer calls
+  - Identify template rendering chains
+- [ ] **Build System Tracing**:
+  - Start from `package.json` scripts
+  - Trace PostCSS input files → build outputs
+  - Map CSS import chains in `main.css`
+  - Identify which CSS files are actually built/served
+- [ ] **Template Inheritance Tracing**:
+  - Start from base templates (`base/`)
+  - Map all template extends/includes chains
+  - Identify orphaned template files
+- [ ] **Static File Tracing**:
+  - Map CSS/JS references in templates
+  - Identify unused static files
+- [ ] **Success Criteria**: Complete reachability report showing all code paths from entry points
+
+#### **Task 3.3: Dead Code Detection & Analysis** ⏱️ 30 minutes
+**Objective**: Identify files and code that are never imported, referenced, or executed
+- [ ] **Python Dead Code**:
+  - Compare import analysis with file system scan
+  - Identify Python files never imported
+  - Find unused functions/classes within imported modules
+  - Check for unused route handlers
+- [ ] **Frontend Dead Code**:
+  - Identify CSS files not included in build process
+  - Find unused CSS classes (not referenced in templates)
+  - Locate JavaScript files not included in templates
+  - Check for unused template files
+- [ ] **Asset Dead Code**:
+  - Find orphaned static files (images, sounds, etc.)
+  - Identify unused template components
+- [ ] **Success Criteria**: Comprehensive list of safe-to-delete files with evidence of non-usage
+
+#### **Task 3.4: Duplicate Detection & Similarity Analysis** ⏱️ 45 minutes
+**Objective**: Find files with identical or near-identical content and overlapping functionality
+- [ ] **Exact Duplicate Detection**:
+  - Use file hashing to find identical files
+  - Compare CSS files for identical content blocks
+  - Find duplicate JavaScript/Python functions
+- [ ] **Semantic Duplicate Detection**:
+  - Compare CSS files for similar rule patterns
+  - Identify template files with similar structure/content
+  - Find Python modules with overlapping functionality
+  - Compare component templates for similar patterns
+- [ ] **Build System Duplicate Analysis**:
+  - Identify multiple CSS entry points serving same purpose
+  - Find redundant PostCSS configurations
+  - Check for duplicate dependency declarations
+- [ ] **Legacy vs Current Analysis**:
+  - Compare `style.css` (39KB) vs `main.css` organized structure
+  - Identify which files are legacy vs current architecture
+  - Map v0.dev specific files vs current design system
+- [ ] **Success Criteria**: Prioritized list of duplicate files with similarity scores and consolidation recommendations
+
+#### **Task 3.5: Build System Optimization Analysis** ⏱️ 30 minutes
+**Objective**: Analyze which files are included in build process and optimize build pipeline
+- [ ] **CSS Build Analysis**:
+  - Map PostCSS build inputs vs outputs
+  - Identify unused CSS entry points
+  - Check build optimization settings
+  - Analyze CSS bundle size and composition
+- [ ] **Template Build Integration**:
+  - Verify which CSS files templates actually reference
+  - Check for build/template mismatches
+  - Identify missing build outputs
+- [ ] **Development vs Production Analysis**:
+  - Compare dev/prod build configurations
+  - Identify debug-only files
+  - Check for proper minification/optimization
+- [ ] **Success Criteria**: Optimized build configuration with unused inputs removed
+
+#### **Task 3.6: Cleanup Recommendations & Risk Assessment** ⏱️ 30 minutes
+**Objective**: Generate prioritized cleanup plan with risk assessment for each change
+- [ ] **Safe Deletion List**:
+  - Files with zero references/imports
+  - Exact duplicates with clear primary version
+  - Backup files (`*.backup`, `*.old`)
+  - Unused build artifacts
+- [ ] **Manual Review Required**:
+  - Files with low similarity but potential overlap
+  - Legacy vs modern architecture decisions
+  - Build system consolidation opportunities
+- [ ] **High-Risk Changes**:
+  - Files that might be referenced dynamically
+  - Core system files with multiple dependencies
+  - Build system changes that could break pipeline
+- [ ] **Consolidation Opportunities**:
+  - Template component merging
+  - CSS architecture simplification  
+  - Service layer optimization
+- [ ] **Success Criteria**: Comprehensive cleanup plan with risk levels and implementation order
 
 ## Job Lifecycle (Event-Driven)
 
@@ -35,93 +200,54 @@ Rebuilding a Flask-based 3D print job management system for an academic/makerspa
 6. **Completed**: Staff marks complete → completion email sent
 7. **PaidPickedUp**: Student collects → final state
 
-## High-Level Task Breakdown
-
-### ✅ **PHASE 0: CODEBASE CLEANUP** (COMPLETED)
-- [x] **Task 0.1**: Remove unused v0 codebase (98 files removed)
-- [x] **Task 0.2**: Remove orphaned files  
-- [x] **Task 0.3**: Fix template inheritance
-- [x] **Task 0.4**: Register error handlers
-- [x] **EMERGENCY FIX**: Convert base modal to proper Jinja2 macro
-
-### ✅ **PHASE 0.5: EMERGENCY INFRASTRUCTURE RECOVERY** (COMPLETED)
-- [x] **Task 0.5.1**: Environment Configuration Setup
-- [x] **Task 0.5.2**: Database Initialization (Fixed schema mismatch crisis)
-- [x] **Task 0.5.3**: Application Smoke Testing
-- [x] **Task 0.5.4**: Enhanced Testing Framework (Comprehensive test suite implemented)
-
-### 🚀 **PHASE 1: DATABASE IMPLEMENTATION** (READY TO START)
-
-#### **Task 1.1: Core Models Implementation** ⏱️ 60 minutes
-**Objective**: Establish robust PostgreSQL database with proper models and migrations
-- [ ] Create Job model with all required fields (id, student info, file paths, status, timestamps)
-- [ ] Create Event model for immutable audit logging
-- [ ] Define status enums and relationships
-- [ ] Test model creation and querying
-- [ ] **Success Criteria**: Models created, relationships defined, all operations work correctly
-
-#### **Task 1.2: File Management System** ⏱️ 45 minutes
-**Objective**: Implement robust file handling with status-based directories and metadata
-- [ ] Create file_service.py with status-based directory management
-- [ ] Implement standardized naming convention: FirstAndLastName_PrintMethod_Color_SimpleJobID.ext
-- [ ] Add metadata.json embedding for file resilience
-- [ ] **Success Criteria**: Complete file lifecycle management working
-
-#### **Task 1.3: Core Workflow Routes** ⏱️ 90 minutes
-**Objective**: Implement student submission and staff approval workflows
-- [ ] Implement submission form with comprehensive validation
-- [ ] Add file upload handling with security checks
-- [ ] Create staff dashboard with job management
-- [ ] Add job approval/rejection functionality
-- [ ] **Success Criteria**: Complete job lifecycle functional
-
 ## Project Status Board
 
 ### ✅ COMPLETED PHASES
 - **Phase 0**: Codebase Cleanup (100% Complete)
 - **Phase 0.5**: Emergency Infrastructure Recovery (100% Complete)
+- **Phase 1**: Database Implementation (100% Complete)
+- **Phase 2**: CSS Architecture Consolidation (100% Complete)
 
 ### 🎯 CURRENT FOCUS
-- **Phase 1**: ✅ COMPLETED - Emergency Stabilization
-- **Phase 2**: ✅ COMPLETED - CSS Architecture Consolidation
-- **Phase 3**: ✅ COMPLETED - System Modernization 
-- **NEXT**: Database Implementation (Ready to start with Task 1.1)
+- **Phase 3**: Comprehensive Dependency Analysis & Cleanup (Ready to start with Task 3.1)
 
 ## Current Status / Progress Tracking
 
-**PROJECT STATUS**: ✅ **PHASE 2 ARCHITECTURE CONSOLIDATION COMPLETED**
+**PROJECT STATUS**: 🔍 **PHASE 3 COMPREHENSIVE CLEANUP PLANNING COMPLETED**
 
-**MAJOR MILESTONE ACHIEVED**:
-- ✅ Root cause analysis completed - Multi-factor CSS layout failure identified
-- ✅ Technical investigation report generated: `UI_INCIDENT_ROOT_CAUSE_ANALYSIS.md`
-- ✅ Solutions architecture document created: `UI_SOLUTIONS_ARCHITECTURE.md`
-- ✅ Implementation plan executed: `cline-tasks.md`
-- ✅ PHASE 1 EMERGENCY FIXES DEPLOYED: `emergency-fix.css` created and integrated
-- ✅ PHASE 2 ARCHITECTURE CONSOLIDATION COMPLETED: Full CSS system rebuilt
-- ✅ Mobile tab scrolling restored, z-index conflicts resolved
-- ✅ Template backup created, CSS load order optimized
-- ✅ **CRITICAL FIX**: Removed invalid @extend CSS syntax causing system failure
+**PLANNING SESSION ACHIEVEMENTS**:
+- ✅ **Technology Stack Analysis**: Flask + PostgreSQL backend, Tailwind + PostCSS frontend identified
+- ✅ **Entry Point Identification**: Main entry points mapped (`app.py`, `app/__init__.py`, `package.json`)
+- ✅ **File Structure Assessment**: Critical CSS consolidation issues identified
+- ✅ **Dependency Relationship Mapping**: Python import patterns analyzed
+- ✅ **Build System Architecture**: Node.js + PostCSS pipeline documented
+- ✅ **Phase 3 Task Breakdown**: 6 comprehensive tasks defined with clear success criteria
 
-**ALL PHASES DELIVERABLES COMPLETED**:
-- ✅ **Complete CSS Architecture**: 4,500+ lines organized across base/, components/, layouts/
-- ✅ **Design System Foundation**: `variables.css` (288 lines), `reset.css` (381 lines)
-- ✅ **Component Library**: buttons, tabs, cards, modals, forms (2,600+ lines total)
-- ✅ **Layout System**: responsive grid and containers (1,100+ lines)
-- ✅ **Legacy Compatibility**: All v0.dev and Apple classes supported
-- ✅ **Template Integration**: `base.html` updated to use new `main.css`
-- ✅ **Emergency CSS Syntax Fix**: Replaced invalid @extend with valid CSS
-- ✅ **Build System**: PostCSS pipeline with optimization and health checks
-- ✅ **Automated Testing**: Responsive testing suite for 6 breakpoints
-- ✅ **Performance Monitoring**: CSS health monitoring and layout shift detection
-- ✅ **Documentation**: Complete component library and responsive design guides
+**CRITICAL FINDINGS FROM ANALYSIS**:
+- ⚠️ **CSS System Overlap**: 6+ CSS files with potential duplication:
+  - `style.css` (39KB minified) - Legacy system
+  - `main.css` (5.8KB) - Current organized system  
+  - `emergency-fix.css` (6.3KB) - Previous session fixes
+  - `style.css.backup` (39KB) - Backup file
+  - Multiple specialized files: `input.css`, `v0dev-animations.css`
+- ⚠️ **Build System Complexity**: Multiple CSS entry points may indicate incomplete consolidation
+- ⚠️ **Template Structure**: Organized hierarchy but potential for component duplication
+- ✅ **Python Architecture**: Clean modular structure with proper separation of concerns
 
-**INCIDENT STATUS**: 🟢 **FULLY RESOLVED**
-- 🟢 Mobile devices (320-480px width) - Tab scrolling functional
-- 🟢 Tablet landscape (480-768px width) - Full responsive behavior
-- 🟢 Desktop functionality (1024px+ width) - Enhanced and maintained
-- 🟢 CSS architecture technical debt - Completely eliminated
+**COMPREHENSIVE CLEANUP PLAN READY**:
+- **Task 3.1**: Complete Dependency Mapping (45 min) - Map all Python/CSS/template dependencies
+- **Task 3.2**: Entry Point Tracing (60 min) - Trace reachable code from main entry points  
+- **Task 3.3**: Dead Code Detection (30 min) - Identify never-referenced files
+- **Task 3.4**: Duplicate Detection (45 min) - Find identical/similar files with consolidation plan
+- **Task 3.5**: Build System Analysis (30 min) - Optimize CSS build pipeline
+- **Task 3.6**: Risk Assessment (30 min) - Generate prioritized cleanup recommendations
 
-**NEXT EXECUTOR ACTION**: ALL PHASES COMPLETED ✅ - System production-ready with full testing pipeline
+**ESTIMATED TOTAL EFFORT**: 4 hours 0 minutes for complete dependency analysis and cleanup planning
+
+**NEXT ACTION FOR HUMAN USER**: 
+- ✅ **Planner Phase Complete**: Comprehensive analysis and task breakdown documented
+- 🎯 **Ready for Executor**: Approve transition to Executor mode to begin Task 3.1 (Dependency Mapping)
+- 📋 **Implementation Strategy**: Execute tasks sequentially with milestone checkpoints
 
 **SYSTEM STATUS**:
 - ✅ Flask application running successfully on http://127.0.0.1:5000
