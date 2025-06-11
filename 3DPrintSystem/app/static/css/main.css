@@ -46,62 +46,143 @@
    ========================================================================== */
 
 /* Ensure smooth transition from old classes to new ones */
+/* Note: Using CSS class copying instead of @extend since @extend is SCSS syntax */
+
+/* Tab system compatibility - copy styles from tab-nav */
 .tabs-v0 {
-  /* Use new tab system but maintain compatibility */
-  @extend .tab-nav;
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 0.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  margin-bottom: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-400, #9ca3af) var(--color-gray-100, #f3f4f6);
+}
+
+.tabs-v0::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tabs-v0::-webkit-scrollbar-track {
+  background: var(--color-gray-100, #f3f4f6);
+  border-radius: 3px;
+}
+
+.tabs-v0::-webkit-scrollbar-thumb {
+  background: var(--color-gray-400, #9ca3af);
+  border-radius: 3px;
 }
 
 .tab-v0-active {
-  @extend .tab-item;
-  @extend .tab-item--active;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
+  background-color: var(--color-primary, #2563eb);
+  color: white;
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
 }
 
 .tab-v0-inactive {
-  @extend .tab-item;
-  @extend .tab-item--inactive;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
+  background-color: white;
+  color: var(--color-primary, #2563eb);
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+.tab-v0-inactive:hover {
+  background-color: var(--color-gray-50, #f9fafb);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+/* Button compatibility - copy basic button styles */
+.btn-apple-primary,
+.btn-v0-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  border-radius: var(--radius-md, 12px);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  background-color: var(--color-primary, #2563eb);
+  color: white;
+}
+
+.btn-apple-primary:hover,
+.btn-v0-primary:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+.btn-apple-secondary,
+.btn-v0-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  border-radius: var(--radius-md, 12px);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background-color: white;
+  color: var(--color-primary, #2563eb);
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+.btn-apple-secondary:hover,
+.btn-v0-secondary:hover {
+  background-color: var(--color-gray-50, #f9fafb);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
 }
 
 /* Card compatibility */
-.card-apple {
-  @extend .card;
-}
-
+.card-apple,
 .card-v0 {
-  @extend .card;
-}
-
-.grid-v0-jobs {
-  @extend .jobs-grid;
-}
-
-/* Button compatibility */
-.btn-apple-primary {
-  @extend .btn;
-  @extend .btn--primary;
-}
-
-.btn-apple-secondary {
-  @extend .btn;
-  @extend .btn--secondary;
-}
-
-.btn-v0-primary {
-  @extend .btn;
-  @extend .btn--primary;
-}
-
-.btn-v0-secondary {
-  @extend .btn;
-  @extend .btn--secondary;
+  background-color: white;
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  border: 1px solid var(--color-border, #e5e7eb);
+  overflow: hidden;
 }
 
 /* Container compatibility */
 .container-v0 {
-  @extend .container--wide;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg, 24px);
 }
 
 .header-v0 {
-  @extend .dashboard-header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md, 16px) var(--spacing-lg, 24px);
+  background: white;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
 }
 
 /* ==========================================================================
